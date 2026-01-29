@@ -11,7 +11,7 @@
 ### 基本信息
 - **项目名称**: 漫骑游官方网站
 - **Git 仓库**: git@github.com:zhf186/mqyweb.git
-- **服务器 IP**: 47.37.21.33
+- **服务器 IP**: 47.97.21.33
 - **域名**: www.manqiyou.cn
 - **部署方式**: Docker + Nginx + Let's Encrypt
 
@@ -60,7 +60,7 @@
 
 ```bash
 # 1. 连接到服务器
-ssh root@47.37.21.33
+ssh root@47.97.21.33
 
 # 2. 克隆代码
 sudo mkdir -p /var/www/manqiyou
@@ -138,7 +138,7 @@ EMAIL="your-email@example.com"  # 改为你的实际邮箱
 ```bash
 # 在本地执行
 nslookup www.manqiyou.cn
-# 应该返回 47.37.21.33
+# 应该返回 47.97.21.33
 ```
 
 ### 4. 确认 Git SSH 密钥

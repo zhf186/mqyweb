@@ -28,7 +28,7 @@
 
 ```bash
 # 1. 连接到服务器
-ssh root@47.37.21.33
+ssh root@47.97.21.33
 
 # 2. 下载部署脚本
 curl -O https://raw.githubusercontent.com/zhf186/mqyweb/main/deploy/quick-deploy.sh
@@ -48,7 +48,7 @@ bash quick-deploy.sh
 ## 📋 部署信息
 
 ### 服务器信息
-- **IP 地址**: 47.37.21.33
+- **IP 地址**: 47.97.21.33
 - **域名**: www.manqiyou.cn
 - **操作系统**: Ubuntu 24.04
 - **Web 服务器**: Nginx

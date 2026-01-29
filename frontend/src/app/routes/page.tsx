@@ -173,15 +173,24 @@ export default function RoutesPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6 }}
-                className="text-center"
+                className="group relative overflow-hidden rounded-2xl"
               >
-                <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-orange-500/10">
-                  <span className="text-3xl">🗺️</span>
+                <div className="relative aspect-[4/3]">
+                  <Image
+                    src="/brand_assets/routes/page12_img3.jpeg"
+                    alt={t('routesPage.features.culture.title')}
+                    fill
+                    className="object-cover transition-transform duration-700 group-hover:scale-110"
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-black/20" />
                 </div>
-                <h3 className="text-xl font-bold mb-3">{t('routesPage.features.culture.title')}</h3>
-                <p className="text-white/60 leading-relaxed">
-                  {t('routesPage.features.culture.desc')}
-                </p>
+                <div className="absolute bottom-0 left-0 right-0 p-6 text-center">
+                  <h3 className="text-xl font-bold mb-3">{t('routesPage.features.culture.title')}</h3>
+                  <p className="text-white/80 leading-relaxed text-sm">
+                    {t('routesPage.features.culture.desc')}
+                  </p>
+                </div>
               </motion.div>
 
               <motion.div
@@ -189,15 +198,24 @@ export default function RoutesPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: 0.1 }}
-                className="text-center"
+                className="group relative overflow-hidden rounded-2xl"
               >
-                <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-orange-500/10">
-                  <span className="text-3xl">🚴</span>
+                <div className="relative aspect-[4/3]">
+                  <Image
+                    src="/brand_assets/ebike/page10_img1.jpeg"
+                    alt={t('routesPage.features.ebike.title')}
+                    fill
+                    className="object-cover transition-transform duration-700 group-hover:scale-110"
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-black/20" />
                 </div>
-                <h3 className="text-xl font-bold mb-3">{t('routesPage.features.ebike.title')}</h3>
-                <p className="text-white/60 leading-relaxed">
-                  {t('routesPage.features.ebike.desc')}
-                </p>
+                <div className="absolute bottom-0 left-0 right-0 p-6 text-center">
+                  <h3 className="text-xl font-bold mb-3">{t('routesPage.features.ebike.title')}</h3>
+                  <p className="text-white/80 leading-relaxed text-sm">
+                    {t('routesPage.features.ebike.desc')}
+                  </p>
+                </div>
               </motion.div>
 
               <motion.div
@@ -205,15 +223,24 @@ export default function RoutesPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: 0.2 }}
-                className="text-center"
+                className="group relative overflow-hidden rounded-2xl"
               >
-                <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-orange-500/10">
-                  <span className="text-3xl">🎯</span>
+                <div className="relative aspect-[4/3]">
+                  <Image
+                    src="/brand_assets/community/page14_img1.jpeg"
+                    alt={t('routesPage.features.experience.title')}
+                    fill
+                    className="object-cover transition-transform duration-700 group-hover:scale-110"
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-black/20" />
                 </div>
-                <h3 className="text-xl font-bold mb-3">{t('routesPage.features.experience.title')}</h3>
-                <p className="text-white/60 leading-relaxed">
-                  {t('routesPage.features.experience.desc')}
-                </p>
+                <div className="absolute bottom-0 left-0 right-0 p-6 text-center">
+                  <h3 className="text-xl font-bold mb-3">{t('routesPage.features.experience.title')}</h3>
+                  <p className="text-white/80 leading-relaxed text-sm">
+                    {t('routesPage.features.experience.desc')}
+                  </p>
+                </div>
               </motion.div>
             </div>
           </div>
