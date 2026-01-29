@@ -1,0 +1,110 @@
+version: '3.8'
+
+services:
+  # PostgreSQL 数据库
+  postgres:
+    image: postgres:16-alpine
+    container_name: manqiyou-postgres
+    restart: always
+    environment:
+      POSTGRES_DB: manqiyou
+      POSTGRES_USER: manqiyou_user
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-manqiyou2024!@#}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/sql:/docker-entrypoint-initdb.d
+    ports:
+      - "127.0.0.1:5432:5432"
+    networks:
+      - manqiyou-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U manqiyou_user -d manqiyou"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis 缓存
+  redis:
+    image: redis:7-alpine
+    container_name: manqiyou-redis
+    restart: always
+    command: redis-server --requirepass ${REDIS_PASSWORD:-redis2024!@#}
+    ports:
+      - "127.0.0.1:6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - manqiyou-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # 后端服务
+  backend:
+    build:
+      context: ./backend/manqiyou-app
+      dockerfile: Dockerfile
+    container_name: manqiyou-backend
+    restart: always
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: manqiyou
+      DB_USERNAME: manqiyou_user
+      DB_PASSWORD: ${DB_PASSWORD:-manqiyou2024!@#}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-redis2024!@#}
+      JWT_SECRET: ${JWT_SECRET:-your_jwt_secret_change_in_production}
+    ports:
+      - "127.0.0.1:8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - manqiyou-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # 前端服务
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: https://www.manqiyou.cn/api
+    container_name: manqiyou-frontend
+    restart: always
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+    ports:
+      - "127.0.0.1:3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - manqiyou-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  manqiyou-network:
+    driver: bridge

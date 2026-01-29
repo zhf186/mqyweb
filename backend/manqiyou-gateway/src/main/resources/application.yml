@@ -1,0 +1,77 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: manqiyou-gateway
+  cloud:
+    gateway:
+      routes:
+        # 用户服务
+        - id: user-service
+          uri: lb://manqiyou-user
+          predicates:
+            - Path=/api/auth/**, /api/users/**
+        # 线路服务
+        - id: route-service
+          uri: lb://manqiyou-route
+          predicates:
+            - Path=/api/routes/**, /api/categories/**
+        # 订单服务
+        - id: order-service
+          uri: lb://manqiyou-order
+          predicates:
+            - Path=/api/orders/**
+        # 会员服务
+        - id: member-service
+          uri: lb://manqiyou-member
+          predicates:
+            - Path=/api/membership/**
+        # CMS服务
+        - id: cms-service
+          uri: lb://manqiyou-cms
+          predicates:
+            - Path=/api/content/**, /api/admin/**, /api/goods/**, /api/activities/**
+      # 全局CORS配置
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowedHeaders: "*"
+            maxAge: 3600
+
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      database: 0
+
+# JWT配置
+jwt:
+  secret: ${JWT_SECRET:manqiyou-secret-key-must-be-at-least-256-bits-long}
+  expiration: 86400000
+  refresh-expiration: 604800000
+
+# 白名单路径（无需认证）
+gateway:
+  whitelist:
+    - /api/auth/send-code
+    - /api/auth/login
+    - /api/auth/wechat
+    - /api/routes/**
+    - /api/categories/**
+    - /api/content/**
+    - /api/goods/**
+    - /api/activities/**
+
+logging:
+  level:
+    com.manqiyou: DEBUG
+    org.springframework.cloud.gateway: DEBUG

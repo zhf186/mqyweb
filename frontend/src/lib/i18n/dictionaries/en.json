@@ -1,0 +1,869 @@
+{
+  "common": {
+    "brand": "Manqiyou",
+    "slogan": "Ride into Infinite Beauty",
+    "tagline": "Premium Cross-border Cycling Life Platform",
+    "learnMore": "Learn More",
+    "viewAll": "View All",
+    "bookNow": "Book Now",
+    "contactUs": "Contact Us",
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout",
+    "myAccount": "My Account",
+    "language": "Language",
+    "search": "Search",
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "retry": "Retry",
+    "back": "Back",
+    "next": "Next",
+    "prev": "Previous",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "startRiding": "Start Riding",
+    "exploreRoutes": "Explore Routes",
+    "learnEbike": "Learn E-BIKE"
+  },
+  "units": {
+    "kg": "kg"
+  },
+  "nav": {
+    "home": "Home",
+    "routes": "Routes",
+    "ebike": "E-BIKE",
+    "goods": "Goods",
+    "community": "Community",
+    "partners": "Partners",
+    "about": "About",
+    "contact": "Contact"
+  },
+  "hero": {
+    "title": "Manqiyou",
+    "subtitle": "Slow down, ride out, explore the world",
+    "description": "Deep routes, Smart community, Quality goods, Boundless alliances, Scenic life galleries",
+    "cta": "Explore Cycling Journey",
+    "scrollDown": "Scroll Down"
+  },
+  "aboutPage": {
+    "heroImageAlt": "About Manqiyou",
+    "heroTitle": "About Manqiyou",
+    "missionLine1": "Manqiyou is committed to building China's leading cross-border cycling lifestyle platform,",
+    "missionLine2": "making every ride an unforgettable journey.",
+    "stats": {
+      "routes": "Featured Routes",
+      "members": "Members Served",
+      "partners": "Partners",
+      "cities": "Cities Covered"
+    },
+    "valuesBadge": "CORE VALUES",
+    "values": {
+      "routes": {
+        "title": "Deep Routes",
+        "desc": "Carefully design every cycling route"
+      },
+      "community": {
+        "title": "Smart Community",
+        "desc": "Gather like-minded riders"
+      },
+      "goods": {
+        "title": "Quality Goods",
+        "desc": "Curated local specialties along the way"
+      },
+      "partners": {
+        "title": "Business Alliance",
+        "desc": "Cross-industry collaboration and resource integration"
+      },
+      "gallery": {
+        "title": "Life Gallery",
+        "desc": "Offline experience of cycling culture"
+      }
+    },
+    "timelineBadge": "MILESTONES",
+    "timelineTitle": "Our Journey",
+    "milestones": {
+      "2020": "Manqiyou brand founded",
+      "2021": "First featured route launched",
+      "2022": "Membership exceeded 10,000",
+      "2023": "Tour E-BIKE released",
+      "2024": "Nationwide expansion started"
+    },
+    "cta": {
+      "title": "Join Manqiyou",
+      "desc": "Whether you're a cycling enthusiast, a partner, or looking to join our team",
+      "member": "Become a Member",
+      "cooperate": "Business Cooperation"
+    }
+  },
+  "communityPage": {
+    "heroImageAlt": "Cycling community",
+    "heroBadge": "Community",
+    "heroTitle": "Smart Community",
+    "heroDesc": "Like-minded riders, exciting events—share the joy of cycling",
+    "heroCta": "Join the Community",
+    "intro": {
+      "badge": "COMMUNITY INTRO",
+      "title": "Choice of 100k+ Riders",
+      "desc": "Building high-value user communities through shared values and interests—from fans to loyal members, even becoming partners in Manqiyou's business"
+    },
+    "stats": {
+      "members": "Community Members",
+      "events": "Cycling Events",
+      "distance": "Total Distance (km)",
+      "distanceZh": "1,000,000"
+    },
+    "activities": {
+      "badge": "LATEST EVENTS",
+      "title": "Highlights",
+      "status": {
+        "open": "Open",
+        "ongoing": "Ongoing",
+        "ended": "Ended"
+      },
+      "participantsUnit": "participants",
+      "items": {
+        "1": {
+          "title": "Weekend Ride: Siming Mountain Challenge",
+          "date": "Jan 20, 2024",
+          "location": "Ningbo · Siming Mountain"
+        },
+        "2": {
+          "title": "New Year Lake Loop Ride",
+          "date": "Jan 1, 2024",
+          "location": "Ningbo · Dongqian Lake"
+        },
+        "3": {
+          "title": "Cycling Photography Contest",
+          "date": "Feb 2024",
+          "location": "Online"
+        }
+      }
+    },
+    "gallery": {
+      "badge": "MOMENTS",
+      "title": "Capture Every Great Moment",
+      "desc": "Real cycling activity photos showcasing the vitality and passion of our community",
+      "imageAlt": "Cycling moment"
+    },
+    "cta": {
+      "title": "Join the Manqiyou Community",
+      "desc": "Explore more routes and share the joy of cycling with like-minded riders",
+      "joinNow": "Join Now",
+      "benefits": {
+        "community": "Active Community",
+        "communityDesc": "Meet like-minded riders",
+        "events": "Exciting Events",
+        "eventsDesc": "Join 500+ cycling activities",
+        "rewards": "Member Benefits",
+        "rewardsDesc": "Exclusive discounts and rewards"
+      }
+    }
+  },
+  "goodsPage": {
+    "heroImageAlt": "Local goods",
+    "heroBadge": "Local Goods",
+    "heroTitle": "Quality Goods",
+    "heroDesc": "Bring home the best local specialties from your journey",
+    "categories": {
+      "all": "All",
+      "local": "Local Specialties",
+      "gear": "Cycling Gear",
+      "apparel": "Cycling Apparel"
+    },
+    "feature": {
+      "badge": "QUALITY ASSURANCE",
+      "title": "Carefully Curated Local Goods",
+      "desc": "We go deep into villages along the route to curate local specialties. From fields to tables, from workshops to your hands—each item carries local culture and craftsmanship.",
+      "bullets": {
+        "1": "Direct from origin, quality guaranteed",
+        "2": "Strictly selected, carefully curated",
+        "3": "Support local communities"
+      },
+      "imageAlt": "Goods showcase"
+    },
+    "products": {
+      "1": "Ningbo Rice Cake Gift Box",
+      "2": "Fenghua Honey Peach",
+      "3": "Pro Cycling Helmet",
+      "4": "Breathable Cycling Jersey",
+      "5": "Portable Repair Tool Kit",
+      "6": "Cixi Bayberry Wine",
+      "7": "Cycling Gloves",
+      "8": "Sports Water Bottle"
+    }
+  },
+  "partnersPage": {
+    "heroImageAlt": "Partners",
+    "heroBadge": "Partners",
+    "heroTitle": "Business Alliance",
+    "heroDesc": "Co-create and share the cycling ecosystem—open new opportunities in cycling tourism",
+    "advantages": {
+      "traffic": {
+        "number": "100k+",
+        "title": "Shared Traffic",
+        "desc": "100k+ targeted cycling users"
+      },
+      "marketing": {
+        "number": "Precise",
+        "title": "Precision Marketing",
+        "desc": "Targeted promotion, efficient conversion"
+      },
+      "brand": {
+        "number": "Premium",
+        "title": "Brand Endorsement",
+        "desc": "Premium brand positioning"
+      },
+      "resource": {
+        "number": "Integrated",
+        "title": "Resource Exchange",
+        "desc": "Multi-dimensional resource integration"
+      }
+    },
+    "types": {
+      "badge": "PARTNERSHIP MODELS",
+      "title": "Flexible Cooperation",
+      "scenic": {
+        "title": "Scenic Spots",
+        "desc": "Strategic partnership with top destinations to create unique cycling experiences",
+        "benefits": {
+          "1": "Exclusive routes",
+          "2": "Ticket discounts",
+          "3": "Co-marketing"
+        }
+      },
+      "hotel": {
+        "title": "Hotels & Homestays",
+        "desc": "Curated bike-friendly stays with thoughtful services",
+        "benefits": {
+          "1": "Bike storage",
+          "2": "Gear cleaning",
+          "3": "Breakfast supplies"
+        }
+      },
+      "sponsor": {
+        "title": "Brand Sponsorship",
+        "desc": "Work with renowned brands to promote cycling culture",
+        "benefits": {
+          "1": "Brand exposure",
+          "2": "Event sponsorship",
+          "3": "Product collaboration"
+        }
+      }
+    },
+    "cta": {
+      "title": "Become a Partner",
+      "desc": "Join the Manqiyou ecosystem and grow the cycling tourism market together",
+      "consult": "Consult Now",
+      "download": "Download Partnership Guide"
+    }
+  },
+  "termsPage": {
+    "heroTitle": "Terms of Service",
+    "lastUpdated": "Last updated: Jan 2024",
+    "introLine1": "Welcome to Manqiyou. Please read the following terms carefully before using our services.",
+    "introLine2": "By using our services, you agree to these Terms of Service.",
+    "sections": {
+      "service": {
+        "title": "1. Service Description",
+        "content": "Manqiyou provides cycling tourism related services, including but not limited to:",
+        "items": {
+          "1": "Route booking and navigation",
+          "2": "E-assist bike rental",
+          "3": "Sales of cycling gear and local goods",
+          "4": "Community activities and event organization"
+        }
+      },
+      "responsibility": {
+        "title": "2. User Responsibilities",
+        "content": "As a user, you agree to:",
+        "items": {
+          "1": "Provide true and accurate personal information",
+          "2": "Keep account credentials secure and be responsible for account activities",
+          "3": "Comply with applicable laws, regulations, and platform rules",
+          "4": "Respect the rights of other users and partners",
+          "5": "Not engage in any behavior that may harm the platform"
+        }
+      },
+      "booking": {
+        "title": "3. Booking & Cancellation",
+        "content": "After booking is confirmed, please follow the instructions in the confirmation. Cancellation policies vary by product—please read terms carefully before booking:",
+        "items": {
+          "1": "Cancel 7+ days before departure: full refund",
+          "2": "Cancel 3–7 days before departure: 50% refund",
+          "3": "Cancel within 3 days of departure: no refund",
+          "4": "Cancellation due to force majeure (e.g., weather): full refund or reschedule"
+        }
+      },
+      "safety": {
+        "title": "4. Safety Notice",
+        "line1": "Cycling activities involve certain risks. Participants should have appropriate physical conditions and riding skills.",
+        "line2": "We strongly recommend all participants:",
+        "items": {
+          "1": "Purchase appropriate insurance",
+          "2": "Wear a safety helmet",
+          "3": "Follow traffic rules",
+          "4": "Ride within your ability and take breaks"
+        }
+      },
+      "ip": {
+        "title": "5. Intellectual Property",
+        "content": "All content on Manqiyou (including but not limited to text, images, videos, trademarks, and route designs) is protected by intellectual property laws and may not be used without authorization."
+      },
+      "disclaimer": {
+        "title": "6. Disclaimer",
+        "content": "To the extent permitted by law, Manqiyou is not liable for:",
+        "items": {
+          "1": "Losses caused by the user",
+          "2": "Service interruption due to force majeure",
+          "3": "Actions of third-party service providers",
+          "4": "Consequences caused by violation of these terms"
+        }
+      },
+      "contact": {
+        "title": "7. Contact",
+        "content": "If you have any questions, please contact us:"
+      }
+    },
+    "contact": {
+      "address": "Haishu District, Ningbo, Zhejiang"
+    }
+  },
+  "privacyPage": {
+    "heroTitle": "Privacy Policy",
+    "lastUpdated": "Last updated: Jan 2024",
+    "introLine1": "Manqiyou (\"we\") takes your privacy seriously.",
+    "introLine2": "This policy explains how we collect, use, store, and protect your personal information.",
+    "sections": {
+      "collect": {
+        "title": "1. Information Collection",
+        "content": "We collect information you provide while using Manqiyou services, including but not limited to:",
+        "items": {
+          "1": "Registration information (phone number, email, etc.)",
+          "2": "Profile information (nickname, avatar, etc.)",
+          "3": "Order information (bookings, payment info, etc.)",
+          "4": "Device information (model, operating system, etc.)",
+          "5": "Location information (for navigation and route recommendations)"
+        }
+      },
+      "use": {
+        "title": "2. Information Use",
+        "content": "We use the collected information to:",
+        "items": {
+          "1": "Provide, maintain, and improve our services",
+          "2": "Process your orders and transactions",
+          "3": "Send service notifications and marketing messages",
+          "4": "Protect account and transaction security",
+          "5": "Analyze data to improve user experience"
+        }
+      },
+      "protect": {
+        "title": "3. Information Protection",
+        "content": "We take appropriate technical and organizational measures to protect your personal information from unauthorized access, use, or disclosure, including:",
+        "items": {
+          "1": "Encrypted transmission and storage",
+          "2": "Access control",
+          "3": "Regular security audits",
+          "4": "Employee privacy training"
+        }
+      },
+      "share": {
+        "title": "4. Information Sharing",
+        "content": "We do not sell your personal information. We may share your information in the following situations:",
+        "items": {
+          "1": "With your explicit consent",
+          "2": "When necessary to complete a transaction (e.g., payment providers)",
+          "3": "When required by laws and regulations",
+          "4": "To protect our or others' legitimate rights and interests"
+        }
+      },
+      "rights": {
+        "title": "5. Your Rights",
+        "content": "You have the right to access, correct, or delete your personal information. To exercise these rights, please contact us through the methods below."
+      },
+      "contact": {
+        "title": "6. Contact Us",
+        "content": "If you have any questions about this Privacy Policy, please contact us:"
+      }
+    },
+    "contact": {
+      "address": "Haishu District, Ningbo, Zhejiang"
+    }
+  },
+  "home": {
+    "heroImageAlt": "Manqiyou - Encounter Infinite Beautiful Life Through Cycling",
+    "introImageAlt": "Cycling through landscapes",
+    "ebikeImageAlt": "German Heritage Smart E-Assist Bicycle",
+    "brand": {
+      "badge": "FUTURE LUXURY CYCLING",
+      "title": "German Heritage × Smart Cycling",
+      "desc": "Premium Cross-border Cycling Life Platform"
+    },
+    "intro": "Cycling Life, All-in-One Experience",
+    "ebike": {
+      "title": "German Heritage × Smart Cycling",
+      "subtitle": "Tour E-BIKE",
+      "desc": "Scan to Ride, Smart Companion",
+      "features": [
+        { "value": "11.9kg", "label": "Ultra Light" },
+        { "value": "100km", "label": "Range" },
+        { "value": "Smart System", "label": "Scan to Ride" }
+      ]
+    },
+    "ebikeTitle": "German Heritage × Smart Cycling",
+    "ebikeSubtitle": "Tour E-BIKE",
+    "ebikeDesc": "Scan to Ride, Smart Companion",
+    "statsWeight": "Ultra Light",
+    "statsRange": "Range",
+    "statsSpeed": "Max Speed",
+    "routes": {
+      "title": "Featured Routes",
+      "subtitle": "ROUTES",
+      "desc": "Explore Cities, Encounter Beauty"
+    },
+    "routesTitle": "Featured Routes",
+    "routesSubtitle": "ROUTES",
+    "routesDesc": "Explore Cities, Encounter Beauty",
+    "featuresTitle": "Five Core Sections",
+    "featuresDesc": "Building a complete cycling ecosystem",
+    "featureRental": "Smart Rental",
+    "featureRentalDesc": "Scan to ride, convenient travel",
+    "featureRoutes": "Featured Routes",
+    "featureRoutesDesc": "Deep experience, cultural scenery",
+    "featureCommunity": "Cycling Community",
+    "featureCommunityDesc": "Like-minded, ride together",
+    "featureGoods": "Local Goods",
+    "featureGoodsDesc": "Local specialties, quality selection",
+    "featurePartners": "Business Alliance",
+    "featurePartnersDesc": "Resource integration, win-win",
+    "featureGallery": "Life Gallery",
+    "featureGalleryDesc": "Offline experience, cycling culture",
+    "cta": {
+      "title": "Start Your Cycling Journey",
+      "desc": "Explore More Possibilities"
+    },
+    "ctaTitle": "Start Your Cycling Journey",
+    "ctaDesc": "Explore More Possibilities"
+  },
+  "partners": {
+    "hero": {
+      "title": "Partners",
+      "subtitle": "Partnering with World-Class Brands"
+    },
+    "yadea": {
+      "title": "Yadea",
+      "subtitle": "World's Largest Electric Vehicle Brand",
+      "desc": "Strategic partner, building smart cycling ecosystem together"
+    },
+    "gazelle": {
+      "title": "Gazelle",
+      "subtitle": "Dutch Royal Brand",
+      "desc": "Introducing European advanced technology, German heritage E-BIKE"
+    },
+    "scenic": {
+      "title": "11 National Scenic Areas",
+      "desc": "Deep cooperation, creating new cycling experiences"
+    }
+  },
+  "about": {
+    "hero": {
+      "title": "About Manqiyou",
+      "subtitle": "Encounter Infinite Beautiful Life Through Cycling"
+    },
+    "stats": [
+      { "value": "2006", "label": "Founded" },
+      { "value": "32", "label": "Export Countries" },
+      { "value": "5000㎡", "label": "Smart Factory" },
+      { "value": "11", "label": "Scenic Partners" }
+    ],
+    "story": {
+      "badge": "BRAND STORY",
+      "title": "Brand Story",
+      "content": "Since 2006, our products have been exported to 32 countries and regions worldwide. In 2020, Manqiyou brand was officially founded, committed to building a premium cross-border cycling lifestyle platform. We combine German-heritage smart E-BIKEs with deep cycling routes to provide riders with a one-stop cycling experience."
+    },
+    "timeline": {
+      "badge": "TIMELINE",
+      "title": "Our Journey",
+      "milestones": [
+        { "year": "2006", "event": "Products exported to 32 countries" },
+        { "year": "2020", "event": "Manqiyou brand founded" },
+        { "year": "2021", "event": "First featured route launched" },
+        { "year": "2022", "event": "Membership exceeded 10,000" },
+        { "year": "2023", "event": "Tour E-BIKE released" },
+        { "year": "2024", "event": "11 scenic partnerships launched" }
+      ]
+    },
+    "manufacturing": {
+      "badge": "MANUFACTURING",
+      "title": "Smart Manufacturing Base",
+      "desc": "Ningbo Hongtu Smart Technology Co., Ltd., 20 years of professional manufacturing experience",
+      "stats": [
+        { "value": "5000㎡", "label": "Factory Area" },
+        { "value": "20 Years", "label": "Experience" },
+        { "value": "200+", "label": "Employees" }
+      ]
+    },
+    "stores": {
+      "badge": "NATIONWIDE",
+      "title": "Nationwide Layout",
+      "desc": "5 city stores, expanding to more cities",
+      "cities": [
+        { "name": "Ningbo Dongqian Lake Store", "location": "Zhejiang · Ningbo" },
+        { "name": "Ningbo Cicheng Store", "location": "Zhejiang · Ningbo" },
+        { "name": "Ningbo Yaojiang Store", "location": "Zhejiang · Ningbo" },
+        { "name": "Hainan Danzhou Store", "location": "Hainan · Danzhou" },
+        { "name": "Guizhou Xingyi Store", "location": "Guizhou · Xingyi" },
+        { "name": "More Stores", "location": "Coming Soon" }
+      ]
+    },
+    "cta": {
+      "title": "Join Manqiyou",
+      "desc": "Whether you're a cycling enthusiast, a partner, or looking to join our team",
+      "member": "Become a Member",
+      "cooperate": "Business Cooperation"
+    }
+  },
+  "community": {
+    "hero": {
+      "title": "Cycling Community",
+      "subtitle": "Choice of 100k+ Riders"
+    },
+    "stats": [
+      { "value": "500+", "label": "Cycling Events" },
+      { "value": "100k+", "label": "Community Members" }
+    ]
+  },
+  "sections": {
+    "rental": "Rental",
+    "routes": "Routes",
+    "community": "Community",
+    "goods": "Goods",
+    "alliance": "Alliance",
+    "rentalDesc": "German Heritage E-BIKE Smart Rental",
+    "routesDesc": "Deep Cycling Route Experience",
+    "communityDesc": "High-value Cycling Community",
+    "goodsDesc": "Curated Local Specialty Goods",
+    "allianceDesc": "Cross-industry Alliance"
+  },
+  "strategy": {
+    "title": "Three Core Strategies",
+    "product": {
+      "title": "Product Serviceization",
+      "subtitle": "Product Serviceization",
+      "desc": "Deep development and design of cycling routes as core products"
+    },
+    "platform": {
+      "title": "Service Platformization",
+      "subtitle": "Service Platformization",
+      "desc": "Six functional divisions empowering strategic development"
+    },
+    "income": {
+      "title": "Income Diversification",
+      "subtitle": "Diversification of Income",
+      "desc": "Multiple revenue streams for sustainable business model"
+    },
+    "stats": {
+      "product": {
+        "suffix": "+",
+        "label": "Deep Routes"
+      },
+      "platform": {
+        "suffix": "",
+        "label": "Divisions"
+      },
+      "income": {
+        "suffix": "",
+        "label": "Revenue Streams"
+      }
+    }
+  },
+  "routes": {
+    "title": "Deep Cycling Routes",
+    "subtitle": "Integrating local culture, history and nature, transforming sightseeing into deep experience",
+    "featured": "Featured",
+    "all": "All Routes",
+    "badges": {
+      "hot": "Hot",
+      "new": "New",
+      "limited": "Limited Offer"
+    },
+    "units": {
+      "km": "km",
+      "day_one": "day",
+      "day_other": "days",
+      "night_one": "night",
+      "night_other": "nights",
+      "hour_one": "hour",
+      "hour_other": "hours"
+    },
+    "difficulty": {
+      "easy": "Easy",
+      "medium": "Medium",
+      "hard": "Challenge"
+    },
+    "duration": "Duration",
+    "price": "Price",
+    "perPerson": "/person",
+    "participants": "Participants",
+    "availableSpots": "Available Spots",
+    "bookRoute": "Book Route",
+    "viewDetails": "View Details"
+  },
+  "routesPage": {
+    "heroImageAlt": "Featured cycling routes",
+    "heroBadge": "Featured",
+    "heroTitle": "Deep Routes",
+    "heroDesc": "Carefully designed routes blending scenery and culture—every ride becomes an unforgettable journey.",
+    "filters": {
+      "allDifficulty": "All difficulties",
+      "allCategories": "All categories"
+    },
+    "states": {
+      "loadFailed": "Failed to load. Please try again later.",
+      "empty": "No routes yet"
+    },
+    "perPersonFrom": "/person from",
+    "pagination": {
+      "prev": "Previous",
+      "next": "Next"
+    },
+    "customCta": {
+      "title": "Customize Your Route",
+      "desc": "We offer private customization to create a unique cycling experience for you.",
+      "button": "Contact Us"
+    },
+    "features": {
+      "badge": "FEATURES",
+      "title": "Deep Cycling Route Features",
+      "culture": {
+        "title": "Local Culture Integration",
+        "desc": "Each route deeply integrates local culture, history, and nature—transforming sightseeing into deep experience"
+      },
+      "ebike": {
+        "title": "German Heritage E-BIKE",
+        "desc": "Tour e-assist bicycles completely solve the fundamental contradiction between deep exploration and physical exhaustion"
+      },
+      "experience": {
+        "title": "All-in-One Experience",
+        "desc": "Integrating clothing, food, accommodation, transportation, and entertainment along the route for exceptional deep cycling experiences"
+      }
+    },
+    "gallery": {
+      "badge": "GALLERY",
+      "title": "Wonderful Moments",
+      "desc": "Recording every unforgettable cycling journey"
+    },
+    "browseMore": "Browse More Routes"
+  },
+  "routesDetail": {
+    "heroImageAlt": "Route detail",
+    "backToRoutes": "Back to routes",
+    "badge": "Route Detail",
+    "states": {
+      "loadFailed": "Failed to load",
+      "notFound": "Route not found"
+    },
+    "perPersonFrom": "/person from",
+    "actions": {
+      "backToList": "Back to list",
+      "consultNow": "Consult now"
+    }
+  },
+  "ebike": {
+    "title": "Tour E-Assist Bicycle",
+    "subtitle": "German Heritage · Smart Cycling",
+    "tagline": "Completely solving the fundamental contradiction between deep exploration and physical exhaustion",
+    "features": {
+      "scan": "Scan to Rent",
+      "keyless": "Keyless Start",
+      "gps": "GPS Tracking",
+      "lock": "Smart Electronic Lock"
+    },
+    "specs": {
+      "speed": "Max Speed",
+      "range": "Range",
+      "assist": "Electric Assist"
+    }
+  },
+  "ebikePage": {
+    "heroImageAlt": "Tour E-BIKE",
+    "heroBadge": "Tour E-BIKE",
+    "heroTitle": "Break Free",
+    "heroSubtitle": "An ultra-light e-bike like no other",
+    "introLine1": "Effortlessly glide through the city, laughing and riding with your companions.",
+    "introLine2": "Lightly pedal—let Tour carry you forward.",
+    "designImageAlt": "Tour design",
+    "designTitle": "Stand Out",
+    "designDesc": "Minimalist frame, unforgettable at first sight",
+    "designDescFull": "Whether parked at a coffee shop or speeding past traffic on the road, that unforgettable minimalist frame is unmistakably Tour.",
+    "galleryAlt": "Tour gallery",
+    "carbonImageAlt": "Carbon fiber frame",
+    "carbonTitle": "Ultra-light × Tough Strength",
+    "carbonDesc": "Handcrafted carbon fiber frame",
+    "carbonDescFull": "Combining extreme lightness with strength, the handcrafted carbon fiber frame delivers precise and smooth handling.",
+    "smartAssistLabel": "Smart Assist System",
+    "partners": {
+      "title": "Partner Brands"
+    },
+    "features": {
+      "lightweight": {
+        "title": "Light & Portable",
+        "desc": "The ultra-light diamond frame makes Tour easy to lift and carry with you."
+      },
+      "smartAssist": {
+        "title": "Smart Power Assist",
+        "desc": "Intelligent sensing delivers precise power assistance exactly when you need it.",
+        "maxAssistSpeedLabel": "Max assist speed",
+        "sportRangeLabel": "Sport mode range"
+      },
+      "charging": {
+        "title": "One-Touch Charging",
+        "desc": "Stop for a moment and easily connect the standard charger.",
+        "chargerTitle": "Standard Charger",
+        "chargerDesc": "Lightweight and portable",
+        "chargerDescFull": "Included by default—lightweight and portable, charge anywhere you go.",
+        "hoursUnit": "hours",
+        "fullChargeLabel": "Full charge"
+      },
+      "beltDrive": {
+        "title": "Silent Belt Drive",
+        "desc": "Patented design, smooth and quiet",
+        "descFull": "Durable patented design for a smooth and quiet riding experience—ride with confidence."
+      }
+    },
+    "models": {
+      "compareTitle": "Ultra-light vs. Super-light",
+      "tour1s": "Tour 1S",
+      "tour1": "Tour 1",
+      "tour1sDesc": "Full carbon fiber frame and fork. Full carbon seatpost, handlebar, and wheelset.",
+      "tour1Desc": "Full carbon fiber frame and fork. Aluminum seatpost, handlebar, and wheelset.",
+      "specs": {
+        "weight": "Weight",
+        "seatpost": "Seatpost",
+        "handlebar": "Handlebar"
+      },
+      "materials": {
+        "carbon3k": "3K plain weave carbon",
+        "aluminum": "Aluminum alloy"
+      }
+    },
+    "warranty": {
+      "strong": {
+        "title": "Built Tough",
+        "desc": "Carbon fiber frame, durable and strong"
+      },
+      "promise": {
+        "title": "Peace of Mind",
+        "desc": "5-year frame warranty, 3-year parts warranty"
+      },
+      "return": {
+        "title": "Hassle-free Returns",
+        "desc": "14-day worry-free return policy"
+      }
+    },
+    "cta": {
+      "title": "Experience Tour Now",
+      "desc": "Book a test ride and feel the ultimate lightness",
+      "testRide": "Book a Test Ride",
+      "buyNow": "Buy Now"
+    },
+    "help": {
+      "needHelp": "Need help?"
+    }
+  },
+  "goods": {
+    "title": "Local Goods",
+    "subtitle": "One click to embrace all the best of a city",
+    "categories": {
+      "clothing": "Clothing",
+      "food": "Food",
+      "accommodation": "Stay",
+      "transportation": "Travel",
+      "entertainment": "Fun"
+    }
+  },
+  "community": {
+    "title": "Cycling Community",
+    "subtitle": "Building high-value user communities through shared values and interests",
+    "joinUs": "Join Community",
+    "memberPath": "Member Growth Path",
+    "fromFan": "From fan to loyal member, even becoming a partner in Manqiyou's business"
+  },
+  "partners": {
+    "title": "Partners",
+    "subtitle": "Government Cooperation · Industry Alliance · City Franchise",
+    "government": "Government Cooperation",
+    "alliance": "Industry Alliance",
+    "franchise": "City Franchise",
+    "model": {
+      "plan": "Joint Planning",
+      "resource": "Resource Sharing",
+      "market": "Market Expansion",
+      "profit": "Profit Sharing"
+    },
+    "applyNow": "Apply Now"
+  },
+  "cities": {
+    "title": "City Network",
+    "subtitle": "From Ningbo to the World",
+    "vision": "Future coverage nationwide and beyond",
+    "stats": {
+      "cities": "Cities Covered",
+      "routes": "Deep Routes",
+      "partners": "Partners"
+    }
+  },
+  "footer": {
+    "productsTitle": "Products",
+    "communityTitle": "Community",
+    "companyTitle": "Company",
+    "supportTitle": "Support",
+    "links": {
+      "events": "Events",
+      "stories": "Stories",
+      "careers": "Careers",
+      "faq": "FAQ"
+    },
+    "serviceLineLabel": "Service Hotline",
+    "serviceHours": "Service Hours: 09:00 - 21:00",
+    "copyright": "© 2026 Manqiyou. All rights reserved.",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service"
+  },
+  "membership": {
+    "title": "Membership Center",
+    "level": "Member Level",
+    "points": "Points Balance",
+    "benefits": "Member Benefits",
+    "history": "Points History",
+    "upgrade": "Upgrade Membership"
+  },
+  "booking": {
+    "title": "Booking Information",
+    "date": "Travel Date",
+    "participants": "Number of Participants",
+    "contact": "Contact Name",
+    "phone": "Phone Number",
+    "remark": "Remarks",
+    "total": "Total",
+    "confirmBooking": "Confirm Booking",
+    "payNow": "Pay Now"
+  },
+  "auth": {
+    "loginTitle": "Login to Manqiyou",
+    "registerTitle": "Create Account",
+    "phone": "Phone Number",
+    "code": "Verification Code",
+    "getCode": "Get Code",
+    "resendCode": "Resend",
+    "wechatLogin": "WeChat Login",
+    "agreement": "By logging in, you agree to our",
+    "termsOfService": "Terms of Service",
+    "and": "and",
+    "privacyPolicy": "Privacy Policy"
+  }
+}

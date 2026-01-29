@@ -1,0 +1,418 @@
+# Implementation Plan: 漫骑游官方网站
+
+## Overview
+
+基于需求和设计文档，采用前后端分离架构实施漫骑游官方网站。前端使用Next.js 14 + TypeScript + Tailwind CSS，后端使用Java Spring Boot 3.x微服务架构。
+
+## Tasks
+
+- [x] 1. 项目初始化与基础架构搭建
+  - [x] 1.1 创建Next.js 14前端项目，配置TypeScript、Tailwind CSS、ESLint
+    - 初始化项目结构，配置路径别名
+    - 安装shadcn/ui、Framer Motion、Zustand、React Query
+    - _Requirements: 20.1_
+  - [x] 1.2 创建Java Spring Boot后端项目结构
+    - 创建Maven多模块项目：gateway、common、user、route、order、member、cms
+    - 配置Spring Boot 3.x、MyBatis-Plus、PostgreSQL连接
+    - _Requirements: 20.2_
+  - [x] 1.3 配置数据库和Redis
+    - 执行PostgreSQL建表脚本
+    - 配置Redis缓存连接
+    - _Requirements: 20.2_
+
+- [x] 2. 品牌视觉系统与基础组件
+  - [x] 2.1 实现品牌设计系统
+    - 配置Tailwind CSS主题：品牌色彩(#0F4C3A, #2A5FAD, #D4AF37)
+    - 配置字体系统：阿里汉仪智能黑体、思源黑体、Playfair Display
+    - 实现渐变背景、噪点纹理、六边形图案等视觉效果
+    - _Requirements: 12.1, 12.2, 12.3, 12.6_
+  - [ ]* 2.2 编写属性测试验证品牌视觉规范
+    - **Property 14: 品牌视觉规范一致性**
+    - **Validates: Requirements 12.2, 12.3**
+  - [x] 2.3 实现基础UI组件库
+    - 基于shadcn/ui定制Button、Card、Input、Modal等组件
+    - 实现响应式断点系统(Mobile/Tablet/Desktop/Large Desktop)
+    - _Requirements: 9.1, 12.5_
+
+- [x] 3. 布局组件与导航系统
+  - [x] 3.1 实现Header导航组件
+    - 响应式导航菜单（桌面端水平导航、移动端汉堡菜单）
+    - 语言切换按钮（中/英）
+    - 用户登录状态显示
+    - _Requirements: 13.1, 14.2_
+  - [x] 3.2 实现Footer页脚组件
+    - 联系方式、社交媒体链接、微信公众号二维码
+    - 网站地图导航
+    - _Requirements: 15.1, 15.5_
+  - [x] 3.3 实现Breadcrumb面包屑导航
+    - 自动根据路由生成面包屑
+    - _Requirements: 13.3_
+  - [ ]* 3.4 编写属性测试验证导航系统
+    - **Property 6: 导航系统完整性**
+    - **Validates: Requirements 13.1, 13.3, 13.4**
+
+- [x] 4. 动画引擎与交互效果
+  - [x] 4.1 实现ScrollReveal滚动揭示动画组件
+    - 基于Framer Motion实现元素滑入动画
+    - 支持交错延迟(staggered reveals)
+    - _Requirements: 1.4, 12.4_
+  - [x] 4.2 实现CountUp数字计数动画组件
+    - 当元素进入视口时触发从0到目标数字的动画
+    - _Requirements: 8.4_
+  - [x] 4.3 实现ParallaxImage视差滚动组件
+    - 图片随滚动产生视差效果
+    - _Requirements: 1.4_
+  - [x] 4.4 实现悬停交互效果
+    - 卡片上浮、阴影加深、图片放大效果
+    - _Requirements: 2.4, 12.4_
+
+- [x] 5. 首页开发
+  - [x] 5.1 实现Hero区域
+    - 全屏背景图(page1_img1.jpeg)
+    - 品牌标语动画揭示
+    - 粒子效果背景
+    - _Requirements: 1.1, 1.2, 1.3_
+  - [x] 5.2 实现五大板块展示区
+    - 租赁、线路、社群、好物、异业图标卡片
+    - 悬停交互效果
+    - _Requirements: 1.5_
+  - [x] 5.3 实现三大核心战略展示
+    - 产品服务化、服务平台化、收入多元化
+    - _Requirements: 1.6_
+  - [x] 5.4 实现热门线路推荐区
+    - 线路卡片轮播/网格展示
+    - _Requirements: 2.1_
+  - [ ]* 5.5 编写属性测试验证页面性能
+    - **Property 2: 页面性能一致性**
+    - **Validates: Requirements 1.1, 9.3, 11.1**
+
+- [x] 6. Checkpoint - 首页与基础组件完成
+  - 确保所有测试通过，如有问题请询问用户
+  - [x] 6.1 创建简化后端单体应用（开发用）
+    - 使用H2内存数据库，无需外部依赖
+    - 实现模拟认证（万能验证码123456）
+    - 实现线路和分类API
+  - [x] 6.2 配置前端API客户端
+    - 创建API客户端和类型定义
+    - 配置环境变量
+  - [x] 6.3 复制品牌素材到前端public目录
+    - 261个图片文件已复制
+  - [x] 6.4 创建启动脚本
+    - start-all.bat, start-backend.bat, start-frontend.bat
+    - Maven Wrapper支持（无需全局安装Maven）
+    - check-env.bat 环境检测脚本
+  - [ ] 6.5 安装开发环境并启动服务
+    - 需要安装: Node.js 18+, Java 17+
+    - 前端: http://localhost:3000
+    - 后端: http://localhost:8080
+
+- [x] 7. 后端用户认证服务
+  - [x] 7.1 实现用户实体和Mapper
+    - User、MemberLevel实体类
+    - MyBatis-Plus Mapper接口
+    - _Requirements: 16.1_
+  - [x] 7.2 实现手机验证码登录（模拟实现）
+    - 发送验证码接口（模拟，开发环境返回验证码）
+    - 验证码校验登录接口（支持万能验证码123456）
+    - JWT Token生成和刷新
+    - _Requirements: 16.1, 20.4_
+  - [x] 7.3 实现微信OAuth登录（模拟实现）
+    - 微信授权回调处理
+    - 用户绑定/创建逻辑
+    - _Requirements: 16.2_
+  - [x] 7.4 实现Spring Security配置
+    - 公开接口白名单配置
+    - JWT Token过滤器
+    - _Requirements: 16.6_
+  - [ ]* 7.5 编写属性测试验证认证状态
+    - **Property 9: 用户认证状态一致性**
+    - **Validates: Requirements 16.3, 16.4, 16.5, 16.6**
+
+- [x] 8. 后端线路服务
+  - [x] 8.1 实现线路实体和Mapper
+    - Route、RouteCategory、RouteSchedule实体类
+    - _Requirements: 2.1_
+  - [x] 8.2 实现线路公开API
+    - GET /api/routes - 线路列表（支持分页、分类筛选）
+    - GET /api/routes/{id} - 线路详情
+    - GET /api/routes/{id}/schedules - 线路排期
+    - _Requirements: 2.1, 2.3_
+  - [ ]* 8.3 编写属性测试验证线路数据
+    - **Property 5: 线路数据展示一致性**
+    - **Validates: Requirements 2.1, 2.3**
+
+- [ ] 9. 前端线路页面
+  - [ ] 9.1 实现线路列表页
+    - 分类筛选、搜索功能
+    - 线路卡片网格展示
+    - 分页加载
+    - _Requirements: 2.1, 2.2_
+  - [ ] 9.2 实现线路详情页
+    - 图片画廊、行程安排、特色介绍
+    - 预订按钮（未登录时引导登录）
+    - _Requirements: 2.3, 2.5_
+  - [ ]* 9.3 编写属性测试验证公开访问
+    - **Property 1: 公开内容访问权限**
+    - **Validates: Requirements 1.1, 2.1, 2.3**
+
+- [ ] 10. E-BIKE产品页面
+  - [ ] 10.1 实现E-BIKE展示页
+    - 产品图片展示(page9-11系列)
+    - 技术参数展示
+    - 智能系统四大功能介绍
+    - 品牌荣誉展示
+    - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5_
+
+- [ ] 11. 在地好物与异业联盟页面
+  - [ ] 11.1 实现好物展示页
+    - 分类展示（衣、食、住、行、乐）
+    - 好物卡片网格
+    - _Requirements: 4.1, 4.3_
+  - [ ] 11.2 实现异业联盟展示
+    - 合作伙伴Logo墙
+    - 合作理念介绍
+    - _Requirements: 4.2, 4.4, 4.5_
+
+- [ ] 12. 社群活动页面
+  - [ ] 12.1 实现社群活动展示页
+    - 活动图片墙（瀑布流布局）
+    - 社群理念介绍
+    - 会员成长路径展示
+    - _Requirements: 5.1, 5.2, 5.3, 5.5_
+
+- [ ] 13. 合作伙伴与加盟页面
+  - [ ] 13.1 实现合作模式展示
+    - 政企合作模式介绍
+    - 六大功能事业部展示
+    - _Requirements: 7.1, 7.2_
+  - [ ] 13.2 实现加盟城市地图
+    - 高德地图集成
+    - 城市标记展示
+    - _Requirements: 7.4, 8.1_
+  - [ ] 13.3 实现合作申请表单
+    - 政企合作、异业联盟、城市加盟表单
+    - _Requirements: 15.3_
+
+- [ ] 14. Checkpoint - 展示页面完成
+  - 确保所有测试通过，如有问题请询问用户
+
+- [ ] 15. 后端订单服务
+  - [ ] 15.1 实现订单实体和Mapper
+    - Order实体类
+    - 订单号生成逻辑
+    - _Requirements: 17.3_
+  - [ ] 15.2 实现订单API
+    - POST /api/orders - 创建订单（需登录）
+    - GET /api/orders/{id} - 订单详情
+    - POST /api/orders/{id}/cancel - 取消订单
+    - _Requirements: 17.1, 17.3_
+  - [ ] 15.3 实现库存扣减逻辑
+    - 乐观锁防止超卖
+    - 订单取消时释放库存
+    - _Requirements: 17.2_
+  - [ ]* 15.4 编写属性测试验证库存一致性
+    - **Property 15: 线路预订库存一致性**
+    - **Validates: Requirements 17.2**
+  - [ ]* 15.5 编写属性测试验证订单状态流转
+    - **Property 10: 订单状态流转正确性**
+    - **Validates: Requirements 17.3, 17.5, 17.6, 17.7**
+
+- [ ] 16. 支付集成
+  - [ ] 16.1 实现支付宝支付
+    - 创建支付订单
+    - 支付回调处理
+    - _Requirements: 17.4_
+  - [ ] 16.2 实现微信支付
+    - 创建支付订单
+    - 支付回调处理
+    - _Requirements: 17.4_
+  - [ ] 16.3 实现支付成功通知
+    - 短信通知
+    - 邮件通知
+    - _Requirements: 17.5_
+
+- [ ] 17. 前端预订流程
+  - [ ] 17.1 实现预订表单组件
+    - 日期选择、人数选择、联系方式
+    - 实时显示可预订名额
+    - _Requirements: 17.1, 17.2_
+  - [ ] 17.2 实现支付页面
+    - 支付方式选择
+    - 支付二维码展示
+    - 支付状态轮询
+    - _Requirements: 17.4_
+  - [ ] 17.3 实现支付结果页
+    - 成功/失败状态展示
+    - 失败重试选项
+    - _Requirements: 17.5, 17.7_
+  - [ ]* 17.4 编写属性测试验证表单提交
+    - **Property 8: 表单提交流程正确性**
+    - **Validates: Requirements 15.4, 17.1, 17.3**
+
+- [ ] 18. 后端会员积分服务
+  - [ ] 18.1 实现积分实体和Mapper
+    - PointsRecord实体类
+    - _Requirements: 18.5_
+  - [ ] 18.2 实现积分发放逻辑
+    - 订单支付成功后自动发放积分
+    - 积分记录明细
+    - _Requirements: 18.1, 18.5_
+  - [ ] 18.3 实现会员等级升级逻辑
+    - 根据累计积分自动升级
+    - _Requirements: 18.4_
+  - [ ] 18.4 实现积分兑换功能
+    - 积分兑换优惠券
+    - _Requirements: 18.3_
+  - [ ]* 18.5 编写属性测试验证积分系统
+    - **Property 11: 积分系统一致性**
+    - **Validates: Requirements 18.1, 18.4, 18.5**
+  - [ ]* 18.6 编写属性测试验证会员升级
+    - **Property 12: 会员等级升级正确性**
+    - **Validates: Requirements 18.4**
+
+- [ ] 19. 前端用户中心
+  - [ ] 19.1 实现登录/注册页面
+    - 手机验证码登录
+    - 微信扫码登录
+    - _Requirements: 16.1, 16.2_
+  - [ ] 19.2 实现个人信息页
+    - 头像、昵称编辑
+    - _Requirements: 16.3_
+  - [ ] 19.3 实现订单列表页
+    - 订单状态筛选
+    - 订单详情查看
+    - _Requirements: 17.6_
+  - [ ] 19.4 实现会员中心页
+    - 会员等级、积分余额展示
+    - 积分明细查看
+    - 积分兑换入口
+    - _Requirements: 16.4, 16.5, 18.2_
+
+- [ ] 20. Checkpoint - 用户功能完成
+  - 确保所有测试通过，如有问题请询问用户
+
+- [ ] 21. 后端CMS服务
+  - [ ] 21.1 实现内容管理实体和Mapper
+    - Content、Admin实体类
+    - _Requirements: 19.1_
+  - [ ] 21.2 实现管理员认证
+    - 管理员登录
+    - 权限校验
+    - _Requirements: 19.1_
+  - [ ] 21.3 实现内容CRUD API
+    - 线路管理、活动管理、新闻管理
+    - 轮播图管理、好物管理
+    - _Requirements: 19.2, 19.3, 19.4, 19.5, 19.6_
+  - [ ] 21.4 实现数据统计API
+    - 访问量、订单量、会员数统计
+    - _Requirements: 19.8_
+  - [ ]* 21.5 编写属性测试验证CMS CRUD
+    - **Property 13: CMS内容管理CRUD正确性**
+    - **Validates: Requirements 19.2, 19.3, 19.4, 19.5, 19.6**
+
+- [ ] 22. 管理后台前端
+  - [ ] 22.1 实现管理后台布局
+    - 侧边栏导航、顶部栏
+    - _Requirements: 19.1_
+  - [ ] 22.2 实现数据仪表盘
+    - 关键指标卡片
+    - 图表展示
+    - _Requirements: 19.8_
+  - [ ] 22.3 实现内容管理页面
+    - 线路、活动、新闻的列表和编辑
+    - _Requirements: 19.2, 19.3, 19.4_
+  - [ ] 22.4 实现订单和用户管理
+    - 订单列表、状态管理
+    - 用户列表、会员管理
+    - _Requirements: 19.7_
+
+- [ ] 23. 国际化支持
+  - [ ] 23.1 实现i18n配置
+    - next-i18next配置
+    - 中英文翻译文件
+    - _Requirements: 14.1, 14.2_
+  - [ ] 23.2 实现语言切换功能
+    - 语言切换保持页面位置
+    - _Requirements: 14.3_
+  - [ ] 23.3 添加品牌核心理念英文翻译
+    - _Requirements: 14.4_
+  - [ ]* 23.4 编写属性测试验证国际化
+    - **Property 7: 国际化切换正确性**
+    - **Validates: Requirements 14.1, 14.3**
+
+- [ ] 24. 响应式适配与图片优化
+  - [ ] 24.1 实现响应式布局适配
+    - 四个断点的样式调整
+    - 移动端触摸优化
+    - _Requirements: 9.1, 9.2, 9.4_
+  - [ ] 24.2 实现图片资源管理
+    - WebP格式转换
+    - 响应式图片尺寸
+    - 图片懒加载
+    - _Requirements: 10.1, 10.2, 10.3_
+  - [ ] 24.3 实现图片加载失败处理
+    - 占位图显示
+    - 错误日志记录
+    - _Requirements: 10.4_
+  - [ ]* 24.4 编写属性测试验证响应式布局
+    - **Property 3: 响应式布局正确性**
+    - **Validates: Requirements 9.1, 9.2**
+  - [ ]* 24.5 编写属性测试验证图片管理
+    - **Property 4: 图片资源管理正确性**
+    - **Validates: Requirements 9.5, 10.1, 10.2, 10.3, 10.4**
+
+- [ ] 25. SEO优化
+  - [ ] 25.1 实现SEO元数据
+    - 页面title、description配置
+    - Open Graph标签
+    - _Requirements: 11.2_
+  - [ ] 25.2 实现结构化数据
+    - Schema.org标记
+    - _Requirements: 11.2_
+  - [ ] 25.3 生成站点地图和Robots.txt
+    - XML Sitemap自动生成
+    - Robots.txt配置
+    - _Requirements: 11.3_
+  - [ ] 25.4 关键词优化
+    - 骑游、E-BIKE租赁、深度骑行线路、宁波骑行
+    - _Requirements: 11.4_
+
+- [ ] 26. 性能优化
+  - [ ] 26.1 前端性能优化
+    - 代码分割、懒加载
+    - 图片优化、字体优化
+    - _Requirements: 11.1_
+  - [ ] 26.2 后端性能优化
+    - Redis缓存热点数据
+    - 数据库查询优化
+    - _Requirements: 11.1_
+  - [ ] 26.3 CDN配置
+    - 静态资源CDN加速
+    - _Requirements: 20.3_
+
+- [ ] 27. 部署配置
+  - [ ] 27.1 配置Docker容器化
+    - 前端Dockerfile
+    - 后端各服务Dockerfile
+    - docker-compose配置
+    - _Requirements: 20.3_
+  - [ ] 27.2 配置阿里云服务
+    - ECS服务器配置
+    - RDS数据库配置
+    - OSS存储配置
+    - CDN配置
+    - _Requirements: 20.3_
+
+- [ ] 28. Final Checkpoint - 项目完成
+  - 确保所有测试通过
+  - Lighthouse性能评分 > 90
+  - 如有问题请询问用户
+
+## Notes
+
+- Tasks marked with `*` are optional and can be skipped for faster MVP
+- Each task references specific requirements for traceability
+- Checkpoints ensure incremental validation
+- Property tests validate universal correctness properties
+- Unit tests validate specific examples and edge cases
+- 未登录用户可浏览所有展示页面，仅预订/支付/用户中心需要登录

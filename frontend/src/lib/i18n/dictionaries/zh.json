@@ -1,0 +1,899 @@
+{
+  "common": {
+    "brand": "漫骑游",
+    "slogan": "骑遇无限美好人生",
+    "tagline": "高端跨界骑游生活平台",
+    "learnMore": "了解更多",
+    "viewAll": "查看全部",
+    "bookNow": "立即预订",
+    "contactUs": "联系我们",
+    "login": "登录",
+    "register": "注册",
+    "logout": "退出登录",
+    "myAccount": "我的账户",
+    "language": "语言",
+    "search": "搜索",
+    "loading": "加载中...",
+    "error": "出错了",
+    "retry": "重试",
+    "back": "返回",
+    "next": "下一步",
+    "prev": "上一步",
+    "submit": "提交",
+    "cancel": "取消",
+    "confirm": "确认",
+    "save": "保存",
+    "delete": "删除",
+    "edit": "编辑",
+    "close": "关闭",
+    "startRiding": "开始骑行",
+    "exploreRoutes": "探索线路",
+    "learnEbike": "了解 E-BIKE"
+  },
+  "units": {
+    "kg": "公斤"
+  },
+  "nav": {
+    "home": "首页",
+    "routes": "骑游线路",
+    "ebike": "E-BIKE",
+    "goods": "在地好物",
+    "community": "社群活动",
+    "partners": "合作伙伴",
+    "about": "关于我们",
+    "contact": "联系我们"
+  },
+  "hero": {
+    "title": "漫骑游",
+    "subtitle": "慢下来，骑出去，游世界",
+    "description": "有深度的线路、有智趣的社群、有品质的好物、有境界的异业、有风景的生活馆",
+    "cta": "探索骑游之旅",
+    "scrollDown": "向下滚动"
+  },
+  "aboutPage": {
+    "heroImageAlt": "关于漫骑游",
+    "heroTitle": "关于漫骑游",
+    "missionLine1": "漫骑游致力于打造中国领先的跨境骑行生活平台，",
+    "missionLine2": "让每一次骑行都成为难忘的旅程。",
+    "stats": {
+      "routes": "精品线路",
+      "members": "服务会员",
+      "partners": "合作伙伴",
+      "cities": "覆盖城市"
+    },
+    "valuesBadge": "核心价值",
+    "values": {
+      "routes": {
+        "title": "有深度的线路",
+        "desc": "精心设计每一条骑行线路"
+      },
+      "community": {
+        "title": "有智趣的社群",
+        "desc": "汇聚志同道合的骑友"
+      },
+      "goods": {
+        "title": "有品质的好物",
+        "desc": "严选骑游沿途特色好物"
+      },
+      "partners": {
+        "title": "有境界的异业",
+        "desc": "跨界合作整合优质资源"
+      },
+      "gallery": {
+        "title": "有风景的生活馆",
+        "desc": "线下体验骑行文化魅力"
+      }
+    },
+    "timelineBadge": "发展历程",
+    "timelineTitle": "一路走来",
+    "milestones": {
+      "2020": "漫骑游品牌创立",
+      "2021": "首条精品线路上线",
+      "2022": "会员突破10000人",
+      "2023": "途尔E-BIKE发布",
+      "2024": "全国布局启动"
+    },
+    "cta": {
+      "title": "加入漫骑游",
+      "desc": "无论你是骑行爱好者、合作伙伴还是想加入我们的团队",
+      "member": "成为会员",
+      "cooperate": "商务合作"
+    }
+  },
+  "communityPage": {
+    "heroImageAlt": "骑行社区",
+    "heroBadge": "骑行社区",
+    "heroTitle": "有智趣的社群",
+    "heroDesc": "志同道合的骑友，精彩纷呈的活动，分享骑行的快乐",
+    "heroCta": "加入社区",
+    "intro": {
+      "badge": "社群介绍",
+      "title": "10万+骑友的选择",
+      "desc": "通过价值观和爱好相同构建高价值用户社群，从粉丝到铁杆会员，甚至成为漫骑游事业的合伙人"
+    },
+    "stats": {
+      "members": "社区成员",
+      "events": "骑行活动",
+      "distance": "累计里程 (km)",
+      "distanceZh": "100万"
+    },
+    "activities": {
+      "badge": "近期活动",
+      "title": "精彩活动",
+      "status": {
+        "open": "报名中",
+        "ongoing": "进行中",
+        "ended": "已结束"
+      },
+      "participantsUnit": "人参与",
+      "items": {
+        "1": {
+          "title": "周末骑行：四明山挑战赛",
+          "date": "2024年1月20日",
+          "location": "宁波·四明山"
+        },
+        "2": {
+          "title": "新年环湖骑行",
+          "date": "2024年1月1日",
+          "location": "宁波·东钱湖"
+        },
+        "3": {
+          "title": "骑行摄影大赛",
+          "date": "2024年2月",
+          "location": "线上活动"
+        }
+      }
+    },
+    "gallery": {
+      "badge": "骑行瞬间",
+      "title": "记录每一个精彩时刻",
+      "desc": "真实的骑行活动照片，展示社群的活力与热情",
+      "imageAlt": "骑行瞬间"
+    },
+    "cta": {
+      "title": "加入漫骑游社区",
+      "desc": "与志同道合的骑友一起，探索更多精彩线路，分享骑行的快乐",
+      "joinNow": "立即加入",
+      "benefits": {
+        "community": "活跃社群",
+        "communityDesc": "结识志同道合的骑友",
+        "events": "精彩活动",
+        "eventsDesc": "参与500+场骑行活动",
+        "rewards": "会员权益",
+        "rewardsDesc": "专属优惠和积分奖励"
+      }
+    }
+  },
+  "goodsPage": {
+    "heroImageAlt": "在地好物",
+    "heroBadge": "在地好物",
+    "heroTitle": "有品质的好物",
+    "heroDesc": "骑游沿途的特色好物，将旅途的美好带回家",
+    "categories": {
+      "all": "全部",
+      "local": "在地特产",
+      "gear": "骑行装备",
+      "apparel": "骑行服饰"
+    },
+    "feature": {
+      "badge": "品质保证",
+      "title": "严选在地好物",
+      "desc": "我们深入骑游沿途的每一个村落，精心挑选当地特色好物。\n从田间到餐桌，从工坊到您手中，每一件商品都承载着当地的文化与匠心。",
+      "bullets": {
+        "1": "产地直供，品质保证",
+        "2": "严格筛选，精挑细选",
+        "3": "支持当地，助力乡村"
+      },
+      "imageAlt": "好物展示"
+    },
+    "products": {
+      "1": "宁波年糕礼盒",
+      "2": "奉化水蜜桃",
+      "3": "专业骑行头盔",
+      "4": "透气骑行服",
+      "5": "便携修车工具包",
+      "6": "慈溪杨梅酒",
+      "7": "骑行手套",
+      "8": "运动水壶"
+    }
+  },
+  "partnersPage": {
+    "heroImageAlt": "合作伙伴",
+    "heroBadge": "合作伙伴",
+    "heroTitle": "有境界的异业",
+    "heroDesc": "携手共创，共享骑行生态，共同开拓骑行旅游新蓝海",
+    "advantages": {
+      "traffic": {
+        "number": "10万+",
+        "title": "流量共享",
+        "desc": "10万+精准骑行用户"
+      },
+      "marketing": {
+        "number": "精准",
+        "title": "精准营销",
+        "desc": "定向推广，高效转化"
+      },
+      "brand": {
+        "number": "高端",
+        "title": "品牌背书",
+        "desc": "高端品牌形象加持"
+      },
+      "resource": {
+        "number": "整合",
+        "title": "资源互换",
+        "desc": "多维度资源整合"
+      }
+    },
+    "types": {
+      "badge": "合作模式",
+      "title": "多元化合作方式",
+      "scenic": {
+        "title": "景区合作",
+        "desc": "与优质景区建立战略合作，打造独特骑行体验",
+        "benefits": {
+          "1": "专属骑行路线",
+          "2": "门票优惠",
+          "3": "联合营销"
+        }
+      },
+      "hotel": {
+        "title": "酒店民宿",
+        "desc": "精选骑行友好型住宿，为骑友提供贴心服务",
+        "benefits": {
+          "1": "车辆存放",
+          "2": "装备清洗",
+          "3": "早餐补给"
+        }
+      },
+      "sponsor": {
+        "title": "品牌赞助",
+        "desc": "携手知名品牌，共同推广骑行文化",
+        "benefits": {
+          "1": "品牌曝光",
+          "2": "活动赞助",
+          "3": "产品合作"
+        }
+      }
+    },
+    "cta": {
+      "title": "成为合作伙伴",
+      "desc": "加入漫骑游生态，共同开拓骑行旅游市场",
+      "consult": "立即咨询",
+      "download": "下载合作手册"
+    }
+  },
+  "termsPage": {
+    "heroTitle": "服务条款",
+    "lastUpdated": "最后更新：2024年1月",
+    "introLine1": "欢迎使用漫骑游服务。请在使用我们的服务前仔细阅读以下条款。",
+    "introLine2": "使用我们的服务即表示您同意本服务条款。",
+    "sections": {
+      "service": {
+        "title": "1. 服务说明",
+        "content": "漫骑游提供骑行旅游相关服务，包括但不限于：",
+        "items": {
+          "1": "骑行线路预订和导航",
+          "2": "电助力自行车租赁",
+          "3": "骑行装备和特色好物销售",
+          "4": "骑行社区和活动组织"
+        }
+      },
+      "responsibility": {
+        "title": "2. 用户责任",
+        "content": "作为用户，您同意：",
+        "items": {
+          "1": "提供真实、准确的个人信息",
+          "2": "妥善保管账户信息，对账户活动负责",
+          "3": "遵守相关法律法规和平台规则",
+          "4": "尊重其他用户和合作伙伴的权益",
+          "5": "不从事任何可能损害平台利益的行为"
+        }
+      },
+      "booking": {
+        "title": "3. 预订与取消",
+        "content": "线路预订成功后，请按照预订确认中的说明进行操作。取消政策因产品而异，请在预订前仔细阅读相关条款：",
+        "items": {
+          "1": "出发前7天取消：全额退款",
+          "2": "出发前3-7天取消：退还50%",
+          "3": "出发前3天内取消：不予退款",
+          "4": "因天气等不可抗力取消：全额退款或改期"
+        }
+      },
+      "safety": {
+        "title": "4. 安全须知",
+        "line1": "骑行活动存在一定风险，参与者应具备相应的身体条件和骑行技能。",
+        "line2": "我们强烈建议所有参与者：",
+        "items": {
+          "1": "购买相关保险",
+          "2": "佩戴安全头盔",
+          "3": "遵守交通规则",
+          "4": "量力而行，注意休息"
+        }
+      },
+      "ip": {
+        "title": "5. 知识产权",
+        "content": "漫骑游平台上的所有内容（包括但不限于文字、图片、视频、商标、线路设计等）均受知识产权法保护，未经授权不得使用。"
+      },
+      "disclaimer": {
+        "title": "6. 免责声明",
+        "content": "在法律允许的范围内，漫骑游不对以下情况承担责任：",
+        "items": {
+          "1": "因用户自身原因导致的损失",
+          "2": "因不可抗力导致的服务中断",
+          "3": "第三方服务提供商的行为",
+          "4": "用户违反本条款导致的后果"
+        }
+      },
+      "contact": {
+        "title": "7. 联系方式",
+        "content": "如有任何问题，请联系我们："
+      }
+    },
+    "contact": {
+      "address": "浙江省宁波市海曙区"
+    }
+  },
+  "privacyPage": {
+    "heroTitle": "隐私政策",
+    "lastUpdated": "最后更新：2024年1月",
+    "introLine1": "漫骑游（以下简称\"我们\"）非常重视用户的隐私保护。",
+    "introLine2": "本隐私政策旨在向您说明我们如何收集、使用、存储和保护您的个人信息。",
+    "sections": {
+      "collect": {
+        "title": "1. 信息收集",
+        "content": "我们收集您在使用漫骑游服务时提供的信息，包括但不限于：",
+        "items": {
+          "1": "注册信息（手机号、邮箱等）",
+          "2": "个人资料（昵称、头像等）",
+          "3": "订单信息（预订记录、支付信息等）",
+          "4": "设备信息（设备型号、操作系统等）",
+          "5": "位置信息（用于骑行导航和线路推荐）"
+        }
+      },
+      "use": {
+        "title": "2. 信息使用",
+        "content": "我们使用收集的信息用于：",
+        "items": {
+          "1": "提供、维护和改进我们的服务",
+          "2": "处理您的订单和交易",
+          "3": "向您发送服务通知和营销信息",
+          "4": "保障账户和交易安全",
+          "5": "进行数据分析以优化用户体验"
+        }
+      },
+      "protect": {
+        "title": "3. 信息保护",
+        "content": "我们采取适当的技术和组织措施来保护您的个人信息，防止未经授权的访问、使用或披露。这些措施包括：",
+        "items": {
+          "1": "数据加密传输和存储",
+          "2": "访问权限控制",
+          "3": "定期安全审计",
+          "4": "员工隐私培训"
+        }
+      },
+      "share": {
+        "title": "4. 信息共享",
+        "content": "我们不会向第三方出售您的个人信息。在以下情况下，我们可能会共享您的信息：",
+        "items": {
+          "1": "经您明确同意",
+          "2": "为完成交易所必需（如支付服务商）",
+          "3": "法律法规要求",
+          "4": "保护我们或他人的合法权益"
+        }
+      },
+      "rights": {
+        "title": "5. 您的权利",
+        "content": "您有权访问、更正或删除您的个人信息。如需行使这些权利，请通过以下方式联系我们。"
+      },
+      "contact": {
+        "title": "6. 联系我们",
+        "content": "如果您对本隐私政策有任何疑问，请通过以下方式联系我们："
+      }
+    },
+    "contact": {
+      "address": "浙江省宁波市海曙区"
+    }
+  },
+  "home": {
+    "heroImageAlt": "漫骑游 - 骑遇无限美好人生",
+    "introImageAlt": "山水骑行",
+    "ebikeImageAlt": "德国血统智能电助力自行车",
+    "brand": {
+      "badge": "FUTURE LUXURY CYCLING",
+      "title": "德国血统 × 智能骑行",
+      "desc": "高端跨界骑游生活平台"
+    },
+    "intro": "骑游生活，一站式体验",
+    "ebike": {
+      "title": "德国血统 × 智能骑行",
+      "subtitle": "途尔 E-BIKE",
+      "desc": "扫码即骑，智能随行",
+      "features": [
+        { "value": "11.9kg", "label": "极致轻量" },
+        { "value": "100km", "label": "续航里程" },
+        { "value": "智能系统", "label": "扫码即骑" }
+      ]
+    },
+    "ebikeTitle": "德国血统 × 智能骑行",
+    "ebikeSubtitle": "途尔 E-BIKE",
+    "ebikeDesc": "扫码即骑，智能随行",
+    "statsWeight": "极致轻量",
+    "statsRange": "续航里程",
+    "statsSpeed": "最高时速",
+    "routes": {
+      "title": "精选路线",
+      "subtitle": "ROUTES",
+      "desc": "探索城市，骑遇美好"
+    },
+    "routesTitle": "精选路线",
+    "routesSubtitle": "ROUTES",
+    "routesDesc": "探索城市，骑遇美好",
+    "featuresTitle": "五大核心板块",
+    "featuresDesc": "构建完整的骑游生态体系",
+    "featureRental": "智能租赁",
+    "featureRentalDesc": "扫码即骑，便捷出行",
+    "featureRoutes": "精选线路",
+    "featureRoutesDesc": "深度体验，人文风光",
+    "featureCommunity": "骑行社群",
+    "featureCommunityDesc": "志同道合，结伴同行",
+    "featureGoods": "在地好物",
+    "featureGoodsDesc": "沿途特产，品质严选",
+    "featurePartners": "异业合作",
+    "featurePartnersDesc": "资源整合，共创共赢",
+    "featureGallery": "生活馆",
+    "featureGalleryDesc": "线下体验，骑行文化",
+    "cta": {
+      "title": "开启骑行之旅",
+      "desc": "探索更多可能"
+    },
+    "ctaTitle": "开启骑行之旅",
+    "ctaDesc": "探索更多可能"
+  },
+  "partners": {
+    "hero": {
+      "title": "合作伙伴",
+      "subtitle": "携手世界级品牌"
+    },
+    "yadea": {
+      "title": "雅迪",
+      "subtitle": "全球最大电动车品牌",
+      "desc": "战略合作伙伴,共同打造智能骑行生态"
+    },
+    "gazelle": {
+      "title": "Gazelle",
+      "subtitle": "荷兰皇家品牌",
+      "desc": "引入欧洲先进技术，德国血统E-BIKE"
+    },
+    "scenic": {
+      "title": "11家国家级景区",
+      "desc": "深度合作，共创骑游新体验"
+    },
+    "title": "合作伙伴",
+    "subtitle": "政企合作 · 异业联盟 · 城市加盟",
+    "government": "政企合作",
+    "alliance": "异业联盟",
+    "franchise": "城市加盟",
+    "model": {
+      "plan": "规划共制",
+      "resource": "资源共建",
+      "market": "市场共拓",
+      "profit": "利益共享"
+    },
+    "applyNow": "申请合作"
+  },
+  "about": {
+    "hero": {
+      "title": "关于漫骑游",
+      "subtitle": "骑遇无限美好人生"
+    },
+    "stats": [
+      { "value": "2006", "label": "创立年份" },
+      { "value": "32", "label": "出口国家" },
+      { "value": "5000㎡", "label": "智造工厂" },
+      { "value": "11", "label": "景区合作" }
+    ],
+    "story": {
+      "badge": "BRAND STORY",
+      "title": "品牌故事",
+      "content": "2006年起，我们的产品远销全球32个国家和地区。2020年，漫骑游品牌正式创立，致力于打造高端跨界骑游生活平台。我们将德国血统的智能E-BIKE与深度骑游线路相结合，为骑友提供一站式骑游体验。"
+    },
+    "timeline": {
+      "badge": "TIMELINE",
+      "title": "发展历程",
+      "milestones": [
+        { "year": "2006", "event": "产品远销全球32国" },
+        { "year": "2020", "event": "漫骑游品牌创立" },
+        { "year": "2021", "event": "首条精品线路上线" },
+        { "year": "2022", "event": "会员突破10000人" },
+        { "year": "2023", "event": "途尔E-BIKE发布" },
+        { "year": "2024", "event": "11家景区合作启动" }
+      ]
+    },
+    "manufacturing": {
+      "badge": "MANUFACTURING",
+      "title": "智造基地",
+      "desc": "宁波宏途智能科技有限公司，20年专业制造经验",
+      "stats": [
+        { "value": "5000㎡", "label": "工厂面积" },
+        { "value": "20年", "label": "制造经验" },
+        { "value": "200+", "label": "专业员工" }
+      ]
+    },
+    "stores": {
+      "badge": "NATIONWIDE",
+      "title": "全国布局",
+      "desc": "5个城市门店，更多城市持续拓展中",
+      "cities": [
+        { "name": "宁波东钱湖店", "location": "浙江·宁波" },
+        { "name": "宁波慈城店", "location": "浙江·宁波" },
+        { "name": "宁波姚江店", "location": "浙江·宁波" },
+        { "name": "海南儋州店", "location": "海南·儋州" },
+        { "name": "贵州兴义店", "location": "贵州·兴义" },
+        { "name": "更多门店", "location": "持续拓展中" }
+      ]
+    },
+    "cta": {
+      "title": "加入漫骑游",
+      "desc": "无论你是骑行爱好者、合作伙伴还是想加入我们的团队",
+      "member": "成为会员",
+      "cooperate": "商务合作"
+    }
+  },
+  "community": {
+    "hero": {
+      "title": "骑行社群",
+      "subtitle": "10万+骑友的选择"
+    },
+    "stats": [
+      { "value": "500+", "label": "骑行活动" },
+      { "value": "10万+", "label": "社群成员" }
+    ]
+  },
+  "sections": {
+    "rental": "租赁",
+    "routes": "线路",
+    "community": "社群",
+    "goods": "好物",
+    "alliance": "异业",
+    "rentalDesc": "德国血统E-BIKE智能租赁",
+    "routesDesc": "深度骑游线路体验",
+    "communityDesc": "高价值骑游社群",
+    "goodsDesc": "在地特色好物精选",
+    "allianceDesc": "跨界异业联盟"
+  },
+  "strategy": {
+    "title": "三大核心战略",
+    "product": {
+      "title": "产品服务化",
+      "subtitle": "Product Serviceization",
+      "desc": "将深度骑游线路作为核心产品进行深度研发与设计"
+    },
+    "platform": {
+      "title": "服务平台化",
+      "subtitle": "Service Platformization",
+      "desc": "六大功能事业部立体赋能战略发展"
+    },
+    "income": {
+      "title": "收入多元化",
+      "subtitle": "Diversification of Income",
+      "desc": "多元收入来源，可持续商业模式"
+    },
+    "stats": {
+      "product": {
+        "suffix": "+",
+        "label": "深度线路"
+      },
+      "platform": {
+        "suffix": "大",
+        "label": "功能事业部"
+      },
+      "income": {
+        "suffix": "种",
+        "label": "收入来源"
+      }
+    }
+  },
+  "routes": {
+    "title": "深度骑游线路",
+    "subtitle": "融入当地文化、历史与自然，变「观光」为「深度体验」",
+    "featured": "热门推荐",
+    "all": "全部线路",
+    "badges": {
+      "hot": "热门",
+      "new": "新线路",
+      "limited": "限时优惠"
+    },
+    "units": {
+      "km": "公里",
+      "day_one": "天",
+      "day_other": "天",
+      "night_one": "夜",
+      "night_other": "夜",
+      "hour_one": "小时",
+      "hour_other": "小时"
+    },
+    "difficulty": {
+      "easy": "轻松",
+      "medium": "中等",
+      "hard": "挑战"
+    },
+    "duration": "时长",
+    "price": "价格",
+    "perPerson": "/人",
+    "participants": "人数",
+    "availableSpots": "剩余名额",
+    "bookRoute": "预订线路",
+    "viewDetails": "查看详情"
+  },
+  "routesPage": {
+    "heroImageAlt": "精选骑行线路",
+    "heroBadge": "精选线路",
+    "heroTitle": "有深度的线路",
+    "heroDesc": "精心设计每一条骑行线路，融合自然风光与人文历史，让每一次骑行都成为难忘的旅程",
+    "filters": {
+      "allDifficulty": "全部难度",
+      "allCategories": "全部分类"
+    },
+    "states": {
+      "loadFailed": "加载失败，请稍后重试",
+      "empty": "暂无线路"
+    },
+    "perPersonFrom": "/人起",
+    "pagination": {
+      "prev": "上一页",
+      "next": "下一页"
+    },
+    "customCta": {
+      "title": "定制专属线路",
+      "desc": "我们提供私人定制服务，根据您的需求打造独一无二的骑行体验",
+      "button": "联系我们定制"
+    },
+    "features": {
+      "badge": "特色",
+      "title": "深度骑游线路特色",
+      "culture": {
+        "title": "融入当地文化",
+        "desc": "每条线路都深度融入当地文化、历史与自然，变「观光」为「深度体验」"
+      },
+      "ebike": {
+        "title": "德国血统 E-BIKE",
+        "desc": "途尔电助力自行车，彻底解决深度探索与体力透支的根本矛盾"
+      },
+      "experience": {
+        "title": "一站式体验",
+        "desc": "整合线路上的「衣、食、住、行、乐」，提供超值的深度骑游体验"
+      }
+    },
+    "gallery": {
+      "badge": "精彩瞬间",
+      "title": "精彩瞬间",
+      "desc": "记录每一次难忘的骑行旅程"
+    },
+    "browseMore": "浏览更多线路"
+  },
+  "routesDetail": {
+    "heroImageAlt": "线路详情",
+    "backToRoutes": "返回线路",
+    "badge": "线路详情",
+    "states": {
+      "loadFailed": "加载失败",
+      "notFound": "线路不存在"
+    },
+    "perPersonFrom": "/人起",
+    "actions": {
+      "backToList": "返回列表",
+      "consultNow": "立即咨询"
+    }
+  },
+  "ebike": {
+    "title": "途尔电助力自行车",
+    "subtitle": "德国血统 · 智能骑行",
+    "tagline": "彻底解决深度探索与体力透支的根本矛盾",
+    "features": {
+      "scan": "扫码租车",
+      "keyless": "无钥匙启动",
+      "gps": "GPS卫星定位",
+      "lock": "智能电子中控锁"
+    },
+    "specs": {
+      "speed": "最高时速",
+      "range": "续航里程",
+      "assist": "电动助力"
+    }
+  },
+  "ebikePage": {
+    "heroImageAlt": "途尔电助力自行车",
+    "heroBadge": "途尔 E-BIKE",
+    "heroTitle": "跃出地表",
+    "heroSubtitle": "无可比拟的极致轻盈电动单车",
+    "introLine1": "毫不费力穿梭都市间，尽管和伙伴一同欢笑前行。",
+    "introLine2": "轻踩踏板，交给途尔破风前行。",
+    "designImageAlt": "途尔设计",
+    "designTitle": "特立独行",
+    "designDesc": "极简美学车架，一眼难忘",
+    "designDescFull": "无论是停驻在咖啡店，或飞身超越群车的公路上，看见一眼难忘的极简美学车架，铁定就是途尔。",
+    "galleryAlt": "途尔展示",
+    "carbonImageAlt": "碳纤维车架",
+    "carbonTitle": "极致轻量 × 坚韧强度",
+    "carbonDesc": "手工打造碳纤维车架",
+    "carbonDescFull": "结合极致的轻量与坚韧，手工打造的碳纤维车架，让驾驭精准而顺畅。",
+    "smartAssistLabel": "智能助力系统",
+    "partners": {
+      "title": "合作品牌"
+    },
+    "features": {
+      "lightweight": {
+        "title": "轻盈可携",
+        "desc": "极致轻量的菱形车架，让途尔可以轻松被举起，携带同行。"
+      },
+      "smartAssist": {
+        "title": "智慧动力辅助",
+        "desc": "智慧感应施力，精确提供动力的辅助。",
+        "maxAssistSpeedLabel": "最大辅助速度",
+        "sportRangeLabel": "运动模式续航"
+      },
+      "charging": {
+        "title": "一触即充",
+        "desc": "停驻的片刻，轻松连接标准充电器。",
+        "chargerTitle": "标配充电器",
+        "chargerDesc": "轻巧便携",
+        "chargerDescFull": "随车标配，轻巧可携的设计，骑到哪充到哪。",
+        "hoursUnit": "小时",
+        "fullChargeLabel": "充电完成"
+      },
+      "beltDrive": {
+        "title": "静音皮带传动",
+        "desc": "专利设计，流畅安静",
+        "descFull": "专利设计耐用可靠，打造流畅安静的行车体验。骑士放心享受骑乘，无忧前行。"
+      }
+    },
+    "models": {
+      "compareTitle": "超轻量 与 极轻量",
+      "tour1s": "途尔 1S",
+      "tour1": "途尔 1",
+      "tour1sDesc": "全碳纤维车架与前叉。全碳纤维座管、把手、轮组。",
+      "tour1Desc": "全碳纤维车架与前叉。铝合金座管、把手、轮组。",
+      "specs": {
+        "weight": "重量",
+        "seatpost": "座管",
+        "handlebar": "车手把"
+      },
+      "materials": {
+        "carbon3k": "3K 平织碳纤维",
+        "aluminum": "铝合金"
+      }
+    },
+    "warranty": {
+      "strong": {
+        "title": "生来强韧",
+        "desc": "碳纤维车架，强悍耐用"
+      },
+      "promise": {
+        "title": "安心承诺",
+        "desc": "车架5年保固，零件3年保固"
+      },
+      "return": {
+        "title": "无忧退货",
+        "desc": "14天无忧退货"
+      }
+    },
+    "cta": {
+      "title": "立即体验途尔",
+      "desc": "预约试骑，感受极致轻盈的骑行体验",
+      "testRide": "预约试骑",
+      "buyNow": "立即购买"
+    },
+    "help": {
+      "needHelp": "需要帮忙？"
+    }
+  },
+  "goods": {
+    "title": "在地好物",
+    "subtitle": "一键囊括一城好物",
+    "categories": {
+      "clothing": "衣",
+      "food": "食",
+      "accommodation": "住",
+      "transportation": "行",
+      "entertainment": "乐"
+    }
+  },
+  "community": {
+    "title": "骑游社群",
+    "subtitle": "通过价值观和爱好相同构建高价值用户社群",
+    "joinUs": "加入社群",
+    "memberPath": "会员成长路径",
+    "fromFan": "从粉丝到铁杆会员，甚至成为漫骑游事业的合伙人"
+  },
+  "partners": {
+    "hero": {
+      "title": "合作伙伴",
+      "subtitle": "携手世界级品牌"
+    },
+    "yadea": {
+      "title": "全球领先电动车品牌",
+      "subtitle": "战略合作伙伴",
+      "desc": "与雅迪战略合作，共同打造智能骑行生态，为用户提供高品质的电助力自行车产品和服务"
+    },
+    "gazelle": {
+      "title": "荷兰皇家自行车品牌",
+      "subtitle": "欧洲先进技术",
+      "desc": "引入Gazelle荷兰皇家品牌的先进技术，德国血统E-BIKE，为骑友带来纯正的欧洲骑行体验"
+    },
+    "scenic": {
+      "title": "11家国家级景区",
+      "desc": "深度合作，共创骑游新体验"
+    },
+    "title": "合作伙伴",
+    "subtitle": "政企合作 · 异业联盟 · 城市加盟",
+    "government": "政企合作",
+    "alliance": "异业联盟",
+    "franchise": "城市加盟",
+    "model": {
+      "plan": "规划共制",
+      "resource": "资源共建",
+      "market": "市场共拓",
+      "profit": "利益共享"
+    },
+    "applyNow": "申请合作"
+  },
+  "cities": {
+    "title": "城市版图",
+    "subtitle": "以甬为轴，骑通天下",
+    "vision": "未来覆盖全国，甚至走向世界",
+    "stats": {
+      "cities": "已布局城市",
+      "routes": "深度线路",
+      "partners": "合作伙伴"
+    }
+  },
+  "footer": {
+    "productsTitle": "产品服务",
+    "communityTitle": "骑行社区",
+    "companyTitle": "关于漫骑游",
+    "supportTitle": "帮助支持",
+    "links": {
+      "events": "活动日历",
+      "stories": "骑友故事",
+      "careers": "加入我们",
+      "faq": "常见问题"
+    },
+    "serviceLineLabel": "服务专线",
+    "serviceHours": "服务时间: 09:00 - 21:00",
+    "copyright": "© 2026 漫骑游. 保留所有权利.",
+    "privacy": "隐私政策",
+    "terms": "服务条款"
+  },
+  "membership": {
+    "title": "会员中心",
+    "level": "会员等级",
+    "points": "积分余额",
+    "benefits": "会员权益",
+    "history": "积分明细",
+    "upgrade": "升级会员"
+  },
+  "booking": {
+    "title": "预订信息",
+    "date": "出行日期",
+    "participants": "出行人数",
+    "contact": "联系人",
+    "phone": "联系电话",
+    "remark": "备注",
+    "total": "总计",
+    "confirmBooking": "确认预订",
+    "payNow": "立即支付"
+  },
+  "auth": {
+    "loginTitle": "登录漫骑游",
+    "registerTitle": "注册账号",
+    "phone": "手机号",
+    "code": "验证码",
+    "getCode": "获取验证码",
+    "resendCode": "重新发送",
+    "wechatLogin": "微信登录",
+    "agreement": "登录即表示同意",
+    "termsOfService": "服务条款",
+    "and": "和",
+    "privacyPolicy": "隐私政策"
+  }
+}

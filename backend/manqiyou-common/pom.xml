@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.manqiyou</groupId>
+        <artifactId>manqiyou-backend</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>manqiyou-common</artifactId>
+    <packaging>pom</packaging>
+    <name>漫骑游公共模块</name>
+
+    <modules>
+        <module>manqiyou-common-core</module>
+        <module>manqiyou-common-security</module>
+        <module>manqiyou-common-redis</module>
+    </modules>
+</project>
