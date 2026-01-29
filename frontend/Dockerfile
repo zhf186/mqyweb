@@ -30,10 +30,6 @@ FROM node:20-alpine AS runner
 
 WORKDIR /app
 
-# 创建非 root 用户
-RUN addgroup -g 1000 manqiyou && \
-    adduser -D -u 1000 -G manqiyou manqiyou
-
 # 设置生产环境
 ENV NODE_ENV=production
 ENV PORT=3000
@@ -43,11 +39,11 @@ COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 
-# 更改所有权
-RUN chown -R manqiyou:manqiyou /app
+# 更改所有权（使用 node 用户，Alpine 镜像自带）
+RUN chown -R node:node /app
 
 # 切换到非 root 用户
-USER manqiyou
+USER node
 
 # 暴露端口
 EXPOSE 3000

@@ -60,7 +60,7 @@ services:
       REDIS_PASSWORD: ${REDIS_PASSWORD:-redis2024!@#}
       JWT_SECRET: ${JWT_SECRET:-your_jwt_secret_change_in_production}
     ports:
-      - "127.0.0.1:8080:8080"
+      - "127.0.0.1:8081:8080"  # 改为 8081，避免与其他项目冲突
     depends_on:
       postgres:
         condition: service_healthy
@@ -88,7 +88,7 @@ services:
       NODE_ENV: production
       PORT: 3000
     ports:
-      - "127.0.0.1:3000:3000"
+      - "127.0.0.1:3001:3000"  # 改为 3001，避免与其他项目冲突
     depends_on:
       - backend
     networks:
