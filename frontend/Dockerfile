@@ -34,6 +34,9 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=3000
 
+# 安装 sharp 用于图片优化（standalone 模式必需）
+RUN npm install sharp
+
 # 复制必要文件
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
