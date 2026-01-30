@@ -2,6 +2,7 @@
 
 import * as React from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { cn } from '@/lib/utils'
 import { useTranslation } from '@/hooks/useTranslation'
 import { Button, Container, Section, Badge, ImageCard } from '@/components/ui'
@@ -119,10 +120,14 @@ export function FeaturedRoutes() {
                   <div className="group relative overflow-hidden rounded-2xl bg-white shadow-brand-sm">
                     {/* Image */}
                     <div className="relative aspect-[4/3] overflow-hidden">
-                      <img
+                      <Image
                         src={route.image}
                         alt={locale === 'en' ? route.titleEn : route.title}
-                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                        fill
+                        loading="lazy"
+                        quality={75}
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                        className="object-cover transition-transform duration-500 group-hover:scale-110"
                       />
                       {/* Gradient Overlay */}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />

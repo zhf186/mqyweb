@@ -3,6 +3,7 @@
 import * as React from 'react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
 import { useTranslation } from '@/hooks/useTranslation'
@@ -82,10 +83,13 @@ export default function CommunityPage() {
         {/* Hero Section */}
         <section className="relative h-[70vh] min-h-[500px] overflow-hidden">
           <div className="absolute inset-0">
-            <img
+            <Image
               src="/brand_assets/page19_img3.jpeg"
               alt={t('communityPage.heroImageAlt')}
-              className="h-full w-full object-cover"
+              fill
+              priority
+              quality={85}
+              className="object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black" />
           </div>
@@ -179,10 +183,14 @@ export default function CommunityPage() {
                   className="group"
                 >
                   <div className="relative aspect-[16/10] overflow-hidden rounded-2xl">
-                    <img
+                    <Image
                       src={activity.image}
                       alt={locale === 'en' ? activity.titleEn : t(activity.titleKey)}
-                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      fill
+                      loading="lazy"
+                      quality={75}
+                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      className="object-cover transition-transform duration-500 group-hover:scale-110"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
                     <span className={`absolute right-4 top-4 rounded-full px-3 py-1 text-xs font-medium ${
@@ -247,10 +255,14 @@ export default function CommunityPage() {
                   transition={{ duration: 0.5, delay: index * 0.05 }}
                   className="group relative aspect-square overflow-hidden rounded-2xl cursor-pointer"
                 >
-                  <img
+                  <Image
                     src={src}
                     alt={`${t('communityPage.gallery.imageAlt')} ${index + 1}`}
-                    className="h-full w-full object-cover transition-all duration-500 group-hover:scale-110 group-hover:brightness-75"
+                    fill
+                    loading="lazy"
+                    quality={75}
+                    sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
+                    className="object-cover transition-all duration-500 group-hover:scale-110 group-hover:brightness-75"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                   <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100">

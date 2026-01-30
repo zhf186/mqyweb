@@ -1,6 +1,7 @@
 'use client'
 
 import * as React from 'react'
+import Image from 'next/image'
 import { cn } from '@/lib/utils'
 import { useTranslation } from '@/hooks/useTranslation'
 import { Container, Section } from '@/components/ui'
@@ -68,10 +69,14 @@ export function SectionsShowcase() {
                 <div className="group relative overflow-hidden rounded-2xl bg-white shadow-brand-sm">
                   {/* Image */}
                   <div className="relative aspect-[4/3] overflow-hidden">
-                    <img
+                    <Image
                       src={section.image}
                       alt={t(`sections.${section.key}`)}
-                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      fill
+                      loading="lazy"
+                      quality={75}
+                      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
+                      className="object-cover transition-transform duration-500 group-hover:scale-110"
                     />
                     {/* Gradient Overlay */}
                     <div

@@ -1,4 +1,5 @@
 import * as React from 'react'
+import Image from 'next/image'
 import { cn } from '@/lib/utils'
 
 const Card = React.forwardRef<
@@ -151,10 +152,14 @@ const ImageCard = React.forwardRef<
         aspectRatio === 'wide' && 'aspect-[2/1]'
       )}
     >
-      <img
+      <Image
         src={image}
         alt={title}
-        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+        fill
+        loading="lazy"
+        quality={75}
+        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+        className="object-cover transition-transform duration-500 group-hover:scale-110"
       />
       {/* 渐变遮罩 */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />

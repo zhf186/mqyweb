@@ -1,6 +1,7 @@
 'use client'
 
 import * as React from 'react'
+import Image from 'next/image'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { cn } from '@/lib/utils'
 
@@ -36,12 +37,16 @@ export function ParallaxImage({
       ref={ref}
       className={cn('relative overflow-hidden', containerClassName)}
     >
-      <motion.img
-        src={src}
-        alt={alt}
-        style={{ y, scale: imageScale }}
-        className={cn('h-full w-full object-cover', className)}
-      />
+      <motion.div style={{ y, scale: imageScale }} className="relative h-full w-full">
+        <Image
+          src={src}
+          alt={alt}
+          fill
+          loading="lazy"
+          quality={80}
+          className={cn('object-cover', className)}
+        />
+      </motion.div>
     </div>
   )
 }
@@ -78,10 +83,13 @@ export function ParallaxSection({
         style={{ y }}
         className="absolute inset-0 -top-[20%] h-[140%]"
       >
-        <img
+        <Image
           src={backgroundImage}
           alt=""
-          className="h-full w-full object-cover"
+          fill
+          loading="lazy"
+          quality={80}
+          className="object-cover"
         />
       </motion.div>
       

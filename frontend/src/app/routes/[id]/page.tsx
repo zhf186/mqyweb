@@ -2,6 +2,7 @@
 
 import * as React from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { useParams } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { useQuery } from '@tanstack/react-query'
@@ -86,10 +87,13 @@ export default function RouteDetailPage() {
       <main className="bg-black text-white">
         <section className="relative h-[60vh] min-h-[420px] overflow-hidden">
           <div className="absolute inset-0">
-            <img
+            <Image
               src={routeQuery.data?.coverImage || '/brand_assets/page12_img1.jpeg'}
               alt={routeQuery.data ? (locale === 'en' ? routeQuery.data.nameEn || routeQuery.data.name : routeQuery.data.name) : t('routesDetail.heroImageAlt')}
-              className="h-full w-full object-cover"
+              fill
+              priority
+              quality={85}
+              className="object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-black" />
           </div>

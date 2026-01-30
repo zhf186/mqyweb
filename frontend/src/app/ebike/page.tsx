@@ -3,6 +3,7 @@
 import * as React from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
 import { useTranslation } from '@/hooks/useTranslation'
@@ -26,10 +27,13 @@ export default function EbikePage() {
         {/* Hero Section */}
         <section className="relative h-screen overflow-hidden">
           <motion.div style={{ opacity }} className="absolute inset-0 bg-black">
-            <img
+            <Image
               src="/brand_assets/ebike/page11_img1.jpeg"
               alt={t('ebikePage.heroImageAlt')}
-              className="h-full w-full object-cover"
+              fill
+              priority
+              quality={85}
+              className="object-cover"
               style={{ objectPosition: 'left 72%' }}
             />
             <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black" />
@@ -131,10 +135,13 @@ export default function EbikePage() {
         {/* Design Section - Large Image Display */}
         <section className="relative min-h-screen">
           <div className="sticky top-0 h-screen overflow-hidden">
-            <img
+            <Image
               src="/brand_assets/ebike/page10_img2.jpeg"
               alt={t('ebikePage.designImageAlt')}
-              className="h-full w-full object-cover"
+              fill
+              loading="lazy"
+              quality={80}
+              className="object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/50 to-transparent" />
             
@@ -173,10 +180,14 @@ export default function EbikePage() {
                   transition={{ duration: 0.6, delay: (index + 1) * 0.1 }}
                   className="relative h-[500px] w-[400px] overflow-hidden rounded-2xl"
                 >
-                  <img
+                  <Image
                     src={src}
                     alt={`${t('ebikePage.galleryAlt')} ${index + 1}`}
-                    className="h-full w-full object-cover"
+                    fill
+                    loading="lazy"
+                    quality={75}
+                    sizes="400px"
+                    className="object-cover"
                   />
                 </motion.div>
               ))}
@@ -187,10 +198,13 @@ export default function EbikePage() {
         {/* Carbon Fiber Section - Simplified */}
         <section className="relative min-h-screen">
           <div className="sticky top-0 h-screen overflow-hidden">
-            <img
+            <Image
               src="/brand_assets/ebike/page10_img3.jpeg"
               alt={t('ebikePage.carbonImageAlt')}
-              className="h-full w-full object-cover"
+              fill
+              loading="lazy"
+              quality={80}
+              className="object-cover"
               style={{ objectPosition: 'left 50%' }}
             />
             <div className="pointer-events-none absolute inset-y-0 right-0 w-[70%] bg-gradient-to-l from-black/90 via-black/50 to-transparent" />
@@ -345,11 +359,15 @@ export default function EbikePage() {
                 transition={{ duration: 0.8 }}
                 className="rounded-3xl border border-white/10 bg-white/5 p-8"
               >
-                <div className="aspect-[4/3] overflow-hidden rounded-2xl bg-gradient-to-br from-zinc-800 to-zinc-900">
-                  <img
+                <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-gradient-to-br from-zinc-800 to-zinc-900">
+                  <Image
                     src="/brand_assets/ebike/page10_img2.jpeg"
                     alt={t('ebikePage.models.tour1s')}
-                    className="h-full w-full object-contain p-8"
+                    fill
+                    loading="lazy"
+                    quality={75}
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    className="object-contain p-8"
                   />
                 </div>
                 <div className="mt-8">
@@ -385,11 +403,15 @@ export default function EbikePage() {
                 transition={{ duration: 0.8, delay: 0.2 }}
                 className="rounded-3xl border border-white/10 bg-white/5 p-8"
               >
-                <div className="aspect-[4/3] overflow-hidden rounded-2xl bg-gradient-to-br from-zinc-800 to-zinc-900">
-                  <img
+                <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-gradient-to-br from-zinc-800 to-zinc-900">
+                  <Image
                     src="/brand_assets/ebike/page10_img6.jpeg"
                     alt={t('ebikePage.models.tour1')}
-                    className="h-full w-full object-contain p-8"
+                    fill
+                    loading="lazy"
+                    quality={75}
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    className="object-contain p-8"
                   />
                 </div>
                 <div className="mt-8">

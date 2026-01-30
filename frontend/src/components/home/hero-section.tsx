@@ -1,6 +1,7 @@
 'use client'
 
 import * as React from 'react'
+import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import { useTranslation } from '@/hooks/useTranslation'
@@ -14,10 +15,13 @@ export function HeroSection() {
     <section className="relative min-h-screen overflow-hidden">
       {/* Background Image */}
       <div className="absolute inset-0">
-        <img
+        <Image
           src="/brand_assets/page1_img2.jpeg"
           alt="漫骑游骑行风景"
-          className="h-full w-full object-cover"
+          fill
+          priority
+          quality={85}
+          className="object-cover"
         />
         {/* Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70" />
