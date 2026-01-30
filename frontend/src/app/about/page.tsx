@@ -3,6 +3,7 @@
 import * as React from 'react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
 import { useTranslation } from '@/hooks/useTranslation'
@@ -23,10 +24,14 @@ export default function AboutPage() {
         {/* Hero Section */}
         <section className="relative h-screen overflow-hidden">
           <div className="absolute inset-0">
-            <img
+            <Image
               src="/brand_assets/page1_img1.jpeg"
               alt="关于漫骑游"
-              className="h-full w-full object-cover"
+              fill
+              priority
+              className="object-cover"
+              sizes="100vw"
+              quality={85}
             />
             <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black" />
           </div>
@@ -192,10 +197,13 @@ export default function AboutPage() {
                   transition={{ duration: 0.6, delay: index * 0.1 }}
                   className="group relative overflow-hidden rounded-2xl aspect-[4/3]"
                 >
-                  <img
+                  <Image
                     src={img}
                     alt="智造基地"
-                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    fill
+                    className="object-cover transition-transform duration-700 group-hover:scale-110"
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    loading="lazy"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 </motion.div>
@@ -266,11 +274,14 @@ export default function AboutPage() {
                   transition={{ duration: 0.6, delay: index * 0.1 }}
                   className="group relative overflow-hidden rounded-2xl"
                 >
-                  <div className="aspect-[4/3] overflow-hidden">
-                    <img
+                  <div className="aspect-[4/3] overflow-hidden relative">
+                    <Image
                       src={store.img}
                       alt={store.name}
-                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      fill
+                      className="object-cover transition-transform duration-700 group-hover:scale-110"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      loading="lazy"
                     />
                   </div>
                   <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent" />
@@ -287,10 +298,13 @@ export default function AboutPage() {
         {/* CTA Section */}
         <section className="relative py-32 overflow-hidden">
           <div className="absolute inset-0">
-            <img
+            <Image
               src="/brand_assets/page11_img3.jpeg"
               alt="加入漫骑游"
-              className="h-full w-full object-cover"
+              fill
+              className="object-cover"
+              sizes="100vw"
+              loading="lazy"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-brand-primary/80 via-brand-primary/40 to-transparent" />
           </div>
