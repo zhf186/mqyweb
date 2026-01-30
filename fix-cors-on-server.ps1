@@ -24,7 +24,7 @@ Write-Host ""
 
 # 2. 先验证当前配置
 Write-Host "2. 验证当前 CORS 配置..." -ForegroundColor Yellow
-ssh "${SERVER_USER}@${SERVER_IP}" "cd ${PROJECT_DIR} && chmod +x verify-cors-config.sh && ./verify-cors-config.sh"
+ssh "${SERVER_USER}@${SERVER_IP}" "cd ${PROJECT_DIR}; chmod +x verify-cors-config.sh; ./verify-cors-config.sh"
 
 Write-Host ""
 Write-Host "按任意键继续执行修复，或 Ctrl+C 取消..." -ForegroundColor Cyan
@@ -33,7 +33,7 @@ $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
 # 3. 执行修复
 Write-Host ""
 Write-Host "3. 执行 CORS 修复..." -ForegroundColor Yellow
-ssh "${SERVER_USER}@${SERVER_IP}" "cd ${PROJECT_DIR} && chmod +x fix-cors-duplicate.sh && ./fix-cors-duplicate.sh"
+ssh "${SERVER_USER}@${SERVER_IP}" "cd ${PROJECT_DIR}; chmod +x fix-cors-duplicate.sh; ./fix-cors-duplicate.sh"
 
 if ($LASTEXITCODE -ne 0) {
     Write-Host "修复执行失败！" -ForegroundColor Red
