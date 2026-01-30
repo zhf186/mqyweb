@@ -202,8 +202,7 @@ export default function CommunityEventsPage() {
               </div>
             )}
           </section>
-        </div>
-      </main>
+        </main>
       <Footer />
     </>
   )
