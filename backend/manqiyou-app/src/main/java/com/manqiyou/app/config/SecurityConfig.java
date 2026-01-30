@@ -37,6 +37,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+            // 启用 CORS（使用 CorsFilter 配置）
+            .cors(cors -> cors.configure(http))
             // 禁用 CSRF（API 服务）
             .csrf(AbstractHttpConfigurer::disable)
             // 允许 H2 控制台的 iframe
