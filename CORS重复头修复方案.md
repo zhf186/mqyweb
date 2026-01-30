@@ -171,8 +171,47 @@ curl -v -H "Origin: https://manqiyou.cn" https://www.manqiyou.cn/api/categories 
 
 如果后端直接响应正常，但通过 Nginx 有问题，说明是 Nginx 添加了额外的头。
 
+## 修复状态
+
+✅ **问题已完全解决！** (2026-01-30 10:14 UTC+8)
+
+### 验证结果
+
+#### CORS 头测试
+```bash
+# 测试 www.manqiyou.cn
+curl -I -H 'Origin: https://www.manqiyou.cn' https://www.manqiyou.cn/api/routes
+# 结果：access-control-allow-origin: https://www.manqiyou.cn ✅
+
+# 测试 manqiyou.cn
+curl -I -H 'Origin: https://manqiyou.cn' https://www.manqiyou.cn/api/routes
+# 结果：access-control-allow-origin: https://manqiyou.cn ✅
+```
+
+#### API 数据测试
+```bash
+curl -s -H 'Origin: https://www.manqiyou.cn' https://www.manqiyou.cn/api/routes
+# 结果：返回完整的路线数据，HTTP 200 ✅
+```
+
+### 执行的修复步骤
+
+1. ✅ 更新后端 CorsConfig.java（添加 @Order 和使用 singletonList）
+2. ✅ 添加生产域名到允许列表
+3. ✅ 从 application.yml 移除 CORS 配置
+4. ✅ 提交代码到 GitHub
+5. ✅ 服务器拉取最新代码
+6. ✅ 重新构建后端 Docker 镜像（--no-cache）
+7. ✅ 删除旧容器并启动新容器
+8. ✅ 验证 CORS 头正确（单一值，无重复）
+9. ✅ 验证 API 正常返回数据
+
 ## 更新记录
 
-- 2026-01-30: 创建修复方案文档
-- 问题：CORS 头重复（`'https://manqiyou.cn, *'`）
-- 解决：确保只有后端添加 CORS 头，Nginx 不添加
+- 2026-01-30 02:14: **问题已解决** ✅
+  - CORS 头重复问题已修复
+  - API 正常返回数据
+  - 两个域名（www.manqiyou.cn 和 manqiyou.cn）都工作正常
+- 2026-01-30 00:00: 创建修复方案文档
+  - 问题：CORS 头重复（`'https://manqiyou.cn, *'`）
+  - 解决方案：确保只有后端添加 CORS 头，Nginx 不添加
