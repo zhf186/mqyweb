@@ -10,6 +10,8 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -70,7 +72,7 @@ public class SecurityConfig {
             })
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers(buildPublicPaths()).permitAll()
+                .requestMatchers(buildPublicMatchers()).permitAll()
                 .requestMatchers("/api/admin/settings/**").hasRole("SUPER_ADMIN")
                 .requestMatchers("/api/admin/**").hasAnyRole("SUPER_ADMIN", "CONTENT_EDITOR")
                 .anyRequest().authenticated()
@@ -97,5 +99,14 @@ public class SecurityConfig {
         }
 
         return paths.toArray(String[]::new);
+    }
+
+    private RequestMatcher[] buildPublicMatchers() {
+        String[] paths = buildPublicPaths();
+        RequestMatcher[] matchers = new RequestMatcher[paths.length];
+        for (int i = 0; i < paths.length; i++) {
+            matchers[i] = new AntPathRequestMatcher(paths[i]);
+        }
+        return matchers;
     }
 }
