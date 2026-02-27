@@ -39,6 +39,7 @@ public class SecurityConfig {
         "/api/public/**",
         "/api/admin/auth/login",
         "/api/admin/auth/refresh",
+        "/error",
         "/uploads/**"
     };
 
