@@ -2,6 +2,7 @@ package com.manqiyou.app.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.web.cors.CorsConfiguration;
@@ -10,6 +11,8 @@ import org.springframework.web.filter.CorsFilter;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * CORS 跨域配置
@@ -18,20 +21,21 @@ import java.util.Collections;
 @Configuration
 public class CorsConfig {
 
+    private final Environment environment;
+
+    public CorsConfig(Environment environment) {
+        this.environment = environment;
+    }
+
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
-        
+
         // 允许的源（明确列出，不使用通配符）
-        config.setAllowedOrigins(Arrays.asList(
-            "http://localhost:3000",
-            "http://127.0.0.1:3000",
-            "https://www.manqiyou.cn",
-            "https://manqiyou.cn",
-            "http://www.manqiyou.cn",
-            "http://manqiyou.cn"
-        ));
+        // 支持通过环境变量/配置覆盖：app.cors.allowed-origins（逗号分隔）
+        List<String> allowedOrigins = resolveAllowedOrigins();
+        config.setAllowedOrigins(allowedOrigins);
         
         // 允许的方法
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD"));
@@ -56,5 +60,28 @@ public class CorsConfig {
         source.registerCorsConfiguration("/**", config);
         
         return new CorsFilter(source);
+    }
+
+    private List<String> resolveAllowedOrigins() {
+        String configured = environment.getProperty("app.cors.allowed-origins");
+        if (configured != null && !configured.isBlank()) {
+            return Arrays.stream(configured.split(","))
+                    .map(String::trim)
+                    .filter(s -> !s.isBlank())
+                    .collect(Collectors.toList());
+        }
+
+        return Arrays.asList(
+                "http://localhost:3000",
+                "http://127.0.0.1:3000",
+                "https://www.manqiyou.cn",
+                "https://manqiyou.cn",
+                "http://www.manqiyou.cn",
+                "http://manqiyou.cn",
+                "https://www.zjmqy.cc",
+                "https://zjmqy.cc",
+                "http://www.zjmqy.cc",
+                "http://zjmqy.cc"
+        );
     }
 }

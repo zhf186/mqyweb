@@ -135,14 +135,25 @@ export function Footer() {
               <p className="text-xs text-center text-white/40 sm:text-left">
                 {t('footer.copyright')}
               </p>
-              <a 
-                href="https://beian.miit.gov.cn/" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="text-xs text-white/40 hover:text-white/60 transition-colors"
-              >
-                浙ICP备2022028532号-1
-              </a>
+              <div className="flex flex-wrap items-center justify-center gap-4 sm:justify-start">
+                <a 
+                  href="https://beian.miit.gov.cn/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-xs text-white/40 hover:text-white/60 transition-colors"
+                >
+                  浙ICP备2024125930号-4
+                </a>
+                <a
+                  href="https://beian.mps.gov.cn/#/query/webSearch?code=33020502001320"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1.5 text-xs text-white/40 hover:text-white/60 transition-colors"
+                >
+                  <img src="/备案图标.png" alt="备案图标" className="h-4 w-4" />
+                  浙公网安备33020502001320号
+                </a>
+              </div>
             </div>
             <div className="flex items-center gap-5 sm:gap-6">
               {/* Social Links */}

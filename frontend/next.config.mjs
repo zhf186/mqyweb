@@ -9,6 +9,30 @@ const nextConfig = {
         protocol: 'https',
         hostname: '**.aliyuncs.com',
       },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '8080',
+        pathname: '/uploads/**',
+      },
+      {
+        protocol: 'http',
+        hostname: '127.0.0.1',
+        port: '8080',
+        pathname: '/uploads/**',
+      },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '3000',
+        pathname: '/brand_assets/**',
+      },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '',
+        pathname: '/brand_assets/**',
+      },
     ],
     // 响应式图片尺寸 - 针对常见设备优化
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
@@ -75,9 +99,9 @@ const nextConfig = {
       },
     ]
   },
-  // Skip type checking during build (workaround for Next.js 14 TypeScript issue)
+  // Keep type safety enabled during build.
   typescript: {
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: false,
   },
   // Skip ESLint during build
   eslint: {

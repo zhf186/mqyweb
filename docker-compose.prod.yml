@@ -9,7 +9,7 @@ services:
     environment:
       POSTGRES_DB: manqiyou
       POSTGRES_USER: manqiyou_user
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-manqiyou2024!@#}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD is required}
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./backend/sql:/docker-entrypoint-initdb.d
@@ -28,7 +28,7 @@ services:
     image: redis:7-alpine
     container_name: manqiyou-redis
     restart: always
-    command: redis-server --requirepass ${REDIS_PASSWORD:-redis2024!@#}
+    command: redis-server --requirepass ${REDIS_PASSWORD:?REDIS_PASSWORD is required}
     ports:
       - "127.0.0.1:6379:6379"
     volumes:
@@ -36,7 +36,7 @@ services:
     networks:
       - manqiyou-network
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ["CMD-SHELL", "redis-cli -a ${REDIS_PASSWORD:?REDIS_PASSWORD is required} ping"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -54,11 +54,11 @@ services:
       DB_PORT: 5432
       DB_NAME: manqiyou
       DB_USERNAME: manqiyou_user
-      DB_PASSWORD: ${DB_PASSWORD:-manqiyou2024!@#}
+      DB_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD is required}
       REDIS_HOST: redis
       REDIS_PORT: 6379
-      REDIS_PASSWORD: ${REDIS_PASSWORD:-redis2024!@#}
-      JWT_SECRET: ${JWT_SECRET:-your_jwt_secret_change_in_production}
+      REDIS_PASSWORD: ${REDIS_PASSWORD:?REDIS_PASSWORD is required}
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET is required}
     ports:
       - "127.0.0.1:8081:8080"  # 改为 8081，避免与其他项目冲突
     depends_on:
@@ -81,7 +81,7 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       args:
-        NEXT_PUBLIC_API_URL: https://www.manqiyou.cn/api
+        NEXT_PUBLIC_API_URL: /api
     container_name: manqiyou-frontend
     restart: always
     environment:

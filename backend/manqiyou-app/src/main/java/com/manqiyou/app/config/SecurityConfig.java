@@ -1,5 +1,7 @@
 package com.manqiyou.app.config;
 
+import com.manqiyou.app.cms.config.JwtAuthenticationFilter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -9,45 +11,69 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
- * Spring Security 配置
+ * Spring Security configuration.
  */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
-    /**
-     * 公开访问的路径
-     */
-    private static final String[] PUBLIC_PATHS = {
+    private static final String[] BASE_PUBLIC_PATHS = {
         "/api/health",
         "/api/info",
-        "/api/auth/**",
         "/api/routes/**",
         "/api/categories/**",
         "/api/content/**",
         "/api/goods/**",
         "/api/activities/**",
-        "/h2-console/**",
+        "/api/public/**",
+        "/api/admin/auth/login",
+        "/api/admin/auth/refresh",
+        "/uploads/**"
+    };
+
+    private static final String[] DEV_PUBLIC_PATHS = {
+        "/api/auth/**",
+        "/api/dev/**",
         "/swagger-ui/**",
         "/v3/api-docs/**"
     };
 
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    @Value("${app.security.allow-dev-endpoints:false}")
+    private boolean allowDevEndpoints;
+
+    @Value("${app.security.allow-h2-console:false}")
+    private boolean allowH2Console;
+
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+    }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            // 禁用 CSRF（API 服务）
             .csrf(AbstractHttpConfigurer::disable)
-            // 允许 H2 控制台的 iframe
-            .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
-            // 无状态会话
+            .headers(headers -> {
+                if (allowH2Console) {
+                    headers.frameOptions(frame -> frame.sameOrigin());
+                }
+            })
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            // 配置请求授权
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers(PUBLIC_PATHS).permitAll()
+                .requestMatchers(buildPublicPaths()).permitAll()
+                .requestMatchers("/api/admin/settings/**").hasRole("SUPER_ADMIN")
+                .requestMatchers("/api/admin/**").hasAnyRole("SUPER_ADMIN", "CONTENT_EDITOR")
                 .anyRequest().authenticated()
-            );
+            )
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -55,5 +81,19 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    private String[] buildPublicPaths() {
+        List<String> paths = new ArrayList<>(Arrays.asList(BASE_PUBLIC_PATHS));
+
+        if (allowDevEndpoints) {
+            paths.addAll(Arrays.asList(DEV_PUBLIC_PATHS));
+        }
+
+        if (allowH2Console) {
+            paths.add("/h2-console/**");
+        }
+
+        return paths.toArray(String[]::new);
     }
 }
