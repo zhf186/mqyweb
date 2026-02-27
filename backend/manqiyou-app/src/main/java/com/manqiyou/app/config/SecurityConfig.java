@@ -27,7 +27,9 @@ public class SecurityConfig {
     private static final String[] BASE_PUBLIC_PATHS = {
         "/api/health",
         "/api/info",
+        "/api/routes",
         "/api/routes/**",
+        "/api/categories",
         "/api/categories/**",
         "/api/content/**",
         "/api/goods/**",
