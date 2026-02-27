@@ -1,0 +1,75 @@
+version: '3.8'
+
+services:
+  # MySQL 数据库
+  mysql:
+    image: mysql:8.0
+    container_name: manqiyou-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root123456}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-manqiyou}
+      MYSQL_USER: ${MYSQL_USER:-manqiyou}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-manqiyou123456}
+      TZ: Asia/Shanghai
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./backend/manqiyou-app/src/main/resources/schema-mysql.sql:/docker-entrypoint-initdb.d/01-schema.sql
+      - ./backend/manqiyou-app/src/main/resources/data.sql:/docker-entrypoint-initdb.d/02-data.sql
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --default-authentication-plugin=mysql_native_password
+      - --init-connect=SET NAMES utf8mb4
+      - --skip-character-set-client-handshake
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -p${MYSQL_ROOT_PASSWORD:-root123456}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - manqiyou-network
+
+  # Redis 缓存
+  redis:
+    image: redis:7-alpine
+    container_name: manqiyou-redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - manqiyou-network
+
+  # Adminer 数据库管理工具（可选）
+  adminer:
+    image: adminer
+    container_name: manqiyou-adminer
+    restart: always
+    ports:
+      - "8088:8080"
+    depends_on:
+      - mysql
+    networks:
+      - manqiyou-network
+    profiles:
+      - dev
+
+volumes:
+  mysql_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  manqiyou-network:
+    driver: bridge

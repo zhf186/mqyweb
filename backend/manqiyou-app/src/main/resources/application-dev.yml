@@ -1,0 +1,47 @@
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+  datasource:
+    url: jdbc:h2:mem:manqiyou;MODE=MySQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+      settings:
+        web-allow-others: true
+
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:schema.sql
+      data-locations: classpath:data.sql
+      encoding: UTF-8
+      continue-on-error: false
+
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      database: 0
+      timeout: 3000ms
+
+jwt:
+  secret: ${JWT_SECRET:dev-only-jwt-secret-change-before-prod-32-chars-minimum}
+
+logging:
+  level:
+    com.manqiyou: DEBUG
+    org.springframework.security: DEBUG
+    org.springframework.web: DEBUG
+
+app:
+  security:
+    allow-dev-endpoints: true
+    allow-h2-console: true

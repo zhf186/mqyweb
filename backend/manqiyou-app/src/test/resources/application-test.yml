@@ -1,0 +1,43 @@
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH
+    username: sa
+    password: 
+  
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:schema.sql
+      data-locations: classpath:data.sql
+  
+  h2:
+    console:
+      enabled: false
+  
+  # Use embedded Redis for testing (it-tools embedded-redis)
+  # For now, we'll configure to use localhost but tests should handle Redis not being available
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: 
+      database: 1
+      timeout: 2000ms
+      # Connection pool settings
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+
+jwt:
+  secret: test-secret-key-for-jwt-token-generation-minimum-256-bits
+  expiration: 86400000
+  refresh-expiration: 604800000
+
+logging:
+  level:
+    com.manqiyou: DEBUG
+    org.springframework.security: DEBUG
+    org.springframework.data.redis: WARN

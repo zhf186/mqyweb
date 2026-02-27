@@ -5,9 +5,12 @@ import { motion } from 'framer-motion'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useQuery } from '@tanstack/react-query'
+import { useSearchParams } from 'next/navigation'
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
 import { useTranslation } from '@/hooks/useTranslation'
+import { detectEditableElements, updateElementContent, findElementBySelector, injectUpdateAnimationStyles } from '@/lib/visual-editor/editable-detector'
+import type { IframeBridgeMessage } from '@/lib/visual-editor/types'
 
 import { api, type PageResponse } from '@/lib/api/client'
 
@@ -90,6 +93,8 @@ function formatDifficultyLabel(t: (key: string, fallback?: string) => string, di
 
 export default function RoutesPage() {
   const { t, locale } = useTranslation()
+  const searchParams = useSearchParams()
+  const isEditMode = searchParams.get('editMode') === 'true'
   const [filter, setFilter] = React.useState<DifficultyFilter>('all')
   const [categoryId, setCategoryId] = React.useState<number | null>(null)
   const [page, setPage] = React.useState(1)
@@ -121,6 +126,69 @@ export default function RoutesPage() {
   const routeRecords = routesQuery.data?.records ?? []
   const totalPages = routesQuery.data?.pages ?? 1
 
+  // 编辑模式支持
+  React.useEffect(() => {
+    if (!isEditMode) return
+
+    console.log('[routes/page.tsx] Edit mode enabled')
+    injectUpdateAnimationStyles()
+
+    const handleMessage = (event: MessageEvent<IframeBridgeMessage>) => {
+      if (event.origin !== window.location.origin) return
+      
+      const message = event.data
+      
+      switch (message.type) {
+        case 'INIT_EDIT_MODE':
+          break
+          
+        case 'REQUEST_EDITABLE_ELEMENTS':
+          const elements = detectEditableElements(document)
+          window.parent.postMessage({
+            type: 'EDITABLE_ELEMENTS_RESPONSE',
+            payload: elements
+          }, window.location.origin)
+          break
+          
+        case 'UPDATE_CONTENT':
+          const { fieldKey, content } = message.payload
+          const element = findElementBySelector(`[data-editable="${fieldKey}"]`, document)
+          if (element) {
+            const type = element.getAttribute('data-editable-type') as 'text' | 'image'
+            updateElementContent(element, content, type)
+          }
+          break
+          
+        case 'UPDATE_IMAGE':
+          const { fieldKey: imageFieldKey, imagePath } = message.payload
+          const imageElement = findElementBySelector(`[data-editable="${imageFieldKey}"]`, document)
+          if (imageElement) {
+            updateElementContent(imageElement, imagePath, 'image')
+          }
+          break
+      }
+    }
+
+    let scrollTimeout: NodeJS.Timeout
+    const handleScroll = () => {
+      clearTimeout(scrollTimeout)
+      scrollTimeout = setTimeout(() => {
+        window.parent.postMessage({ type: 'IFRAME_SCROLLED' }, window.location.origin)
+      }, 100)
+    }
+
+    window.addEventListener('message', handleMessage)
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    window.parent.postMessage({ type: 'IFRAME_READY' }, window.location.origin)
+    window.parent.postMessage({ type: 'IFRAME_LOADED' }, window.location.origin)
+
+    return () => {
+      window.removeEventListener('message', handleMessage)
+      window.removeEventListener('scroll', handleScroll)
+      clearTimeout(scrollTimeout)
+    }
+  }, [isEditMode])
+
   return (
     <>
       <Header transparent />
@@ -136,6 +204,9 @@ export default function RoutesPage() {
               className="object-cover"
               sizes="100vw"
               quality={85}
+              data-editable="routes.hero.background"
+              data-editable-type="image"
+              data-editable-label="路线页Hero背景图"
             />
             <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black" />
           </div>
@@ -146,11 +217,26 @@ export default function RoutesPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 0.3 }}
             >
-              <span className="text-sm tracking-[0.3em] text-brand-accent">{t('routesPage.heroBadge')}</span>
-              <h1 className="mt-4 font-zh-display text-5xl font-bold md:text-7xl">
+              <span
+                className="text-sm tracking-[0.3em] text-brand-accent"
+                data-editable="routesPage.heroBadge"
+                data-editable-type="text"
+                data-editable-label="路线页徽章"
+              >{t('routesPage.heroBadge')}</span>
+              <h1 
+                className="mt-4 font-zh-display text-5xl font-bold md:text-7xl"
+                data-editable="routesPage.heroTitle"
+                data-editable-type="text"
+                data-editable-label="路线页标题"
+              >
                 {t('routesPage.heroTitle')}
               </h1>
-              <p className="mx-auto mt-6 max-w-xl text-lg text-white/70">
+              <p 
+                className="mx-auto mt-6 max-w-xl text-lg text-white/70"
+                data-editable="routesPage.heroDesc"
+                data-editable-type="text"
+                data-editable-label="路线页描述"
+              >
                 {t('routesPage.heroDesc')}
               </p>
             </motion.div>
@@ -161,8 +247,20 @@ export default function RoutesPage() {
         <section className="border-b border-white/10 py-16 sm:py-20 md:py-24">
           <div className="mx-auto max-w-7xl px-4 sm:px-6">
             <div className="text-center mb-12 sm:mb-16">
-              <span className="text-xs tracking-[0.3em] text-orange-500 uppercase">{t('routesPage.features.badge')}</span>
-              <h2 className="mt-4 text-3xl font-bold sm:text-4xl md:text-5xl">
+              <span 
+                className="text-xs tracking-[0.3em] text-orange-500 uppercase"
+                data-editable="routesPage.features.badge"
+                data-editable-type="text"
+                data-editable-label="路线特色徽章"
+              >
+                {t('routesPage.features.badge')}
+              </span>
+              <h2 
+                className="mt-4 text-3xl font-bold sm:text-4xl md:text-5xl"
+                data-editable="routesPage.features.title"
+                data-editable-type="text"
+                data-editable-label="路线特色标题"
+              >
                 {t('routesPage.features.title')}
               </h2>
             </div>
@@ -186,8 +284,20 @@ export default function RoutesPage() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-black/20" />
                 </div>
                 <div className="absolute bottom-0 left-0 right-0 p-6 text-center">
-                  <h3 className="text-xl font-bold mb-3">{t('routesPage.features.culture.title')}</h3>
-                  <p className="text-white/80 leading-relaxed text-sm">
+                  <h3 
+                    className="text-xl font-bold mb-3"
+                    data-editable={`routesPage.features.culture.title`}
+                    data-editable-type="text"
+                    data-editable-label="文化深度标题"
+                  >
+                    {t('routesPage.features.culture.title')}
+                  </h3>
+                  <p 
+                    className="text-white/80 leading-relaxed text-sm"
+                    data-editable={`routesPage.features.culture.desc`}
+                    data-editable-type="text"
+                    data-editable-label="文化深度描述"
+                  >
                     {t('routesPage.features.culture.desc')}
                   </p>
                 </div>
@@ -211,8 +321,18 @@ export default function RoutesPage() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-black/20" />
                 </div>
                 <div className="absolute bottom-0 left-0 right-0 p-6 text-center">
-                  <h3 className="text-xl font-bold mb-3">{t('routesPage.features.ebike.title')}</h3>
-                  <p className="text-white/80 leading-relaxed text-sm">
+                  <h3
+                    className="text-xl font-bold mb-3"
+                    data-editable="routesPage.features.ebike.title"
+                    data-editable-type="text"
+                    data-editable-label="E-BIKE助力标题"
+                  >{t('routesPage.features.ebike.title')}</h3>
+                  <p
+                    className="text-white/80 leading-relaxed text-sm"
+                    data-editable="routesPage.features.ebike.desc"
+                    data-editable-type="text"
+                    data-editable-label="E-BIKE助力描述"
+                  >
                     {t('routesPage.features.ebike.desc')}
                   </p>
                 </div>
@@ -236,8 +356,18 @@ export default function RoutesPage() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-black/20" />
                 </div>
                 <div className="absolute bottom-0 left-0 right-0 p-6 text-center">
-                  <h3 className="text-xl font-bold mb-3">{t('routesPage.features.experience.title')}</h3>
-                  <p className="text-white/80 leading-relaxed text-sm">
+                  <h3
+                    className="text-xl font-bold mb-3"
+                    data-editable="routesPage.features.experience.title"
+                    data-editable-type="text"
+                    data-editable-label="沉浸体验标题"
+                  >{t('routesPage.features.experience.title')}</h3>
+                  <p
+                    className="text-white/80 leading-relaxed text-sm"
+                    data-editable="routesPage.features.experience.desc"
+                    data-editable-type="text"
+                    data-editable-label="沉浸体验描述"
+                  >
                     {t('routesPage.features.experience.desc')}
                   </p>
                 </div>
@@ -386,11 +516,30 @@ export default function RoutesPage() {
         <section className="border-t border-white/10 py-16 sm:py-20 md:py-24">
           <div className="mx-auto max-w-7xl px-4 sm:px-6">
             <div className="text-center mb-12 sm:mb-16">
-              <span className="text-xs tracking-[0.3em] text-orange-500 uppercase">{t('routesPage.gallery.badge')}</span>
-              <h2 className="mt-4 text-3xl font-bold sm:text-4xl md:text-5xl">
+              <span 
+                className="text-xs tracking-[0.3em] text-orange-500 uppercase"
+                data-editable="routesPage.gallery.badge"
+                data-editable-type="text"
+                data-editable-label="精彩瞬间徽章"
+              >
+                {t('routesPage.gallery.badge')}
+              </span>
+              <h2 
+                className="mt-4 text-3xl font-bold sm:text-4xl md:text-5xl"
+                data-editable="routesPage.gallery.title"
+                data-editable-type="text"
+                data-editable-label="精彩瞬间标题"
+              >
                 {t('routesPage.gallery.title')}
               </h2>
-              <p className="mt-4 text-white/60">{t('routesPage.gallery.desc')}</p>
+              <p 
+                className="mt-4 text-white/60"
+                data-editable="routesPage.gallery.desc"
+                data-editable-type="text"
+                data-editable-label="精彩瞬间描述"
+              >
+                {t('routesPage.gallery.desc')}
+              </p>
             </div>
 
             <div className="grid gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-4">
@@ -427,10 +576,20 @@ export default function RoutesPage() {
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
             >
-              <h2 className="font-zh-display text-3xl font-bold sm:text-4xl md:text-5xl">
+              <h2 
+                className="font-zh-display text-3xl font-bold sm:text-4xl md:text-5xl"
+                data-editable="routesPage.customCta.title"
+                data-editable-type="text"
+                data-editable-label="定制路线CTA标题"
+              >
                 {t('routesPage.customCta.title')}
               </h2>
-              <p className="mt-5 text-lg text-white/60 sm:mt-6 sm:text-xl">
+              <p 
+                className="mt-5 text-lg text-white/60 sm:mt-6 sm:text-xl"
+                data-editable="routesPage.customCta.desc"
+                data-editable-type="text"
+                data-editable-label="定制路线CTA描述"
+              >
                 {t('routesPage.customCta.desc')}
               </p>
               <div className="mt-8 flex flex-col justify-center gap-4 sm:mt-10 sm:flex-row sm:gap-6">

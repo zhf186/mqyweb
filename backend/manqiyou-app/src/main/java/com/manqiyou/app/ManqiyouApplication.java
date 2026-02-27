@@ -9,7 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * 用于开发阶段，整合所有服务
  */
 @SpringBootApplication
-@MapperScan("com.manqiyou.app.mapper")
+@MapperScan({"com.manqiyou.app.mapper", "com.manqiyou.app.cms.mapper"})
 public class ManqiyouApplication {
 
     public static void main(String[] args) {

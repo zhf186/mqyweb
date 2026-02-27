@@ -85,7 +85,38 @@ winget install EclipseAdoptium.Temurin.17.JDK
 choco install temurin17
 ```
 
-#### 3. Maven（可选，项目已包含 Maven Wrapper）
+#### 3. 安装 MySQL 8.0+ (后端必需)
+
+**方式一：官网下载（推荐）**
+1. 访问 https://dev.mysql.com/downloads/mysql/
+2. 下载 MySQL Community Server 8.0+
+3. 运行安装程序，选择 "Developer Default" 配置
+4. 设置 root 密码（请记住此密码）
+5. 完成安装后验证：
+   ```cmd
+   mysql --version
+   ```
+
+**方式二：使用 Chocolatey**
+```powershell
+choco install mysql
+```
+
+**配置数据库：**
+```cmd
+# 登录 MySQL
+mysql -u root -p
+
+# 创建数据库
+CREATE DATABASE manqiyou CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+# 退出
+EXIT;
+```
+
+详细配置请查看：📖 [MySQL 配置指南](backend/manqiyou-app/MYSQL-SETUP.md)
+
+#### 4. Maven（可选，项目已包含 Maven Wrapper）
 
 项目已包含 Maven Wrapper (`mvnw.cmd`)，会自动下载 Maven，无需手动安装。
 
@@ -104,7 +135,57 @@ choco install maven
 
 - **Node.js 18+**：前端开发
 - **Java 17+**：后端开发
+- **MySQL 8.0+**：数据库（推荐）
 - Maven 3.8+（可选，项目包含 Maven Wrapper）
+
+### 数据库配置
+
+本项目使用 MySQL 数据库。有两种配置方式：
+
+#### 方式一：Docker 容器（推荐）
+
+使用 Docker 快速启动 MySQL 和 Redis：
+
+```bash
+# 启动 MySQL 和 Redis 容器
+docker-compose -f docker-compose.mysql.yml up -d mysql redis
+
+# 查看容器状态
+docker ps
+
+# 启动后端（会自动连接到 Docker 中的 MySQL）
+cd backend/manqiyou-app
+run-with-mysql.bat
+```
+
+**Docker 配置信息**：
+- MySQL 端口: 3306
+- 数据库: manqiyou
+- 用户名: manqiyou
+- 密码: 通过环境变量 `DB_PASSWORD` 配置（开发默认值仅用于本地）
+- Adminer 管理工具: http://localhost:8088 (可选)
+
+详细文档：📖 [Docker MySQL 配置完成报告](MYSQL-DOCKER-SETUP-COMPLETE.md)
+
+#### 方式二：本地安装 MySQL
+
+**快速配置：**
+```bash
+# 1. 安装 MySQL（如未安装）
+# 参考上方"环境安装指南"或查看 backend/manqiyou-app/MYSQL-SETUP.md
+
+# 2. 创建数据库
+mysql -u root -p
+CREATE DATABASE manqiyou CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+EXIT;
+
+# 3. 配置环境变量
+cd backend/manqiyou-app
+copy .env.example .env    # Windows
+# 编辑 .env 文件，填入数据库密码
+```
+
+**详细文档：** 📖 [MySQL 配置指南](backend/manqiyou-app/MYSQL-SETUP.md)
 
 ### 一键启动（Windows）
 
@@ -169,12 +250,18 @@ npm run dev
 |------|------|------|
 | 前端网站 | http://localhost:3000 | Next.js 开发服务器 |
 | 后端 API | http://localhost:8080 | Spring Boot 服务 |
-| H2 控制台 | http://localhost:8080/h2-console | 数据库管理界面 |
+| 管理后台 | http://localhost:3000/admin | CMS 管理系统 |
 
-### H2 数据库连接信息
-- JDBC URL: `jdbc:h2:mem:manqiyou`
-- 用户名: `sa`
-- 密码: (空)
+### 管理后台登录信息
+- 用户名: `admin`
+- 密码: `Admin@123`（仅开发环境默认；生产环境请在初始化后立即修改）
+- 登录页是否显示该提示由 `frontend/.env` 中 `NEXT_PUBLIC_SHOW_DEV_CREDENTIALS` 控制
+
+### MySQL 数据库连接
+- 主机: `localhost:3306`
+- 数据库: `manqiyou`
+- 用户名: 配置在 `.env` 文件中
+- 密码: 配置在 `.env` 文件中
 
 ---
 
@@ -234,7 +321,7 @@ npm run dev
 - **框架**: Spring Boot 3.2
 - **语言**: Java 17
 - **ORM**: MyBatis-Plus
-- **数据库**: H2 (开发) / PostgreSQL (生产)
+- **数据库**: MySQL 8.0+ (推荐) / PostgreSQL (可选)
 - **缓存**: Redis
 
 ---
@@ -255,9 +342,10 @@ npm run dev
 
 ### 开发模式说明
 
-- **验证码登录**：可使用万能验证码 `123456`
-- **数据库**：使用 H2 内存数据库，重启后数据重置
-- **示例数据**：启动时自动加载示例线路数据
+- **验证码登录**：万能验证码 `123456` 仅在 `dev` profile 生效，生产环境禁用 `/api/auth/**` 模拟接口
+- **数据库**：使用 MySQL 数据库，数据持久化保存
+- **示例数据**：首次启动时自动创建表结构并加载示例数据
+- **管理后台**：访问 `/admin` 使用 CMS 管理系统
 
 ---
 
@@ -283,6 +371,16 @@ mvnw.cmd spring-boot:run
 ### Q: 前端启动时提示 "node 不是内部命令"
 A: 需要先安装 Node.js，参考上方安装指南。
 
+### Q: 启动后端时报错 "Access denied for user"
+A: 检查 `backend/manqiyou-app/.env` 文件中的数据库用户名和密码是否正确。
+
+### Q: 启动后端时报错 "Unknown database 'manqiyou'"
+A: 需要先创建数据库：
+```sql
+mysql -u root -p
+CREATE DATABASE manqiyou CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+```
+
 ### Q: 图片无法显示
 A: 确保 `frontend/public/brand_assets/` 目录存在且包含图片文件。如果没有，运行：
 ```cmd
@@ -293,3 +391,12 @@ setup-assets.bat
 A: 修改配置文件中的端口：
 - 前端：`frontend/package.json` 中修改 dev 脚本添加 `-p 3001`
 - 后端：`backend/manqiyou-app/src/main/resources/application.yml` 中修改 `server.port`
+
+### Q: 如何重置数据库？
+A: 删除并重新创建数据库，然后重启应用：
+```sql
+DROP DATABASE manqiyou;
+CREATE DATABASE manqiyou CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+```
+
+更多数据库相关问题，请查看 [MySQL 配置指南](backend/manqiyou-app/MYSQL-SETUP.md)

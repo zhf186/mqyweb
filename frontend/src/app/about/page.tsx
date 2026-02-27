@@ -4,18 +4,108 @@ import * as React from 'react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import Image from 'next/image'
+import { useSearchParams } from 'next/navigation'
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
 import { useTranslation } from '@/hooks/useTranslation'
+import { detectEditableElements, updateElementContent, findElementBySelector, injectUpdateAnimationStyles } from '@/lib/visual-editor/editable-detector'
+import type { IframeBridgeMessage } from '@/lib/visual-editor/types'
 
 export default function AboutPage() {
   const { t, locale } = useTranslation()
+  const searchParams = useSearchParams()
+  const isEditMode = searchParams.get('editMode') === 'true'
 
   // Get typed data from translations with fallbacks
   const stats = (t('about.stats') as unknown as any[]) || []
   const timeline = (t('about.timeline.milestones') as unknown as any[]) || []
   const manufacturingStats = (t('about.manufacturing.stats') as unknown as any[]) || []
   const storeCities = (t('about.stores.cities') as unknown as any[]) || []
+
+  // 编辑模式支持
+  React.useEffect(() => {
+    if (!isEditMode) return
+
+    console.log('[about/page.tsx] Edit mode enabled, setting up message listener')
+    injectUpdateAnimationStyles()
+
+    const handleMessage = (event: MessageEvent<IframeBridgeMessage>) => {
+      if (event.origin !== window.location.origin) return
+      
+      console.log('[about/page.tsx] Received message:', event.data)
+      const message = event.data
+      
+      switch (message.type) {
+        case 'INIT_EDIT_MODE':
+          console.log('Edit mode initialized with locale:', message.payload.locale)
+          break
+          
+        case 'REQUEST_EDITABLE_ELEMENTS':
+          console.log('[about/page.tsx] Detecting editable elements...')
+          const elements = detectEditableElements(document)
+          console.log('[about/page.tsx] Found', elements.length, 'editable elements')
+          window.parent.postMessage({
+            type: 'EDITABLE_ELEMENTS_RESPONSE',
+            payload: elements
+          }, window.location.origin)
+          break
+          
+        case 'UPDATE_CONTENT':
+          const { fieldKey, content } = message.payload
+          const selector = `[data-editable="${fieldKey}"]`
+          const element = findElementBySelector(selector, document)
+          
+          if (element) {
+            const type = element.getAttribute('data-editable-type') as 'text' | 'image'
+            updateElementContent(element, content, type)
+            console.log('Content updated:', fieldKey, content)
+          }
+          break
+          
+        case 'UPDATE_IMAGE':
+          const { fieldKey: imageFieldKey, imagePath } = message.payload
+          const imageSelector = `[data-editable="${imageFieldKey}"]`
+          const imageElement = findElementBySelector(imageSelector, document)
+          
+          if (imageElement) {
+            updateElementContent(imageElement, imagePath, 'image')
+            console.log('Image updated:', imageFieldKey, imagePath)
+          }
+          break
+          
+        case 'EXIT_EDIT_MODE':
+          console.log('Exiting edit mode')
+          break
+      }
+    }
+
+    let scrollTimeout: NodeJS.Timeout
+    const handleScroll = () => {
+      clearTimeout(scrollTimeout)
+      scrollTimeout = setTimeout(() => {
+        window.parent.postMessage({
+          type: 'IFRAME_SCROLLED'
+        }, window.location.origin)
+      }, 100)
+    }
+
+    window.addEventListener('message', handleMessage)
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    
+    window.parent.postMessage({
+      type: 'IFRAME_READY'
+    }, window.location.origin)
+    
+    window.parent.postMessage({
+      type: 'IFRAME_LOADED'
+    }, window.location.origin)
+
+    return () => {
+      window.removeEventListener('message', handleMessage)
+      window.removeEventListener('scroll', handleScroll)
+      clearTimeout(scrollTimeout)
+    }
+  }, [isEditMode])
 
   return (
     <>
@@ -32,6 +122,9 @@ export default function AboutPage() {
               className="object-cover"
               sizes="100vw"
               quality={85}
+              data-editable="about.hero.background"
+              data-editable-type="image"
+              data-editable-label="关于页Hero背景图"
             />
             <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black" />
           </div>
@@ -42,10 +135,20 @@ export default function AboutPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 0.3 }}
             >
-              <h1 className="font-zh-display text-6xl font-bold md:text-8xl">
+              <h1 
+                className="font-zh-display text-6xl font-bold md:text-8xl"
+                data-editable="about.hero.title"
+                data-editable-type="text"
+                data-editable-label="关于页标题"
+              >
                 {t('about.hero.title')}
               </h1>
-              <p className="mx-auto mt-8 max-w-3xl text-xl leading-relaxed text-white/80 md:text-2xl">
+              <p 
+                className="mx-auto mt-8 max-w-3xl text-xl leading-relaxed text-white/80 md:text-2xl"
+                data-editable="about.hero.subtitle"
+                data-editable-type="text"
+                data-editable-label="关于页副标题"
+              >
                 {t('about.hero.subtitle')}
               </p>
             </motion.div>
@@ -65,10 +168,22 @@ export default function AboutPage() {
                   transition={{ duration: 0.6, delay: index * 0.15 }}
                   className="text-center"
                 >
-                  <div className="font-en-display text-6xl font-light md:text-7xl text-brand-accent">
+                  <div 
+                    className="font-en-display text-6xl font-light md:text-7xl text-brand-accent"
+                    data-editable={`about.stats.${index}.value`}
+                    data-editable-type="text"
+                    data-editable-label={`统计数据${index + 1}数值`}
+                  >
                     {stat.value}
                   </div>
-                  <p className="mt-4 text-white/60">{stat.label}</p>
+                  <p 
+                    className="mt-4 text-white/60"
+                    data-editable={`about.stats.${index}.label`}
+                    data-editable-type="text"
+                    data-editable-label={`统计数据${index + 1}标签`}
+                  >
+                    {stat.label}
+                  </p>
                 </motion.div>
               ))}
             </div>
@@ -85,13 +200,28 @@ export default function AboutPage() {
               transition={{ duration: 0.8 }}
               className="text-center"
             >
-              <span className="text-sm tracking-[0.3em] text-brand-accent">
+              <span 
+                className="text-sm tracking-[0.3em] text-brand-accent"
+                data-editable="about.story.badge"
+                data-editable-type="text"
+                data-editable-label="品牌故事徽章"
+              >
                 {t('about.story.badge')}
               </span>
-              <h2 className="mt-4 font-zh-display text-4xl font-bold md:text-6xl">
+              <h2 
+                className="mt-4 font-zh-display text-4xl font-bold md:text-6xl"
+                data-editable="about.story.title"
+                data-editable-type="text"
+                data-editable-label="品牌故事标题"
+              >
                 {t('about.story.title')}
               </h2>
-              <p className="mt-8 text-xl leading-relaxed text-white/80 md:text-2xl">
+              <p 
+                className="mt-8 text-xl leading-relaxed text-white/80 md:text-2xl"
+                data-editable="about.story.content"
+                data-editable-type="text"
+                data-editable-label="品牌故事内容"
+              >
                 {t('about.story.content')}
               </p>
             </motion.div>
@@ -108,10 +238,20 @@ export default function AboutPage() {
               transition={{ duration: 0.8 }}
               className="text-center mb-16"
             >
-              <span className="text-sm tracking-[0.3em] text-brand-accent">
+              <span 
+                className="text-sm tracking-[0.3em] text-brand-accent"
+                data-editable="about.timeline.badge"
+                data-editable-type="text"
+                data-editable-label="发展历程徽章"
+              >
                 {t('about.timeline.badge')}
               </span>
-              <h2 className="mt-4 font-zh-display text-4xl font-bold md:text-6xl">
+              <h2 
+                className="mt-4 font-zh-display text-4xl font-bold md:text-6xl"
+                data-editable="about.timeline.title"
+                data-editable-type="text"
+                data-editable-label="发展历程标题"
+              >
                 {t('about.timeline.title')}
               </h2>
             </motion.div>
@@ -127,13 +267,25 @@ export default function AboutPage() {
                   className="flex items-center gap-8"
                 >
                   <div className="flex-shrink-0 w-32 text-right">
-                    <span className="font-en-display text-4xl font-bold text-brand-accent">
+                    <span 
+                      className="font-en-display text-4xl font-bold text-brand-accent"
+                      data-editable={`about.timeline.${index}.year`}
+                      data-editable-type="text"
+                      data-editable-label={`里程碑${index + 1}年份`}
+                    >
                       {milestone.year}
                     </span>
                   </div>
                   <div className="flex-shrink-0 w-4 h-4 rounded-full bg-brand-accent" />
                   <div className="flex-1">
-                    <p className="text-xl text-white/80">{milestone.event}</p>
+                    <p 
+                      className="text-xl text-white/80"
+                      data-editable={`about.timeline.${index}.event`}
+                      data-editable-type="text"
+                      data-editable-label={`里程碑${index + 1}事件`}
+                    >
+                      {milestone.event}
+                    </p>
                   </div>
                 </motion.div>
               ))}
@@ -151,13 +303,28 @@ export default function AboutPage() {
               transition={{ duration: 0.8 }}
               className="text-center mb-16"
             >
-              <span className="text-sm tracking-[0.3em] text-brand-accent">
+              <span 
+                className="text-sm tracking-[0.3em] text-brand-accent"
+                data-editable="about.manufacturing.badge"
+                data-editable-type="text"
+                data-editable-label="智造基地徽章"
+              >
                 {t('about.manufacturing.badge')}
               </span>
-              <h2 className="mt-4 font-zh-display text-4xl font-bold md:text-6xl">
+              <h2 
+                className="mt-4 font-zh-display text-4xl font-bold md:text-6xl"
+                data-editable="about.manufacturing.title"
+                data-editable-type="text"
+                data-editable-label="智造基地标题"
+              >
                 {t('about.manufacturing.title')}
               </h2>
-              <p className="mt-6 text-xl text-white/70">
+              <p 
+                className="mt-6 text-xl text-white/70"
+                data-editable="about.manufacturing.desc"
+                data-editable-type="text"
+                data-editable-label="智造基地描述"
+              >
                 {t('about.manufacturing.desc')}
               </p>
             </motion.div>
@@ -173,10 +340,22 @@ export default function AboutPage() {
                   transition={{ duration: 0.6, delay: index * 0.15 }}
                   className="text-center"
                 >
-                  <div className="font-en-display text-5xl font-light text-brand-accent md:text-6xl">
+                  <div 
+                    className="font-en-display text-5xl font-light text-brand-accent md:text-6xl"
+                    data-editable={`about.manufacturing.stats.${index}.value`}
+                    data-editable-type="text"
+                    data-editable-label={`制造统计${index + 1}数值`}
+                  >
                     {stat.value}
                   </div>
-                  <p className="mt-4 text-white/60">{stat.label}</p>
+                  <p 
+                    className="mt-4 text-white/60"
+                    data-editable={`about.manufacturing.stats.${index}.label`}
+                    data-editable-type="text"
+                    data-editable-label={`制造统计${index + 1}标签`}
+                  >
+                    {stat.label}
+                  </p>
                 </motion.div>
               ))}
             </div>
@@ -222,13 +401,28 @@ export default function AboutPage() {
               transition={{ duration: 0.8 }}
               className="text-center mb-16"
             >
-              <span className="text-sm tracking-[0.3em] text-brand-accent">
+              <span 
+                className="text-sm tracking-[0.3em] text-brand-accent"
+                data-editable="about.stores.badge"
+                data-editable-type="text"
+                data-editable-label="门店网络徽章"
+              >
                 {t('about.stores.badge')}
               </span>
-              <h2 className="mt-4 font-zh-display text-4xl font-bold md:text-6xl">
+              <h2 
+                className="mt-4 font-zh-display text-4xl font-bold md:text-6xl"
+                data-editable="about.stores.title"
+                data-editable-type="text"
+                data-editable-label="门店网络标题"
+              >
                 {t('about.stores.title')}
               </h2>
-              <p className="mt-6 text-xl text-white/70">
+              <p 
+                className="mt-6 text-xl text-white/70"
+                data-editable="about.stores.desc"
+                data-editable-type="text"
+                data-editable-label="门店网络描述"
+              >
                 {t('about.stores.desc')}
               </p>
             </motion.div>
@@ -305,6 +499,9 @@ export default function AboutPage() {
               className="object-cover"
               sizes="100vw"
               loading="lazy"
+              data-editable="about.cta.background"
+              data-editable-type="image"
+              data-editable-label="关于页CTA背景图"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-brand-primary/80 via-brand-primary/40 to-transparent" />
           </div>
@@ -315,10 +512,20 @@ export default function AboutPage() {
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
             >
-              <h2 className="font-zh-display text-4xl font-bold text-white md:text-6xl drop-shadow-lg">
+              <h2 
+                className="font-zh-display text-4xl font-bold text-white md:text-6xl drop-shadow-lg"
+                data-editable="about.cta.title"
+                data-editable-type="text"
+                data-editable-label="关于页CTA标题"
+              >
                 {t('about.cta.title')}
               </h2>
-              <p className="mt-6 text-xl text-white/90 drop-shadow">
+              <p 
+                className="mt-6 text-xl text-white/90 drop-shadow"
+                data-editable="about.cta.desc"
+                data-editable-type="text"
+                data-editable-label="关于页CTA描述"
+              >
                 {t('about.cta.desc')}
               </p>
               <div className="mt-10 flex flex-wrap justify-center gap-4">

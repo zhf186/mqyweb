@@ -1,6 +1,7 @@
 package com.manqiyou.app.controller;
 
 import com.manqiyou.app.common.Result;
+import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -12,6 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 认证 API（开发用模拟实现）
  */
 @RestController
+@Profile("dev")
 @RequestMapping("/api/auth")
 public class AuthController {
 

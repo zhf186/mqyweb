@@ -4,9 +4,12 @@ import * as React from 'react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import Image from 'next/image'
+import { useSearchParams } from 'next/navigation'
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
 import { useTranslation } from '@/hooks/useTranslation'
+import { detectEditableElements, updateElementContent, findElementBySelector, injectUpdateAnimationStyles } from '@/lib/visual-editor/editable-detector'
+import type { IframeBridgeMessage } from '@/lib/visual-editor/types'
 
 const stats = [
   { key: 'members', value: '10,000+' },
@@ -75,6 +78,71 @@ const galleryImages = [
 
 export default function CommunityPage() {
   const { t, locale } = useTranslation()
+  const searchParams = useSearchParams()
+  const isEditMode = searchParams.get('editMode') === 'true'
+
+  // 编辑模式支持
+  React.useEffect(() => {
+    if (!isEditMode) return
+
+    console.log('[community/page.tsx] Edit mode enabled')
+    injectUpdateAnimationStyles()
+
+    const handleMessage = (event: MessageEvent<IframeBridgeMessage>) => {
+      if (event.origin !== window.location.origin) return
+      
+      const message = event.data
+      
+      switch (message.type) {
+        case 'INIT_EDIT_MODE':
+          break
+          
+        case 'REQUEST_EDITABLE_ELEMENTS':
+          const elements = detectEditableElements(document)
+          window.parent.postMessage({
+            type: 'EDITABLE_ELEMENTS_RESPONSE',
+            payload: elements
+          }, window.location.origin)
+          break
+          
+        case 'UPDATE_CONTENT':
+          const { fieldKey, content } = message.payload
+          const element = findElementBySelector(`[data-editable="${fieldKey}"]`, document)
+          if (element) {
+            const type = element.getAttribute('data-editable-type') as 'text' | 'image'
+            updateElementContent(element, content, type)
+          }
+          break
+          
+        case 'UPDATE_IMAGE':
+          const { fieldKey: imageFieldKey, imagePath } = message.payload
+          const imageElement = findElementBySelector(`[data-editable="${imageFieldKey}"]`, document)
+          if (imageElement) {
+            updateElementContent(imageElement, imagePath, 'image')
+          }
+          break
+      }
+    }
+
+    let scrollTimeout: NodeJS.Timeout
+    const handleScroll = () => {
+      clearTimeout(scrollTimeout)
+      scrollTimeout = setTimeout(() => {
+        window.parent.postMessage({ type: 'IFRAME_SCROLLED' }, window.location.origin)
+      }, 100)
+    }
+
+    window.addEventListener('message', handleMessage)
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    window.parent.postMessage({ type: 'IFRAME_READY' }, window.location.origin)
+    window.parent.postMessage({ type: 'IFRAME_LOADED' }, window.location.origin)
+
+    return () => {
+      window.removeEventListener('message', handleMessage)
+      window.removeEventListener('scroll', handleScroll)
+      clearTimeout(scrollTimeout)
+    }
+  }, [isEditMode])
 
   return (
     <>
@@ -90,6 +158,9 @@ export default function CommunityPage() {
               priority
               quality={85}
               className="object-cover"
+              data-editable="community.hero.background"
+              data-editable-type="image"
+              data-editable-label="社区页Hero背景图"
             />
             <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black" />
           </div>
@@ -101,10 +172,20 @@ export default function CommunityPage() {
               transition={{ duration: 1, delay: 0.3 }}
             >
               <span className="text-sm tracking-[0.3em] text-brand-accent">{t('communityPage.heroBadge')}</span>
-              <h1 className="mt-4 font-zh-display text-5xl font-bold md:text-7xl">
+              <h1 
+                className="mt-4 font-zh-display text-5xl font-bold md:text-7xl"
+                data-editable="communityPage.heroTitle"
+                data-editable-type="text"
+                data-editable-label="社区页标题"
+              >
                 {t('communityPage.heroTitle')}
               </h1>
-              <p className="mx-auto mt-6 max-w-xl text-lg text-white/70">
+              <p 
+                className="mx-auto mt-6 max-w-xl text-lg text-white/70"
+                data-editable="communityPage.heroDesc"
+                data-editable-type="text"
+                data-editable-label="社区页描述"
+              >
                 {t('communityPage.heroDesc')}
               </p>
             </motion.div>
@@ -121,11 +202,26 @@ export default function CommunityPage() {
               transition={{ duration: 0.8 }}
               className="text-center"
             >
-              <span className="text-sm tracking-[0.3em] text-brand-accent">{t('communityPage.intro.badge')}</span>
-              <h2 className="mt-4 font-zh-display text-3xl font-bold md:text-5xl">
+              <span
+                className="text-sm tracking-[0.3em] text-brand-accent"
+                data-editable="communityPage.intro.badge"
+                data-editable-type="text"
+                data-editable-label="社区介绍徽章"
+              >{t('communityPage.intro.badge')}</span>
+              <h2
+                className="mt-4 font-zh-display text-3xl font-bold md:text-5xl"
+                data-editable="communityPage.intro.title"
+                data-editable-type="text"
+                data-editable-label="社区介绍标题"
+              >
                 {t('communityPage.intro.title')}
               </h2>
-              <p className="mx-auto mt-6 max-w-2xl text-lg text-white/70 md:text-xl">
+              <p
+                className="mx-auto mt-6 max-w-2xl text-lg text-white/70 md:text-xl"
+                data-editable="communityPage.intro.desc"
+                data-editable-type="text"
+                data-editable-label="社区介绍描述"
+              >
                 {t('communityPage.intro.desc')}
               </p>
             </motion.div>
@@ -162,8 +258,18 @@ export default function CommunityPage() {
               className="mb-12 flex items-end justify-between"
             >
               <div>
-                <span className="text-sm tracking-[0.3em] text-brand-accent">{t('communityPage.activities.badge')}</span>
-                <h2 className="mt-2 font-zh-display text-3xl font-bold md:text-4xl">
+                <span
+                  className="text-sm tracking-[0.3em] text-brand-accent"
+                  data-editable="communityPage.activities.badge"
+                  data-editable-type="text"
+                  data-editable-label="活动徽章"
+                >{t('communityPage.activities.badge')}</span>
+                <h2
+                  className="mt-2 font-zh-display text-3xl font-bold md:text-4xl"
+                  data-editable="communityPage.activities.title"
+                  data-editable-type="text"
+                  data-editable-label="活动标题"
+                >
                   {t('communityPage.activities.title')}
                 </h2>
               </div>
@@ -235,11 +341,26 @@ export default function CommunityPage() {
               transition={{ duration: 0.8 }}
               className="mb-12 text-center"
             >
-              <span className="text-sm tracking-[0.3em] text-brand-accent">{t('communityPage.gallery.badge')}</span>
-              <h2 className="mt-2 font-zh-display text-3xl font-bold md:text-4xl">
+              <span
+                className="text-sm tracking-[0.3em] text-brand-accent"
+                data-editable="communityPage.gallery.badge"
+                data-editable-type="text"
+                data-editable-label="相册徽章"
+              >{t('communityPage.gallery.badge')}</span>
+              <h2
+                className="mt-2 font-zh-display text-3xl font-bold md:text-4xl"
+                data-editable="communityPage.gallery.title"
+                data-editable-type="text"
+                data-editable-label="相册标题"
+              >
                 {t('communityPage.gallery.title')}
               </h2>
-              <p className="mx-auto mt-4 max-w-2xl text-white/60">
+              <p
+                className="mx-auto mt-4 max-w-2xl text-white/60"
+                data-editable="communityPage.gallery.desc"
+                data-editable-type="text"
+                data-editable-label="相册描述"
+              >
                 {t('communityPage.gallery.desc')}
               </p>
             </motion.div>
@@ -287,10 +408,20 @@ export default function CommunityPage() {
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
             >
-              <h2 className="font-zh-display text-4xl font-bold md:text-6xl">
+              <h2
+                className="font-zh-display text-4xl font-bold md:text-6xl"
+                data-editable="communityPage.cta.title"
+                data-editable-type="text"
+                data-editable-label="社区CTA标题"
+              >
                 {t('communityPage.cta.title')}
               </h2>
-              <p className="mt-6 text-xl text-white/60 md:text-2xl">
+              <p
+                className="mt-6 text-xl text-white/60 md:text-2xl"
+                data-editable="communityPage.cta.desc"
+                data-editable-type="text"
+                data-editable-label="社区CTA描述"
+              >
                 {t('communityPage.cta.desc')}
               </p>
               <div className="mt-12 flex flex-wrap justify-center gap-4">

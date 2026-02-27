@@ -5,7 +5,8 @@
  */
 
 import dynamic from 'next/dynamic'
-import type { ComponentType } from 'react'
+import type { DynamicOptionsLoadingProps } from 'next/dynamic'
+import { createElement, type ComponentType, type ReactElement } from 'react'
 
 /**
  * Dynamic import options for code splitting
@@ -25,7 +26,11 @@ export const DYNAMIC_OPTIONS = {
   
   // Lazy loading with custom loading component
   LAZY_WITH_LOADING: (LoadingComponent: ComponentType) => ({
-    loading: LoadingComponent,
+    loading: (loadingProps: DynamicOptionsLoadingProps) =>
+      createElement(
+        LoadingComponent as ComponentType<DynamicOptionsLoadingProps>,
+        loadingProps
+      ),
     ssr: false,
   }),
 } as const
@@ -37,7 +42,7 @@ export function createDynamicComponent<P = {}>(
   importFn: () => Promise<{ default: ComponentType<P> }>,
   options?: {
     ssr?: boolean
-    loading?: ComponentType
+    loading?: (loadingProps: DynamicOptionsLoadingProps) => ReactElement | null
   }
 ) {
   const { ssr = false, loading } = options || {}

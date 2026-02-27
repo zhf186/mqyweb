@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { useState, useEffect, type ReactNode } from 'react'
 import { useLocaleStore } from '@/stores/locale'
 import { useStyleStore } from '@/stores/style'
+import { Toaster } from '@/components/ui/toaster'
 
 interface ProvidersProps {
   children: ReactNode
@@ -38,6 +39,7 @@ export function Providers({ children }: ProvidersProps) {
   return (
     <QueryClientProvider client={queryClient}>
       {children}
+      <Toaster />
     </QueryClientProvider>
   )
 }

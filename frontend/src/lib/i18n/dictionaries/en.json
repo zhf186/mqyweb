@@ -1,7 +1,7 @@
 {
   "common": {
     "brand": "Manqiyou",
-    "slogan": "Ride into Infinite Beauty",
+    "slogan": "Ride into Beautiful Life",
     "tagline": "Premium Cross-border Cycling Life Platform",
     "learnMore": "Learn More",
     "viewAll": "View All",
@@ -395,7 +395,7 @@
     }
   },
   "home": {
-    "heroImageAlt": "Manqiyou - Encounter Infinite Beautiful Life Through Cycling",
+    "heroImageAlt": "Manqiyou - Encounter Beautiful Life Through Cycling",
     "introImageAlt": "Cycling through landscapes",
     "ebikeImageAlt": "German Heritage Smart E-Assist Bicycle",
     "brand": {
@@ -472,7 +472,7 @@
   "about": {
     "hero": {
       "title": "About Manqiyou",
-      "subtitle": "Encounter Infinite Beautiful Life Through Cycling"
+      "subtitle": "Encounter Beautiful Life Through Cycling"
     },
     "stats": [
       { "value": "2006", "label": "Founded" },

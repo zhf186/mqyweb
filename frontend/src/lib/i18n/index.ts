@@ -5,8 +5,14 @@ type Dictionary = typeof import('./dictionaries/zh.json')
 
 // 字典缓存
 const dictionaries: Record<Locale, () => Promise<Dictionary>> = {
-  zh: () => import('./dictionaries/zh.json').then((module) => module.default),
-  en: () => import('./dictionaries/en.json').then((module) => module.default),
+  zh: () =>
+    import('./dictionaries/zh.json').then(
+      (module) => module.default as unknown as Dictionary
+    ),
+  en: () =>
+    import('./dictionaries/en.json').then(
+      (module) => module.default as unknown as Dictionary
+    ),
 }
 
 /**

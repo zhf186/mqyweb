@@ -4,9 +4,12 @@ import * as React from 'react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import Image from 'next/image'
+import { useSearchParams } from 'next/navigation'
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
 import { useTranslation } from '@/hooks/useTranslation'
+import { detectEditableElements, updateElementContent, findElementBySelector, injectUpdateAnimationStyles } from '@/lib/visual-editor/editable-detector'
+import type { IframeBridgeMessage } from '@/lib/visual-editor/types'
 
 const categories = [
   { id: 'all' },
@@ -28,11 +31,76 @@ const products = [
 
 export default function GoodsPage() {
   const { t, locale } = useTranslation()
+  const searchParams = useSearchParams()
+  const isEditMode = searchParams.get('editMode') === 'true'
   const [activeCategory, setActiveCategory] = React.useState('all')
 
   const filteredProducts = activeCategory === 'all'
     ? products
     : products.filter(p => p.category === activeCategory)
+
+  // 编辑模式支持
+  React.useEffect(() => {
+    if (!isEditMode) return
+
+    console.log('[goods/page.tsx] Edit mode enabled')
+    injectUpdateAnimationStyles()
+
+    const handleMessage = (event: MessageEvent<IframeBridgeMessage>) => {
+      if (event.origin !== window.location.origin) return
+      
+      const message = event.data
+      
+      switch (message.type) {
+        case 'INIT_EDIT_MODE':
+          break
+          
+        case 'REQUEST_EDITABLE_ELEMENTS':
+          const elements = detectEditableElements(document)
+          window.parent.postMessage({
+            type: 'EDITABLE_ELEMENTS_RESPONSE',
+            payload: elements
+          }, window.location.origin)
+          break
+          
+        case 'UPDATE_CONTENT':
+          const { fieldKey, content } = message.payload
+          const element = findElementBySelector(`[data-editable="${fieldKey}"]`, document)
+          if (element) {
+            const type = element.getAttribute('data-editable-type') as 'text' | 'image'
+            updateElementContent(element, content, type)
+          }
+          break
+          
+        case 'UPDATE_IMAGE':
+          const { fieldKey: imageFieldKey, imagePath } = message.payload
+          const imageElement = findElementBySelector(`[data-editable="${imageFieldKey}"]`, document)
+          if (imageElement) {
+            updateElementContent(imageElement, imagePath, 'image')
+          }
+          break
+      }
+    }
+
+    let scrollTimeout: NodeJS.Timeout
+    const handleScroll = () => {
+      clearTimeout(scrollTimeout)
+      scrollTimeout = setTimeout(() => {
+        window.parent.postMessage({ type: 'IFRAME_SCROLLED' }, window.location.origin)
+      }, 100)
+    }
+
+    window.addEventListener('message', handleMessage)
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    window.parent.postMessage({ type: 'IFRAME_READY' }, window.location.origin)
+    window.parent.postMessage({ type: 'IFRAME_LOADED' }, window.location.origin)
+
+    return () => {
+      window.removeEventListener('message', handleMessage)
+      window.removeEventListener('scroll', handleScroll)
+      clearTimeout(scrollTimeout)
+    }
+  }, [isEditMode])
 
   return (
     <>
@@ -49,6 +117,9 @@ export default function GoodsPage() {
               className="object-cover"
               sizes="100vw"
               quality={85}
+              data-editable="goods.hero.background"
+              data-editable-type="image"
+              data-editable-label="好物页Hero背景图"
             />
             <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black" />
           </div>
@@ -59,11 +130,26 @@ export default function GoodsPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 0.3 }}
             >
-              <span className="text-sm tracking-[0.3em] text-brand-accent">{t('goodsPage.heroBadge')}</span>
-              <h1 className="mt-4 font-zh-display text-5xl font-bold md:text-7xl">
+              <span
+                className="text-sm tracking-[0.3em] text-brand-accent"
+                data-editable="goodsPage.heroBadge"
+                data-editable-type="text"
+                data-editable-label="好物页徽章"
+              >{t('goodsPage.heroBadge')}</span>
+              <h1 
+                className="mt-4 font-zh-display text-5xl font-bold md:text-7xl"
+                data-editable="goodsPage.heroTitle"
+                data-editable-type="text"
+                data-editable-label="好物页标题"
+              >
                 {t('goodsPage.heroTitle')}
               </h1>
-              <p className="mx-auto mt-6 max-w-xl text-lg text-white/70">
+              <p 
+                className="mx-auto mt-6 max-w-xl text-lg text-white/70"
+                data-editable="goodsPage.heroDesc"
+                data-editable-type="text"
+                data-editable-label="好物页描述"
+              >
                 {t('goodsPage.heroDesc')}
               </p>
             </motion.div>
@@ -139,16 +225,39 @@ export default function GoodsPage() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.8 }}
               >
-                <span className="text-xs tracking-[0.3em] text-brand-accent">{t('goodsPage.feature.badge')}</span>
-                <h2 className="mt-3 font-zh-display text-3xl font-bold sm:mt-4 sm:text-4xl md:text-5xl">
+                <span 
+                  className="text-xs tracking-[0.3em] text-brand-accent"
+                  data-editable="goodsPage.feature.badge"
+                  data-editable-type="text"
+                  data-editable-label="好物特色徽章"
+                >
+                  {t('goodsPage.feature.badge')}
+                </span>
+                <h2 
+                  className="mt-3 font-zh-display text-3xl font-bold sm:mt-4 sm:text-4xl md:text-5xl"
+                  data-editable="goodsPage.feature.title"
+                  data-editable-type="text"
+                  data-editable-label="好物特色标题"
+                >
                   {t('goodsPage.feature.title')}
                 </h2>
-                <p className="mt-5 text-base leading-relaxed text-white/60 sm:mt-6 sm:text-lg">
+                <p 
+                  className="mt-5 text-base leading-relaxed text-white/60 sm:mt-6 sm:text-lg"
+                  data-editable="goodsPage.feature.desc"
+                  data-editable-type="text"
+                  data-editable-label="好物特色描述"
+                >
                   {t('goodsPage.feature.desc')}
                 </p>
                 <ul className="mt-6 space-y-3 sm:mt-8 sm:space-y-4">
                   {([1, 2, 3] as const).map((n) => (
-                    <li key={n} className="flex items-center gap-2.5 text-sm text-white/70 sm:gap-3 sm:text-base">
+                    <li 
+                      key={n} 
+                      className="flex items-center gap-2.5 text-sm text-white/70 sm:gap-3 sm:text-base"
+                      data-editable={`goodsPage.feature.bullets.${n}`}
+                      data-editable-type="text"
+                      data-editable-label={`好物特色要点${n}`}
+                    >
                       <span className="text-brand-accent">✓</span>
                       {t(`goodsPage.feature.bullets.${n}`)}
                     </li>

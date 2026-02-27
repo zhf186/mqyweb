@@ -4,9 +4,12 @@ import * as React from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import Link from 'next/link'
 import Image from 'next/image'
+import { useSearchParams } from 'next/navigation'
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
 import { useTranslation } from '@/hooks/useTranslation'
+import { detectEditableElements, updateElementContent, findElementBySelector, injectUpdateAnimationStyles } from '@/lib/visual-editor/editable-detector'
+import type { IframeBridgeMessage } from '@/lib/visual-editor/types'
 
 const galleryImages = [
   '/brand_assets/ebike/page10_img1.jpeg',
@@ -17,8 +20,73 @@ const galleryImages = [
 
 export default function EbikePage() {
   const { t, locale } = useTranslation()
+  const searchParams = useSearchParams()
+  const isEditMode = searchParams.get('editMode') === 'true'
   const { scrollYProgress } = useScroll()
   const opacity = useTransform(scrollYProgress, [0, 0.15], [1, 0])
+
+  // 编辑模式支持
+  React.useEffect(() => {
+    if (!isEditMode) return
+
+    console.log('[ebike/page.tsx] Edit mode enabled')
+    injectUpdateAnimationStyles()
+
+    const handleMessage = (event: MessageEvent<IframeBridgeMessage>) => {
+      if (event.origin !== window.location.origin) return
+      
+      const message = event.data
+      
+      switch (message.type) {
+        case 'INIT_EDIT_MODE':
+          break
+          
+        case 'REQUEST_EDITABLE_ELEMENTS':
+          const elements = detectEditableElements(document)
+          window.parent.postMessage({
+            type: 'EDITABLE_ELEMENTS_RESPONSE',
+            payload: elements
+          }, window.location.origin)
+          break
+          
+        case 'UPDATE_CONTENT':
+          const { fieldKey, content } = message.payload
+          const element = findElementBySelector(`[data-editable="${fieldKey}"]`, document)
+          if (element) {
+            const type = element.getAttribute('data-editable-type') as 'text' | 'image'
+            updateElementContent(element, content, type)
+          }
+          break
+          
+        case 'UPDATE_IMAGE':
+          const { fieldKey: imageFieldKey, imagePath } = message.payload
+          const imageElement = findElementBySelector(`[data-editable="${imageFieldKey}"]`, document)
+          if (imageElement) {
+            updateElementContent(imageElement, imagePath, 'image')
+          }
+          break
+      }
+    }
+
+    let scrollTimeout: NodeJS.Timeout
+    const handleScroll = () => {
+      clearTimeout(scrollTimeout)
+      scrollTimeout = setTimeout(() => {
+        window.parent.postMessage({ type: 'IFRAME_SCROLLED' }, window.location.origin)
+      }, 100)
+    }
+
+    window.addEventListener('message', handleMessage)
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    window.parent.postMessage({ type: 'IFRAME_READY' }, window.location.origin)
+    window.parent.postMessage({ type: 'IFRAME_LOADED' }, window.location.origin)
+
+    return () => {
+      window.removeEventListener('message', handleMessage)
+      window.removeEventListener('scroll', handleScroll)
+      clearTimeout(scrollTimeout)
+    }
+  }, [isEditMode])
 
   return (
     <>
@@ -35,6 +103,9 @@ export default function EbikePage() {
               quality={85}
               className="object-cover"
               style={{ objectPosition: 'left 72%' }}
+              data-editable="ebike.hero.background"
+              data-editable-type="image"
+              data-editable-label="E-BIKE页Hero背景图"
             />
             <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black" />
           </motion.div>
@@ -47,10 +118,20 @@ export default function EbikePage() {
               className="md:max-w-2xl md:pr-4"
             >
               <span className="text-sm tracking-[0.3em] text-brand-accent">{t('ebikePage.heroBadge')}</span>
-              <h1 className="mt-4 font-zh-display text-6xl font-bold md:text-8xl">
+              <h1 
+                className="mt-4 font-zh-display text-6xl font-bold md:text-8xl"
+                data-editable="ebikePage.heroTitle"
+                data-editable-type="text"
+                data-editable-label="E-BIKE页标题"
+              >
                 {t('ebikePage.heroTitle')}
               </h1>
-              <p className="mt-6 text-xl text-white/70 md:text-2xl">
+              <p 
+                className="mt-6 text-xl text-white/70 md:text-2xl"
+                data-editable="ebikePage.heroSubtitle"
+                data-editable-type="text"
+                data-editable-label="E-BIKE页副标题"
+              >
                 {t('ebikePage.heroSubtitle')}
               </p>
             </motion.div>
@@ -66,11 +147,28 @@ export default function EbikePage() {
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
             >
-              <span className="text-sm tracking-[0.3em] text-brand-accent">GERMAN HERITAGE</span>
-              <h2 className="mt-4 font-zh-display text-4xl font-bold md:text-5xl">
+              <span 
+                className="text-sm tracking-[0.3em] text-brand-accent"
+                data-editable="ebikePage.intro.badge"
+                data-editable-type="text"
+                data-editable-label="E-BIKE介绍徽章"
+              >
+                GERMAN HERITAGE
+              </span>
+              <h2 
+                className="mt-4 font-zh-display text-4xl font-bold md:text-5xl"
+                data-editable="ebikePage.intro.title"
+                data-editable-type="text"
+                data-editable-label="E-BIKE介绍标题"
+              >
                 {t('home.brand.title')}
               </h2>
-              <p className="mt-6 text-xl text-white/60 md:text-2xl">
+              <p 
+                className="mt-6 text-xl text-white/60 md:text-2xl"
+                data-editable="ebikePage.introLine1"
+                data-editable-type="text"
+                data-editable-label="E-BIKE介绍描述"
+              >
                 {t('ebikePage.introLine1')}
               </p>
             </motion.div>
@@ -90,11 +188,32 @@ export default function EbikePage() {
                 className="text-center"
               >
                 <div className="mb-6 flex items-baseline justify-center gap-2">
-                  <span className="font-en-display text-7xl font-light text-brand-accent">11.9</span>
+                  <span 
+                    className="font-en-display text-7xl font-light text-brand-accent"
+                    data-editable="ebikePage.features.lightweight.weight"
+                    data-editable-type="text"
+                    data-editable-label="轻量化重量"
+                  >
+                    11.9
+                  </span>
                   <span className="text-2xl text-white/60">{t('units.kg')}</span>
                 </div>
-                <h3 className="font-zh-heading text-2xl font-bold">{t('ebikePage.features.lightweight.title')}</h3>
-                <p className="mt-3 text-white/60">{t('ebikePage.features.lightweight.desc')}</p>
+                <h3 
+                  className="font-zh-heading text-2xl font-bold"
+                  data-editable="ebikePage.features.lightweight.title"
+                  data-editable-type="text"
+                  data-editable-label="轻量化标题"
+                >
+                  {t('ebikePage.features.lightweight.title')}
+                </h3>
+                <p 
+                  className="mt-3 text-white/60"
+                  data-editable="ebikePage.features.lightweight.desc"
+                  data-editable-type="text"
+                  data-editable-label="轻量化描述"
+                >
+                  {t('ebikePage.features.lightweight.desc')}
+                </p>
               </motion.div>
 
               {/* Smart System */}
@@ -106,11 +225,32 @@ export default function EbikePage() {
                 className="text-center"
               >
                 <div className="mb-6 flex items-baseline justify-center gap-2">
-                  <span className="font-en-display text-7xl font-light text-brand-accent">100</span>
+                  <span 
+                    className="font-en-display text-7xl font-light text-brand-accent"
+                    data-editable="ebikePage.features.smartAssist.range"
+                    data-editable-type="text"
+                    data-editable-label="智能助力续航"
+                  >
+                    100
+                  </span>
                   <span className="text-2xl text-white/60">{locale === 'en' ? t('routes.units.km') : t('routes.units.km')}</span>
                 </div>
-                <h3 className="font-zh-heading text-2xl font-bold">{t('ebikePage.features.smartAssist.title')}</h3>
-                <p className="mt-3 text-white/60">{t('ebikePage.features.smartAssist.desc')}</p>
+                <h3 
+                  className="font-zh-heading text-2xl font-bold"
+                  data-editable="ebikePage.features.smartAssist.title"
+                  data-editable-type="text"
+                  data-editable-label="智能助力标题"
+                >
+                  {t('ebikePage.features.smartAssist.title')}
+                </h3>
+                <p 
+                  className="mt-3 text-white/60"
+                  data-editable="ebikePage.features.smartAssist.desc"
+                  data-editable-type="text"
+                  data-editable-label="智能助力描述"
+                >
+                  {t('ebikePage.features.smartAssist.desc')}
+                </p>
               </motion.div>
 
               {/* German Heritage */}
@@ -122,11 +262,32 @@ export default function EbikePage() {
                 className="text-center"
               >
                 <div className="mb-6 flex items-baseline justify-center gap-2">
-                  <span className="font-en-display text-7xl font-light text-brand-accent">25</span>
+                  <span 
+                    className="font-en-display text-7xl font-light text-brand-accent"
+                    data-editable="ebikePage.features.maxSpeed"
+                    data-editable-type="text"
+                    data-editable-label="最高速度"
+                  >
+                    25
+                  </span>
                   <span className="text-2xl text-white/60">KM/H</span>
                 </div>
-                <h3 className="font-zh-heading text-2xl font-bold">{t('ebikePage.features.smartAssist.maxAssistSpeedLabel')}</h3>
-                <p className="mt-3 text-white/60">{t('ebikePage.smartAssistLabel')}</p>
+                <h3 
+                  className="font-zh-heading text-2xl font-bold"
+                  data-editable="ebikePage.features.smartAssist.maxAssistSpeedLabel"
+                  data-editable-type="text"
+                  data-editable-label="最高助力速度标签"
+                >
+                  {t('ebikePage.features.smartAssist.maxAssistSpeedLabel')}
+                </h3>
+                <p 
+                  className="mt-3 text-white/60"
+                  data-editable="ebikePage.smartAssistLabel"
+                  data-editable-type="text"
+                  data-editable-label="智能助力标签"
+                >
+                  {t('ebikePage.smartAssistLabel')}
+                </p>
               </motion.div>
             </div>
           </div>
@@ -142,6 +303,9 @@ export default function EbikePage() {
               loading="lazy"
               quality={80}
               className="object-cover"
+              data-editable="ebikePage.design.background"
+              data-editable-type="image"
+              data-editable-label="设计背景图"
             />
             <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/50 to-transparent" />
             
@@ -154,11 +318,28 @@ export default function EbikePage() {
                   transition={{ duration: 0.8 }}
                   className="max-w-xl"
                 >
-                  <span className="text-sm tracking-[0.3em] text-brand-accent">DESIGN</span>
-                  <h2 className="mt-4 font-zh-display text-5xl font-bold md:text-7xl">
+                  <span 
+                    className="text-sm tracking-[0.3em] text-brand-accent"
+                    data-editable="ebikePage.design.badge"
+                    data-editable-type="text"
+                    data-editable-label="设计徽章"
+                  >
+                    DESIGN
+                  </span>
+                  <h2 
+                    className="mt-4 font-zh-display text-5xl font-bold md:text-7xl"
+                    data-editable="ebikePage.designTitle"
+                    data-editable-type="text"
+                    data-editable-label="设计标题"
+                  >
                     {t('ebikePage.designTitle')}
                   </h2>
-                  <p className="mt-6 text-lg leading-relaxed text-white/70 md:text-xl">
+                  <p 
+                    className="mt-6 text-lg leading-relaxed text-white/70 md:text-xl"
+                    data-editable="ebikePage.designDesc"
+                    data-editable-type="text"
+                    data-editable-label="设计描述"
+                  >
                     {t('ebikePage.designDesc')}
                   </p>
                 </motion.div>
@@ -206,6 +387,9 @@ export default function EbikePage() {
               quality={80}
               className="object-cover"
               style={{ objectPosition: 'left 50%' }}
+              data-editable="ebikePage.carbon.background"
+              data-editable-type="image"
+              data-editable-label="碳纤维背景图"
             />
             <div className="pointer-events-none absolute inset-y-0 right-0 w-[70%] bg-gradient-to-l from-black/90 via-black/50 to-transparent" />
             
@@ -218,11 +402,26 @@ export default function EbikePage() {
                   transition={{ duration: 0.8 }}
                   className="ml-auto max-w-lg text-right"
                 >
-                  <span className="text-sm tracking-[0.3em] text-brand-accent">CARBON FIBER</span>
-                  <h2 className="mt-4 font-zh-display text-4xl font-bold md:text-5xl">
+                  <span
+                    className="text-sm tracking-[0.3em] text-brand-accent"
+                    data-editable="ebikePage.carbon.badge"
+                    data-editable-type="text"
+                    data-editable-label="碳纤维徽章"
+                  >CARBON FIBER</span>
+                  <h2
+                    className="mt-4 font-zh-display text-4xl font-bold md:text-5xl"
+                    data-editable="ebikePage.carbonTitle"
+                    data-editable-type="text"
+                    data-editable-label="碳纤维标题"
+                  >
                     {t('ebikePage.carbonTitle')}
                   </h2>
-                  <p className="mt-6 text-lg leading-relaxed text-white/70 md:text-xl">
+                  <p
+                    className="mt-6 text-lg leading-relaxed text-white/70 md:text-xl"
+                    data-editable="ebikePage.carbonDesc"
+                    data-editable-type="text"
+                    data-editable-label="碳纤维描述"
+                  >
                     {t('ebikePage.carbonDesc')}
                   </p>
                 </motion.div>
@@ -243,12 +442,27 @@ export default function EbikePage() {
                 transition={{ duration: 0.8 }}
                 className="flex flex-col justify-center"
               >
-                <h3 className="font-zh-heading text-3xl font-bold">{t('ebikePage.features.charging.title')}</h3>
-                <p className="mt-4 text-white/60">
+                <h3
+                  className="font-zh-heading text-3xl font-bold"
+                  data-editable="ebikePage.features.charging.title"
+                  data-editable-type="text"
+                  data-editable-label="充电标题"
+                >{t('ebikePage.features.charging.title')}</h3>
+                <p
+                  className="mt-4 text-white/60"
+                  data-editable="ebikePage.features.charging.chargerDesc"
+                  data-editable-type="text"
+                  data-editable-label="充电描述"
+                >
                   {t('ebikePage.features.charging.chargerDesc')}
                 </p>
                 <div className="mt-8 flex items-baseline gap-2">
-                  <span className="font-en-display text-6xl font-light text-brand-accent">2.5</span>
+                  <span
+                    className="font-en-display text-6xl font-light text-brand-accent"
+                    data-editable="ebikePage.features.charging.hours"
+                    data-editable-type="text"
+                    data-editable-label="充电时间"
+                  >2.5</span>
                   <div className="text-white/60">
                     <div className="text-xl">{t('ebikePage.features.charging.hoursUnit')}</div>
                     <div className="text-sm">{t('ebikePage.features.charging.fullChargeLabel')}</div>
@@ -264,8 +478,18 @@ export default function EbikePage() {
                 transition={{ duration: 0.8, delay: 0.2 }}
                 className="flex flex-col justify-center"
               >
-                <h3 className="font-zh-heading text-3xl font-bold">{t('ebikePage.features.beltDrive.title')}</h3>
-                <p className="mt-4 text-white/60">
+                <h3
+                  className="font-zh-heading text-3xl font-bold"
+                  data-editable="ebikePage.features.beltDrive.title"
+                  data-editable-type="text"
+                  data-editable-label="皮带传动标题"
+                >{t('ebikePage.features.beltDrive.title')}</h3>
+                <p
+                  className="mt-4 text-white/60"
+                  data-editable="ebikePage.features.beltDrive.desc"
+                  data-editable-type="text"
+                  data-editable-label="皮带传动描述"
+                >
                   {t('ebikePage.features.beltDrive.desc')}
                 </p>
               </motion.div>
@@ -283,8 +507,18 @@ export default function EbikePage() {
               transition={{ duration: 0.8 }}
               className="mb-16 text-center"
             >
-              <span className="text-sm tracking-[0.3em] text-brand-accent">PARTNERS</span>
-              <h2 className="mt-4 font-zh-display text-4xl font-bold md:text-5xl">
+              <span
+                className="text-sm tracking-[0.3em] text-brand-accent"
+                data-editable="ebikePage.partners.badge"
+                data-editable-type="text"
+                data-editable-label="合作伙伴徽章"
+              >PARTNERS</span>
+              <h2
+                className="mt-4 font-zh-display text-4xl font-bold md:text-5xl"
+                data-editable="ebikePage.partners.title"
+                data-editable-type="text"
+                data-editable-label="合作伙伴标题"
+              >
                 {t('ebikePage.partners.title')}
               </h2>
             </motion.div>
@@ -305,9 +539,24 @@ export default function EbikePage() {
                     </div>
                     <div className="mt-2 text-sm tracking-widest text-white/40">YADEA</div>
                   </div>
-                  <h3 className="mb-3 text-center text-2xl font-bold">{t('partners.yadea.title')}</h3>
-                  <p className="mb-4 text-center text-lg text-white/60">{t('partners.yadea.subtitle')}</p>
-                  <p className="text-center text-white/50">{t('partners.yadea.desc')}</p>
+                  <h3
+                    className="mb-3 text-center text-2xl font-bold"
+                    data-editable="ebikePage.partners.yadea.title"
+                    data-editable-type="text"
+                    data-editable-label="雅迪标题"
+                  >{t('partners.yadea.title')}</h3>
+                  <p
+                    className="mb-4 text-center text-lg text-white/60"
+                    data-editable="ebikePage.partners.yadea.subtitle"
+                    data-editable-type="text"
+                    data-editable-label="雅迪副标题"
+                  >{t('partners.yadea.subtitle')}</p>
+                  <p
+                    className="text-center text-white/50"
+                    data-editable="ebikePage.partners.yadea.desc"
+                    data-editable-type="text"
+                    data-editable-label="雅迪描述"
+                  >{t('partners.yadea.desc')}</p>
                 </div>
               </motion.div>
 
@@ -326,9 +575,24 @@ export default function EbikePage() {
                     </div>
                     <div className="mt-2 text-sm tracking-widest text-white/40">ROYAL DUTCH</div>
                   </div>
-                  <h3 className="mb-3 text-center text-2xl font-bold">{t('partners.gazelle.title')}</h3>
-                  <p className="mb-4 text-center text-lg text-white/60">{t('partners.gazelle.subtitle')}</p>
-                  <p className="text-center text-white/50">{t('partners.gazelle.desc')}</p>
+                  <h3
+                    className="mb-3 text-center text-2xl font-bold"
+                    data-editable="ebikePage.partners.gazelle.title"
+                    data-editable-type="text"
+                    data-editable-label="Gazelle标题"
+                  >{t('partners.gazelle.title')}</h3>
+                  <p
+                    className="mb-4 text-center text-lg text-white/60"
+                    data-editable="ebikePage.partners.gazelle.subtitle"
+                    data-editable-type="text"
+                    data-editable-label="Gazelle副标题"
+                  >{t('partners.gazelle.subtitle')}</p>
+                  <p
+                    className="text-center text-white/50"
+                    data-editable="ebikePage.partners.gazelle.desc"
+                    data-editable-type="text"
+                    data-editable-label="Gazelle描述"
+                  >{t('partners.gazelle.desc')}</p>
                 </div>
               </motion.div>
             </div>
@@ -345,7 +609,12 @@ export default function EbikePage() {
               transition={{ duration: 0.8 }}
               className="mb-16 text-center"
             >
-              <h2 className="font-zh-display text-4xl font-bold md:text-5xl">
+              <h2
+                className="font-zh-display text-4xl font-bold md:text-5xl"
+                data-editable="ebikePage.models.compareTitle"
+                data-editable-type="text"
+                data-editable-label="车型对比标题"
+              >
                 {t('ebikePage.models.compareTitle')}
               </h2>
             </motion.div>
@@ -368,11 +637,24 @@ export default function EbikePage() {
                     quality={75}
                     sizes="(max-width: 768px) 100vw, 50vw"
                     className="object-contain p-8"
+                    data-editable="ebikePage.models.tour1s.image"
+                    data-editable-type="image"
+                    data-editable-label="途尔1S图片"
                   />
                 </div>
                 <div className="mt-8">
-                  <h3 className="font-zh-heading text-2xl font-bold">{t('ebikePage.models.tour1s')}</h3>
-                  <p className="mt-2 text-white/60">
+                  <h3
+                    className="font-zh-heading text-2xl font-bold"
+                    data-editable="ebikePage.models.tour1s.name"
+                    data-editable-type="text"
+                    data-editable-label="途尔1S名称"
+                  >{t('ebikePage.models.tour1s')}</h3>
+                  <p
+                    className="mt-2 text-white/60"
+                    data-editable="ebikePage.models.tour1s.desc"
+                    data-editable-type="text"
+                    data-editable-label="途尔1S描述"
+                  >
                     {t('ebikePage.models.tour1sDesc')}
                   </p>
                   <div className="mt-6 space-y-3 text-sm">
@@ -390,7 +672,12 @@ export default function EbikePage() {
                     </div>
                   </div>
                   <div className="mt-8 text-center">
-                    <span className="text-3xl font-bold text-brand-accent">¥9,999</span>
+                    <span
+                      className="text-3xl font-bold text-brand-accent"
+                      data-editable="ebikePage.models.tour1s.price"
+                      data-editable-type="text"
+                      data-editable-label="途尔1S价格"
+                    >¥9,999</span>
                   </div>
                 </div>
               </motion.div>
@@ -412,11 +699,24 @@ export default function EbikePage() {
                     quality={75}
                     sizes="(max-width: 768px) 100vw, 50vw"
                     className="object-contain p-8"
+                    data-editable="ebikePage.models.tour1.image"
+                    data-editable-type="image"
+                    data-editable-label="途尔1图片"
                   />
                 </div>
                 <div className="mt-8">
-                  <h3 className="font-zh-heading text-2xl font-bold">{t('ebikePage.models.tour1')}</h3>
-                  <p className="mt-2 text-white/60">
+                  <h3
+                    className="font-zh-heading text-2xl font-bold"
+                    data-editable="ebikePage.models.tour1.name"
+                    data-editable-type="text"
+                    data-editable-label="途尔1名称"
+                  >{t('ebikePage.models.tour1')}</h3>
+                  <p
+                    className="mt-2 text-white/60"
+                    data-editable="ebikePage.models.tour1.desc"
+                    data-editable-type="text"
+                    data-editable-label="途尔1描述"
+                  >
                     {t('ebikePage.models.tour1Desc')}
                   </p>
                   <div className="mt-6 space-y-3 text-sm">
@@ -434,7 +734,12 @@ export default function EbikePage() {
                     </div>
                   </div>
                   <div className="mt-8 text-center">
-                    <span className="text-3xl font-bold text-brand-accent">¥6,999</span>
+                    <span
+                      className="text-3xl font-bold text-brand-accent"
+                      data-editable="ebikePage.models.tour1.price"
+                      data-editable-type="text"
+                      data-editable-label="途尔1价格"
+                    >¥6,999</span>
                   </div>
                 </div>
               </motion.div>
@@ -476,10 +781,20 @@ export default function EbikePage() {
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
             >
-              <h2 className="font-zh-display text-4xl font-bold md:text-5xl">
+              <h2 
+                className="font-zh-display text-4xl font-bold md:text-5xl"
+                data-editable="ebikePage.cta.title"
+                data-editable-type="text"
+                data-editable-label="E-BIKE CTA标题"
+              >
                 {t('ebikePage.cta.title')}
               </h2>
-              <p className="mt-6 text-xl text-white/60">
+              <p 
+                className="mt-6 text-xl text-white/60"
+                data-editable="ebikePage.cta.desc"
+                data-editable-type="text"
+                data-editable-label="E-BIKE CTA描述"
+              >
                 {t('ebikePage.cta.desc')}
               </p>
               <div className="mt-10 flex flex-wrap justify-center gap-4">

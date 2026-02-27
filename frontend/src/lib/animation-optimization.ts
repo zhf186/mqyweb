@@ -51,10 +51,11 @@ export function requestAnimationFrameOptimized(
 ): number {
   if (typeof window === 'undefined') return 0
 
-  // Use requestAnimationFrame with fallback
-  const raf = window.requestAnimationFrame || 
-    window.webkitRequestAnimationFrame ||
-    ((cb: FrameRequestCallback) => window.setTimeout(cb, 1000 / 60))
+  const raf: typeof window.requestAnimationFrame =
+    typeof window.requestAnimationFrame === 'function'
+      ? window.requestAnimationFrame.bind(window)
+      : (cb: FrameRequestCallback) =>
+          window.setTimeout(() => cb(performance.now()), 1000 / 60)
 
   return raf(callback)
 }
@@ -65,9 +66,10 @@ export function requestAnimationFrameOptimized(
 export function cancelAnimationFrameOptimized(id: number): void {
   if (typeof window === 'undefined') return
 
-  const caf = window.cancelAnimationFrame || 
-    window.webkitCancelAnimationFrame ||
-    window.clearTimeout
+  const caf: typeof window.cancelAnimationFrame =
+    typeof window.cancelAnimationFrame === 'function'
+      ? window.cancelAnimationFrame.bind(window)
+      : (rafId: number) => window.clearTimeout(rafId)
 
   caf(id)
 }

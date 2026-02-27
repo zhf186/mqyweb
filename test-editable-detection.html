@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>测试可编辑元素检测</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .test-section {
+      margin: 20px 0;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+    .result {
+      background: #f5f5f5;
+      padding: 15px;
+      border-radius: 4px;
+      margin-top: 10px;
+      font-family: monospace;
+      white-space: pre-wrap;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      background: #3b82f6;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      margin: 5px;
+    }
+    button:hover {
+      background: #2563eb;
+    }
+    .editable-element {
+      padding: 10px;
+      margin: 5px 0;
+      background: #e0f2fe;
+      border-left: 3px solid #3b82f6;
+    }
+  </style>
+</head>
+<body>
+  <h1>可编辑元素检测测试</h1>
+  
+  <div class="test-section">
+    <h2>测试元素</h2>
+    <div class="editable-element">
+      <h3 data-editable="test.title" data-editable-type="text" data-editable-label="测试标题">
+        这是一个测试标题
+      </h3>
+      <p data-editable="test.description" data-editable-type="text" data-editable-label="测试描述">
+        这是一个测试描述文本
+      </p>
+      <img 
+        data-editable="test.image" 
+        data-editable-type="image" 
+        data-editable-label="测试图片"
+        src="https://via.placeholder.com/300x200"
+        alt="测试图片"
+        style="max-width: 300px;"
+      />
+    </div>
+  </div>
+
+  <div class="test-section">
+    <h2>测试操作</h2>
+    <button onclick="testDetection()">1. 检测可编辑元素</button>
+    <button onclick="testPostMessage()">2. 测试 postMessage</button>
+    <button onclick="testInIframe()">3. 在 iframe 中测试</button>
+    <button onclick="clearResults()">清除结果</button>
+    
+    <div id="results" class="result"></div>
+  </div>
+
+  <script>
+    function log(message) {
+      const results = document.getElementById('results')
+      results.textContent += message + '\n'
+      console.log(message)
+    }
+
+    function clearResults() {
+      document.getElementById('results').textContent = ''
+    }
+
+    // 测试 1: 检测可编辑元素
+    function testDetection() {
+      clearResults()
+      log('=== 测试可编辑元素检测 ===\n')
+      
+      const elements = document.querySelectorAll('[data-editable]')
+      log(`找到 ${elements.length} 个可编辑元素:\n`)
+      
+      elements.forEach((el, index) => {
+        const fieldKey = el.getAttribute('data-editable')
+        const type = el.getAttribute('data-editable-type')
+        const label = el.getAttribute('data-editable-label')
+        const rect = el.getBoundingClientRect()
+        
+        log(`${index + 1}. ${label}`)
+        log(`   - fieldKey: ${fieldKey}`)
+        log(`   - type: ${type}`)
+        log(`   - position: (${Math.round(rect.top)}, ${Math.round(rect.left)})`)
+        log(`   - size: ${Math.round(rect.width)}x${Math.round(rect.height)}\n`)
+      })
+      
+      if (elements.length === 0) {
+        log('❌ 没有找到可编辑元素！')
+        log('请检查 HTML 中是否有 data-editable 属性')
+      } else {
+        log(`✅ 成功检测到 ${elements.length} 个可编辑元素`)
+      }
+    }
+
+    // 测试 2: 测试 postMessage
+    function testPostMessage() {
+      clearResults()
+      log('=== 测试 postMessage 通信 ===\n')
+      
+      // 设置监听器
+      window.addEventListener('message', function handler(event) {
+        log(`收到消息: ${JSON.stringify(event.data, null, 2)}`)
+        
+        if (event.data.type === 'REQUEST_EDITABLE_ELEMENTS') {
+          log('\n正在检测可编辑元素...')
+          const elements = document.querySelectorAll('[data-editable]')
+          
+          const elementData = Array.from(elements).map((el, index) => ({
+            id: `editable-${index}`,
+            fieldKey: el.getAttribute('data-editable'),
+            type: el.getAttribute('data-editable-type'),
+            label: el.getAttribute('data-editable-label'),
+          }))
+          
+          log(`\n发送响应: ${elementData.length} 个元素`)
+          
+          window.parent.postMessage({
+            type: 'EDITABLE_ELEMENTS_RESPONSE',
+            payload: elementData
+          }, window.location.origin)
+        }
+      })
+      
+      log('✅ postMessage 监听器已设置')
+      log('\n现在发送测试消息...')
+      
+      // 发送测试消息
+      window.postMessage({
+        type: 'REQUEST_EDITABLE_ELEMENTS'
+      }, window.location.origin)
+    }
+
+    // 测试 3: 在 iframe 中测试
+    function testInIframe() {
+      clearResults()
+      log('=== 在 iframe 中测试 ===\n')
+      
+      // 检查是否在 iframe 中
+      if (window.self !== window.top) {
+        log('✅ 当前页面在 iframe 中')
+        log(`   - 父窗口: ${window.parent.location.origin}`)
+        log(`   - 当前窗口: ${window.location.origin}`)
+      } else {
+        log('❌ 当前页面不在 iframe 中')
+        log('\n要测试 iframe 功能，请:')
+        log('1. 打开可视化编辑器')
+        log('2. 在 iframe 内部打开此测试页面')
+      }
+      
+      // 检查 URL 参数
+      const params = new URLSearchParams(window.location.search)
+      const editMode = params.get('editMode')
+      const locale = params.get('locale')
+      
+      log(`\nURL 参数:`)
+      log(`   - editMode: ${editMode}`)
+      log(`   - locale: ${locale}`)
+      
+      if (editMode === 'true') {
+        log('\n✅ editMode 参数正确')
+      } else {
+        log('\n❌ editMode 参数不正确')
+        log('   应该是: editMode=true')
+        log(`   实际是: editMode=${editMode}`)
+      }
+    }
+
+    // 页面加载时自动运行测试
+    window.addEventListener('load', () => {
+      log('页面已加载，准备测试...\n')
+    })
+  </script>
+</body>
+</html>

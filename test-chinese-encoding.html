@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中文编码测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .result {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .success {
+            color: green;
+        }
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>中文编码测试</h1>
+    <button onclick="testAPI()">测试 API 中文编码</button>
+    <div id="result"></div>
+
+    <script>
+        async function testAPI() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '<p>正在测试...</p>';
+
+            try {
+                const response = await fetch('http://localhost:8080/api/routes');
+                const data = await response.json();
+                
+                if (data.code === 200 && data.data.records.length > 0) {
+                    const route = data.data.records[0];
+                    resultDiv.innerHTML = `
+                        <div class="result">
+                            <h3 class="success">✅ 测试成功！</h3>
+                            <p><strong>路线 ID:</strong> ${route.id}</p>
+                            <p><strong>中文名称:</strong> ${route.name}</p>
+                            <p><strong>英文名称:</strong> ${route.nameEn}</p>
+                            <p><strong>简介:</strong> ${route.summary}</p>
+                            <hr>
+                            <h4>所有路线：</h4>
+                            <ul>
+                                ${data.data.records.map(r => `<li>${r.name} (${r.nameEn})</li>`).join('')}
+                            </ul>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = '<p class="error">❌ 没有数据</p>';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="error">❌ 错误: ${error.message}</p>`;
+            }
+        }
+
+        // 自动测试
+        window.onload = () => {
+            testAPI();
+        };
+    </script>
+</body>
+</html>

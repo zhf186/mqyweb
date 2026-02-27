@@ -40,7 +40,9 @@ async function request<T>(
 
   // 添加认证 token
   if (typeof window !== 'undefined') {
-    const token = localStorage.getItem('token')
+    // 优先使用 admin token (用于 CMS 后台)
+    const adminToken = localStorage.getItem('admin_token')
+    const token = adminToken || localStorage.getItem('token')
     if (token) {
       headers.set('Authorization', `Bearer ${token}`)
     }

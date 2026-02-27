@@ -1,7 +1,7 @@
 {
   "common": {
     "brand": "漫骑游",
-    "slogan": "骑遇无限美好人生",
+    "slogan": "骑遇美好人生",
     "tagline": "高端跨界骑游生活平台",
     "learnMore": "了解更多",
     "viewAll": "查看全部",
@@ -395,7 +395,7 @@
     }
   },
   "home": {
-    "heroImageAlt": "漫骑游 - 骑遇无限美好人生",
+    "heroImageAlt": "漫骑游 - 骑遇美好人生",
     "introImageAlt": "山水骑行",
     "ebikeImageAlt": "德国血统智能电助力自行车",
     "brand": {
@@ -484,7 +484,7 @@
   "about": {
     "hero": {
       "title": "关于漫骑游",
-      "subtitle": "骑遇无限美好人生"
+      "subtitle": "骑遇美好人生"
     },
     "stats": [
       { "value": "2006", "label": "创立年份" },

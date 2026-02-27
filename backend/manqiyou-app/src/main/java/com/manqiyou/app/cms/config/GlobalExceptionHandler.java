@@ -1,6 +1,5 @@
 package com.manqiyou.app.cms.config;
 
-import com.manqiyou.app.cms.exception.ConcurrentModificationException;
 import com.manqiyou.app.common.Result;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
@@ -15,6 +14,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.Map;
 

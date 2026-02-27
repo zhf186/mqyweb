@@ -1,9 +1,13 @@
 'use client'
 
 import Image from 'next/image'
+import { useSearchParams } from 'next/navigation'
+import { useEffect } from 'react'
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
 import { useTranslation } from '@/hooks/useTranslation'
+import { detectEditableElements, updateElementContent, findElementBySelector, injectUpdateAnimationStyles } from '@/lib/visual-editor/editable-detector'
+import type { IframeBridgeMessage } from '@/lib/visual-editor/types'
 
 // Scenic areas data
 const scenicAreas = [
@@ -22,6 +26,71 @@ const scenicAreas = [
 
 export default function PartnersPage() {
   const { t, locale, isLoading } = useTranslation()
+  const searchParams = useSearchParams()
+  const isEditMode = searchParams.get('editMode') === 'true'
+
+  // 编辑模式支持
+  useEffect(() => {
+    if (!isEditMode) return
+
+    console.log('[partners/page.tsx] Edit mode enabled')
+    injectUpdateAnimationStyles()
+
+    const handleMessage = (event: MessageEvent<IframeBridgeMessage>) => {
+      if (event.origin !== window.location.origin) return
+      
+      const message = event.data
+      
+      switch (message.type) {
+        case 'INIT_EDIT_MODE':
+          break
+          
+        case 'REQUEST_EDITABLE_ELEMENTS':
+          const elements = detectEditableElements(document)
+          window.parent.postMessage({
+            type: 'EDITABLE_ELEMENTS_RESPONSE',
+            payload: elements
+          }, window.location.origin)
+          break
+          
+        case 'UPDATE_CONTENT':
+          const { fieldKey, content } = message.payload
+          const element = findElementBySelector(`[data-editable="${fieldKey}"]`, document)
+          if (element) {
+            const type = element.getAttribute('data-editable-type') as 'text' | 'image'
+            updateElementContent(element, content, type)
+          }
+          break
+          
+        case 'UPDATE_IMAGE':
+          const { fieldKey: imageFieldKey, imagePath } = message.payload
+          const imageElement = findElementBySelector(`[data-editable="${imageFieldKey}"]`, document)
+          if (imageElement) {
+            updateElementContent(imageElement, imagePath, 'image')
+          }
+          break
+      }
+    }
+
+    let scrollTimeout: NodeJS.Timeout
+    const handleScroll = () => {
+      clearTimeout(scrollTimeout)
+      scrollTimeout = setTimeout(() => {
+        window.parent.postMessage({ type: 'IFRAME_SCROLLED' }, window.location.origin)
+      }, 100)
+    }
+
+    window.addEventListener('message', handleMessage)
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    window.parent.postMessage({ type: 'IFRAME_READY' }, window.location.origin)
+    window.parent.postMessage({ type: 'IFRAME_LOADED' }, window.location.origin)
+
+    return () => {
+      window.removeEventListener('message', handleMessage)
+      window.removeEventListener('scroll', handleScroll)
+      clearTimeout(scrollTimeout)
+    }
+  }, [isEditMode])
 
   if (isLoading) {
     return (
@@ -48,6 +117,9 @@ export default function PartnersPage() {
           fill
           className="object-cover"
           priority
+          data-editable="partners.hero.background"
+          data-editable-type="image"
+          data-editable-label="合作页Hero背景图"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black" />
         
@@ -55,10 +127,20 @@ export default function PartnersPage() {
           <div className="inline-block px-4 py-2 mb-6 text-sm font-medium tracking-widest border border-white/30 rounded-full backdrop-blur-sm">
             {t('partnersPage.heroBadge')}
           </div>
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6">
+          <h1 
+            className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6"
+            data-editable="partnersPage.heroTitle"
+            data-editable-type="text"
+            data-editable-label="合作页标题"
+          >
             {t('partnersPage.heroTitle')}
           </h1>
-          <p className="text-xl md:text-2xl text-white/80 max-w-3xl mx-auto">
+          <p 
+            className="text-xl md:text-2xl text-white/80 max-w-3xl mx-auto"
+            data-editable="partnersPage.heroDesc"
+            data-editable-type="text"
+            data-editable-label="合作页描述"
+          >
             {t('partnersPage.heroDesc')}
           </p>
         </div>
@@ -69,24 +151,108 @@ export default function PartnersPage() {
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
             <div className="text-center">
-              <div className="text-6xl md:text-7xl font-light mb-6 text-orange-500">{t('partnersPage.advantages.traffic.number')}</div>
-              <h3 className="text-xl font-semibold mb-3">{t('partnersPage.advantages.traffic.title')}</h3>
-              <p className="text-white/60">{t('partnersPage.advantages.traffic.desc')}</p>
+              <div 
+                className="text-6xl md:text-7xl font-light mb-6 text-orange-500"
+                data-editable="partnersPage.advantages.traffic.number"
+                data-editable-type="text"
+                data-editable-label="流量优势数字"
+              >
+                {t('partnersPage.advantages.traffic.number')}
+              </div>
+              <h3 
+                className="text-xl font-semibold mb-3"
+                data-editable="partnersPage.advantages.traffic.title"
+                data-editable-type="text"
+                data-editable-label="流量优势标题"
+              >
+                {t('partnersPage.advantages.traffic.title')}
+              </h3>
+              <p 
+                className="text-white/60"
+                data-editable="partnersPage.advantages.traffic.desc"
+                data-editable-type="text"
+                data-editable-label="流量优势描述"
+              >
+                {t('partnersPage.advantages.traffic.desc')}
+              </p>
             </div>
             <div className="text-center">
-              <div className="text-6xl md:text-7xl font-light mb-6 text-orange-500">{t('partnersPage.advantages.marketing.number')}</div>
-              <h3 className="text-xl font-semibold mb-3">{t('partnersPage.advantages.marketing.title')}</h3>
-              <p className="text-white/60">{t('partnersPage.advantages.marketing.desc')}</p>
+              <div 
+                className="text-6xl md:text-7xl font-light mb-6 text-orange-500"
+                data-editable="partnersPage.advantages.marketing.number"
+                data-editable-type="text"
+                data-editable-label="营销优势数字"
+              >
+                {t('partnersPage.advantages.marketing.number')}
+              </div>
+              <h3 
+                className="text-xl font-semibold mb-3"
+                data-editable="partnersPage.advantages.marketing.title"
+                data-editable-type="text"
+                data-editable-label="营销优势标题"
+              >
+                {t('partnersPage.advantages.marketing.title')}
+              </h3>
+              <p 
+                className="text-white/60"
+                data-editable="partnersPage.advantages.marketing.desc"
+                data-editable-type="text"
+                data-editable-label="营销优势描述"
+              >
+                {t('partnersPage.advantages.marketing.desc')}
+              </p>
             </div>
             <div className="text-center">
-              <div className="text-6xl md:text-7xl font-light mb-6 text-orange-500">{t('partnersPage.advantages.brand.number')}</div>
-              <h3 className="text-xl font-semibold mb-3">{t('partnersPage.advantages.brand.title')}</h3>
-              <p className="text-white/60">{t('partnersPage.advantages.brand.desc')}</p>
+              <div 
+                className="text-6xl md:text-7xl font-light mb-6 text-orange-500"
+                data-editable="partnersPage.advantages.brand.number"
+                data-editable-type="text"
+                data-editable-label="品牌优势数字"
+              >
+                {t('partnersPage.advantages.brand.number')}
+              </div>
+              <h3 
+                className="text-xl font-semibold mb-3"
+                data-editable="partnersPage.advantages.brand.title"
+                data-editable-type="text"
+                data-editable-label="品牌优势标题"
+              >
+                {t('partnersPage.advantages.brand.title')}
+              </h3>
+              <p 
+                className="text-white/60"
+                data-editable="partnersPage.advantages.brand.desc"
+                data-editable-type="text"
+                data-editable-label="品牌优势描述"
+              >
+                {t('partnersPage.advantages.brand.desc')}
+              </p>
             </div>
             <div className="text-center">
-              <div className="text-6xl md:text-7xl font-light mb-6 text-orange-500">{t('partnersPage.advantages.resource.number')}</div>
-              <h3 className="text-xl font-semibold mb-3">{t('partnersPage.advantages.resource.title')}</h3>
-              <p className="text-white/60">{t('partnersPage.advantages.resource.desc')}</p>
+              <div 
+                className="text-6xl md:text-7xl font-light mb-6 text-orange-500"
+                data-editable="partnersPage.advantages.resource.number"
+                data-editable-type="text"
+                data-editable-label="资源优势数字"
+              >
+                {t('partnersPage.advantages.resource.number')}
+              </div>
+              <h3 
+                className="text-xl font-semibold mb-3"
+                data-editable="partnersPage.advantages.resource.title"
+                data-editable-type="text"
+                data-editable-label="资源优势标题"
+              >
+                {t('partnersPage.advantages.resource.title')}
+              </h3>
+              <p 
+                className="text-white/60"
+                data-editable="partnersPage.advantages.resource.desc"
+                data-editable-type="text"
+                data-editable-label="资源优势描述"
+              >
+                {t('partnersPage.advantages.resource.desc')}
+              </p>
             </div>
           </div>
         </div>
@@ -99,7 +265,12 @@ export default function PartnersPage() {
             <div className="inline-block px-4 py-2 mb-4 text-sm font-medium tracking-widest text-orange-500 border border-orange-500/30 rounded-full">
               {t('partnersPage.heroBadge')}
             </div>
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold">{t('partners.hero.subtitle')}</h2>
+            <h2
+              className="text-4xl md:text-5xl lg:text-6xl font-bold"
+              data-editable="partnersPage.partners.subtitle"
+              data-editable-type="text"
+              data-editable-label="合作伙伴副标题"
+            >{t('partners.hero.subtitle')}</h2>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
@@ -114,9 +285,24 @@ export default function PartnersPage() {
                 </div>
               </div>
               <div className="p-10">
-                <h3 className="text-3xl font-bold mb-3">{t('partners.yadea.title')}</h3>
-                <p className="text-lg text-white/70 mb-6 font-medium">{t('partners.yadea.subtitle')}</p>
-                <p className="text-white/60 leading-relaxed">{t('partners.yadea.desc')}</p>
+                <h3
+                  className="text-3xl font-bold mb-3"
+                  data-editable="partnersPage.yadea.title"
+                  data-editable-type="text"
+                  data-editable-label="雅迪合作标题"
+                >{t('partners.yadea.title')}</h3>
+                <p
+                  className="text-lg text-white/70 mb-6 font-medium"
+                  data-editable="partnersPage.yadea.subtitle"
+                  data-editable-type="text"
+                  data-editable-label="雅迪合作副标题"
+                >{t('partners.yadea.subtitle')}</p>
+                <p
+                  className="text-white/60 leading-relaxed"
+                  data-editable="partnersPage.yadea.desc"
+                  data-editable-type="text"
+                  data-editable-label="雅迪合作描述"
+                >{t('partners.yadea.desc')}</p>
               </div>
             </div>
 
@@ -131,9 +317,24 @@ export default function PartnersPage() {
                 </div>
               </div>
               <div className="p-10">
-                <h3 className="text-3xl font-bold mb-3">{t('partners.gazelle.title')}</h3>
-                <p className="text-lg text-white/70 mb-6 font-medium">{t('partners.gazelle.subtitle')}</p>
-                <p className="text-white/60 leading-relaxed">{t('partners.gazelle.desc')}</p>
+                <h3
+                  className="text-3xl font-bold mb-3"
+                  data-editable="partnersPage.gazelle.title"
+                  data-editable-type="text"
+                  data-editable-label="Gazelle合作标题"
+                >{t('partners.gazelle.title')}</h3>
+                <p
+                  className="text-lg text-white/70 mb-6 font-medium"
+                  data-editable="partnersPage.gazelle.subtitle"
+                  data-editable-type="text"
+                  data-editable-label="Gazelle合作副标题"
+                >{t('partners.gazelle.subtitle')}</p>
+                <p
+                  className="text-white/60 leading-relaxed"
+                  data-editable="partnersPage.gazelle.desc"
+                  data-editable-type="text"
+                  data-editable-label="Gazelle合作描述"
+                >{t('partners.gazelle.desc')}</p>
               </div>
             </div>
           </div>
@@ -147,8 +348,18 @@ export default function PartnersPage() {
             <div className="inline-block px-4 py-2 mb-4 text-sm font-medium tracking-widest text-orange-500 border border-orange-500/30 rounded-full">
               {t('partnersPage.types.badge')}
             </div>
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">{t('partners.scenic.title')}</h2>
-            <p className="text-xl text-white/70">{t('partners.scenic.desc')}</p>
+            <h2
+              className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4"
+              data-editable="partnersPage.scenic.title"
+              data-editable-type="text"
+              data-editable-label="景区合作标题"
+            >{t('partners.scenic.title')}</h2>
+            <p
+              className="text-xl text-white/70"
+              data-editable="partnersPage.scenic.desc"
+              data-editable-type="text"
+              data-editable-label="景区合作描述"
+            >{t('partners.scenic.desc')}</p>
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
@@ -179,7 +390,12 @@ export default function PartnersPage() {
             <div className="inline-block px-4 py-2 mb-4 text-sm font-medium tracking-widest text-orange-500 border border-orange-500/30 rounded-full">
               {t('partnersPage.types.badge')}
             </div>
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold">{t('partnersPage.types.title')}</h2>
+            <h2
+              className="text-4xl md:text-5xl lg:text-6xl font-bold"
+              data-editable="partnersPage.types.title"
+              data-editable-type="text"
+              data-editable-label="合作类型标题"
+            >{t('partnersPage.types.title')}</h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
@@ -195,8 +411,18 @@ export default function PartnersPage() {
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-black/60" />
               </div>
               <div className="relative z-10 p-8">
-                <h3 className="text-2xl font-bold mb-3">{t('partnersPage.types.scenic.title')}</h3>
-                <p className="text-white/80 mb-6">{t('partnersPage.types.scenic.desc')}</p>
+                <h3
+                  className="text-2xl font-bold mb-3"
+                  data-editable="partnersPage.types.scenic.title"
+                  data-editable-type="text"
+                  data-editable-label="景区合作类型标题"
+                >{t('partnersPage.types.scenic.title')}</h3>
+                <p
+                  className="text-white/80 mb-6"
+                  data-editable="partnersPage.types.scenic.desc"
+                  data-editable-type="text"
+                  data-editable-label="景区合作类型描述"
+                >{t('partnersPage.types.scenic.desc')}</p>
                 <ul className="space-y-2">
                   <li className="flex items-start">
                     <span className="text-orange-500 mr-2">✓</span>
@@ -226,8 +452,18 @@ export default function PartnersPage() {
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-black/60" />
               </div>
               <div className="relative z-10 p-8">
-                <h3 className="text-2xl font-bold mb-3">{t('partnersPage.types.hotel.title')}</h3>
-                <p className="text-white/80 mb-6">{t('partnersPage.types.hotel.desc')}</p>
+                <h3
+                  className="text-2xl font-bold mb-3"
+                  data-editable="partnersPage.types.hotel.title"
+                  data-editable-type="text"
+                  data-editable-label="酒店合作类型标题"
+                >{t('partnersPage.types.hotel.title')}</h3>
+                <p
+                  className="text-white/80 mb-6"
+                  data-editable="partnersPage.types.hotel.desc"
+                  data-editable-type="text"
+                  data-editable-label="酒店合作类型描述"
+                >{t('partnersPage.types.hotel.desc')}</p>
                 <ul className="space-y-2">
                   <li className="flex items-start">
                     <span className="text-orange-500 mr-2">✓</span>
@@ -257,8 +493,18 @@ export default function PartnersPage() {
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-black/60" />
               </div>
               <div className="relative z-10 p-8">
-                <h3 className="text-2xl font-bold mb-3">{t('partnersPage.types.sponsor.title')}</h3>
-                <p className="text-white/80 mb-6">{t('partnersPage.types.sponsor.desc')}</p>
+                <h3
+                  className="text-2xl font-bold mb-3"
+                  data-editable="partnersPage.types.sponsor.title"
+                  data-editable-type="text"
+                  data-editable-label="品牌赞助类型标题"
+                >{t('partnersPage.types.sponsor.title')}</h3>
+                <p
+                  className="text-white/80 mb-6"
+                  data-editable="partnersPage.types.sponsor.desc"
+                  data-editable-type="text"
+                  data-editable-label="品牌赞助类型描述"
+                >{t('partnersPage.types.sponsor.desc')}</p>
                 <ul className="space-y-2">
                   <li className="flex items-start">
                     <span className="text-orange-500 mr-2">✓</span>
@@ -287,14 +533,27 @@ export default function PartnersPage() {
             alt={t('partnersPage.cta.title')}
             fill
             className="object-cover"
+            data-editable="partnersPage.cta.background"
+            data-editable-type="image"
+            data-editable-label="合作页CTA背景图"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-black/50" />
         </div>
         <div className="relative z-10 container mx-auto px-4 text-center">
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 drop-shadow-lg">
+          <h2 
+            className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 drop-shadow-lg"
+            data-editable="partnersPage.cta.title"
+            data-editable-type="text"
+            data-editable-label="合作页CTA标题"
+          >
             {t('partnersPage.cta.title')}
           </h2>
-          <p className="text-xl text-white/90 mb-12 max-w-2xl mx-auto drop-shadow">
+          <p 
+            className="text-xl text-white/90 mb-12 max-w-2xl mx-auto drop-shadow"
+            data-editable="partnersPage.cta.desc"
+            data-editable-type="text"
+            data-editable-label="合作页CTA描述"
+          >
             {t('partnersPage.cta.desc')}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
