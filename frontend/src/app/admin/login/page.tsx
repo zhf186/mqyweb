@@ -13,8 +13,8 @@ import { useAdminAuthStore } from '@/stores/admin-auth'
 import { authApi } from '@/lib/api/admin'
 
 const loginSchema = z.object({
-  username: z.string().min(1, 'Please enter username').min(3, 'Username must be at least 3 characters'),
-  password: z.string().min(1, 'Please enter password').min(6, 'Password must be at least 6 characters'),
+  username: z.string().min(1, '请输入用户名').min(3, '用户名至少 3 个字符'),
+  password: z.string().min(1, '请输入密码').min(6, '密码至少 6 个字符'),
 })
 
 type LoginFormData = z.infer<typeof loginSchema>
@@ -38,19 +38,23 @@ export default function LoginPage() {
     setIsLoading(true)
     try {
       const response = await authApi.login(data)
+      if (!response?.data) {
+        throw new Error('登录失败，请稍后重试')
+      }
+
       const { user, token } = response.data
       login(user, token)
 
       toast({
-        title: 'Login successful',
-        description: `Welcome back, ${user.fullName || user.username}`,
+        title: '登录成功',
+        description: `欢迎回来，${user.fullName || user.username}`,
       })
 
       router.push('/admin/dashboard')
     } catch (error: any) {
-      const errorMessage = error?.response?.data?.message || error?.message || 'Login failed'
+      const errorMessage = error?.response?.data?.message || error?.message || '登录失败'
       toast({
-        title: 'Login failed',
+        title: '登录失败',
         description: errorMessage,
         variant: 'destructive',
       })
@@ -64,19 +68,19 @@ export default function LoginPage() {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Manqiyou CMS</h1>
-          <p className="text-gray-600">Admin management system</p>
+          <p className="text-gray-600">后台管理系统</p>
         </div>
 
         <div className="bg-white rounded-lg shadow-lg p-8">
-          <h2 className="text-2xl font-semibold text-gray-900 mb-6">Admin Login</h2>
+          <h2 className="text-2xl font-semibold text-gray-900 mb-6">管理员登录</h2>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="username">Username</Label>
+              <Label htmlFor="username">用户名</Label>
               <Input
                 id="username"
                 type="text"
-                placeholder="Enter username"
+                placeholder="请输入用户名"
                 autoComplete="username"
                 disabled={isLoading}
                 {...register('username')}
@@ -86,11 +90,11 @@ export default function LoginPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">密码</Label>
               <Input
                 id="password"
                 type="password"
-                placeholder="Enter password"
+                placeholder="请输入密码"
                 autoComplete="current-password"
                 disabled={isLoading}
                 {...register('password')}
@@ -100,14 +104,14 @@ export default function LoginPage() {
             </div>
 
             <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? 'Logging in...' : 'Login'}
+              {isLoading ? '登录中…' : '登录'}
             </Button>
           </form>
 
           {showDevCredentials && (
             <div className="mt-6 text-center text-sm text-gray-600">
-              <p>dev admin user: admin</p>
-              <p>dev admin password: Admin@123</p>
+              <p>开发环境账号：admin</p>
+              <p>开发环境密码：Admin@123</p>
             </div>
           )}
         </div>

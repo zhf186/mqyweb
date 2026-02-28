@@ -54,11 +54,22 @@ async function request<T>(
   })
 
   if (!response.ok) {
-    const error = await response.json().catch(() => ({ message: 'Request failed' }))
+    const error = await response
+      .json()
+      .catch(() => ({ message: 'Request failed' }))
     throw new Error(error.message || `HTTP error! status: ${response.status}`)
   }
 
-  return response.json()
+  const json = await response.json().catch(() => null)
+  if (!json) {
+    throw new Error('Request failed')
+  }
+
+  if (typeof json.code === 'number' && json.code !== 200) {
+    throw new Error(json.message || 'Request failed')
+  }
+
+  return json
 }
 
 /**

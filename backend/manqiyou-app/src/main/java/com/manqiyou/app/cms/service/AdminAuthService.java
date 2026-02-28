@@ -51,7 +51,7 @@ public class AdminAuthService {
         String username = request.getUsername();
 
         if (isAccountLocked(username)) {
-            throw new RuntimeException("账号已被锁定，请稍后再试");
+            throw new RuntimeException("\u8d26\u53f7\u5df2\u88ab\u9501\u5b9a\uff0c\u8bf7\u7a0d\u540e\u518d\u8bd5");
         }
 
         AdminUser user = adminUserMapper.selectOne(
@@ -61,16 +61,16 @@ public class AdminAuthService {
 
         if (user == null) {
             recordLoginFailure(username);
-            throw new RuntimeException("用户名或密码错误");
+            throw new RuntimeException("\u7528\u6237\u540d\u6216\u5bc6\u7801\u9519\u8bef");
         }
 
         if (!Boolean.TRUE.equals(user.getIsActive())) {
-            throw new RuntimeException("账号已被禁用");
+            throw new RuntimeException("\u8d26\u53f7\u5df2\u88ab\u7981\u7528");
         }
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
             recordLoginFailure(username);
-            throw new RuntimeException("用户名或密码错误");
+            throw new RuntimeException("\u7528\u6237\u540d\u6216\u5bc6\u7801\u9519\u8bef");
         }
 
         clearLoginFailures(username);
