@@ -13,11 +13,13 @@ interface AdminAuthState {
   token: string | null
   permissions: string[]
   isAuthenticated: boolean
+  hasHydrated: boolean
   
   // Actions
   setUser: (user: AdminUser | null) => void
   setToken: (token: string | null) => void
   setPermissions: (permissions: string[]) => void
+  syncFromStorage: () => void
   login: (user: AdminUser, token: string, permissions?: string[]) => void
   logout: () => void
   updateUser: (updates: Partial<AdminUser>) => void
@@ -37,21 +39,25 @@ export const useAdminAuthStore = create<AdminAuthState>()(
       token: null,
       permissions: [],
       isAuthenticated: false,
+      hasHydrated: false,
 
       /**
        * 设置用户信息
        */
       setUser: (user) => 
-        set({ 
+        set((state) => ({
           user, 
-          isAuthenticated: !!user 
-        }),
+          isAuthenticated: !!(user || state.token),
+        })),
       
       /**
        * 设置认证令牌
        */
       setToken: (token) => {
-        set({ token })
+        set((state) => ({
+          token,
+          isAuthenticated: !!(token || state.user),
+        }))
         
         // 同步到 localStorage (用于 API 客户端)
         if (typeof window !== 'undefined') {
@@ -68,6 +74,15 @@ export const useAdminAuthStore = create<AdminAuthState>()(
        */
       setPermissions: (permissions) => 
         set({ permissions }),
+
+      /**
+       * 从持久化状态恢复认证标记
+       */
+      syncFromStorage: () =>
+        set((state) => ({
+          isAuthenticated: !!(state.token || state.user),
+          hasHydrated: true,
+        })),
       
       /**
        * 登录
@@ -78,6 +93,7 @@ export const useAdminAuthStore = create<AdminAuthState>()(
           token,
           permissions,
           isAuthenticated: true,
+          hasHydrated: true,
         })
         
         // 同步到 localStorage
@@ -95,6 +111,7 @@ export const useAdminAuthStore = create<AdminAuthState>()(
           token: null,
           permissions: [],
           isAuthenticated: false,
+          hasHydrated: true,
         })
         
         // 清除 localStorage
@@ -117,7 +134,11 @@ export const useAdminAuthStore = create<AdminAuthState>()(
         token: state.token,
         user: state.user,
         permissions: state.permissions,
+        isAuthenticated: state.isAuthenticated,
       }),
+      onRehydrateStorage: () => (state) => {
+        state?.syncFromStorage()
+      },
     }
   )
 )

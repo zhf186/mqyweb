@@ -56,6 +56,13 @@ export interface ContentItem {
   updatedAt: string
 }
 
+export interface EnsureContentItemRequest {
+  fieldKey: string
+  fieldType?: 'text' | 'textarea' | 'richtext'
+  contentZh?: string
+  contentEn?: string
+}
+
 export interface ContentVersion {
   id: string
   contentItemId: string
@@ -246,6 +253,8 @@ export const contentApi = {
    */
   getPageContent: (pageId: string) =>
     api.get<{ page: Page; contentItems: ContentItem[] }>(`/admin/content/pages/${pageId}`),
+  ensureContentItem: (pageId: string, data: EnsureContentItemRequest) =>
+    api.post<ContentItem>(`/admin/content/pages/${pageId}/items`, data),
 
   /**
    * 更新内容项

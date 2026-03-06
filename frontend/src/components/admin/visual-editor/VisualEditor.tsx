@@ -349,17 +349,26 @@ export function VisualEditor({ pageSlug }: VisualEditorProps) {
       // Get page content to find the content item
       const pageContentResponse = await contentApi.getPageContent(currentPage.id)
       const { contentItems } = pageContentResponse.data
-      const contentItem = contentItems.find((item: any) => item.fieldKey === editingElement.fieldKey)
+      let contentItemForField = contentItems.find((item: any) => item.fieldKey === editingElement.fieldKey)
+      if (!contentItemForField) {
+        const ensureResponse = await contentApi.ensureContentItem(currentPage.id, {
+          fieldKey: editingElement.fieldKey,
+          fieldType: 'text',
+          contentZh,
+          contentEn,
+        })
+        contentItemForField = ensureResponse.data
+      }
 
-      if (!contentItem) {
+      if (!contentItemForField) {
         throw new Error('内容项未找到')
       }
 
       // Update the content item
-      await contentApi.updateContentItem(contentItem.id, {
+      await contentApi.updateContentItem(contentItemForField.id, {
         contentZh,
         contentEn,
-        version: contentItem.version,
+        version: contentItemForField.version,
         changeSummary: `通过可视化编辑器更新: ${editingElement.label}`,
       })
 
@@ -417,7 +426,16 @@ export function VisualEditor({ pageSlug }: VisualEditorProps) {
       // Get page content to find the content item
       const pageContentResponse = await contentApi.getPageContent(currentPage.id)
       const { contentItems } = pageContentResponse.data
-      const contentItem = contentItems.find((item: any) => item.fieldKey === editingElement.fieldKey)
+      let contentItem = contentItems.find((item: any) => item.fieldKey === editingElement.fieldKey)
+      if (!contentItem) {
+        const ensureResponse = await contentApi.ensureContentItem(currentPage.id, {
+          fieldKey: editingElement.fieldKey,
+          fieldType: 'text',
+          contentZh: imagePath,
+          contentEn: imagePath,
+        })
+        contentItem = ensureResponse.data
+      }
 
       if (!contentItem) {
         throw new Error('内容项未找到')

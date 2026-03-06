@@ -1,6 +1,7 @@
 package com.manqiyou.app.cms.controller;
 
 import com.manqiyou.app.cms.dto.ContentItemDTO;
+import com.manqiyou.app.cms.dto.CreateContentItemRequest;
 import com.manqiyou.app.cms.dto.PageWithContentDTO;
 import com.manqiyou.app.cms.dto.UpdateContentRequest;
 import com.manqiyou.app.cms.entity.ContentVersion;
@@ -39,6 +40,19 @@ public class ContentController {
     public Result<PageWithContentDTO> getPageWithContent(@PathVariable Long pageId) {
         PageWithContentDTO page = contentService.getPageWithContent(pageId);
         return Result.success(page);
+    }
+
+    @PostMapping("/pages/{pageId}/items")
+    public Result<ContentItemDTO> ensureContentItem(@PathVariable Long pageId,
+                                                    @Validated @RequestBody CreateContentItemRequest request) {
+        ContentItemDTO item = contentService.ensureContentItem(
+            pageId,
+            request.getFieldKey(),
+            request.getFieldType(),
+            request.getContentZh(),
+            request.getContentEn()
+        );
+        return Result.success(item);
     }
 
     @PutMapping("/items/{itemId}")

@@ -191,6 +191,12 @@ export const PreviewFrame = forwardRef<PreviewFrameRef, PreviewFrameProps>(
       'goods': '/goods',
       'community': '/community',
       'partners': '/partners',
+      'community-events': '/community/events',
+      'careers': '/careers',
+      'contact': '/contact',
+      'faq': '/faq',
+      'privacy': '/privacy',
+      'terms': '/terms',
     }
     
     return routeMap[slug] || `/${slug}`

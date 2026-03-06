@@ -20,6 +20,33 @@ import { PublishDialog } from '@/components/admin/PublishDialog'
 import { useToast } from '@/hooks/use-toast'
 import { FileText, Clock, AlertCircle, History, Eye, Upload } from 'lucide-react'
 
+const PAGE_ZH_NAME_MAP: Record<string, string> = {
+  home: '首页',
+  ebike: 'E-BIKE页面',
+  routes: '路线页面',
+  goods: '在地好物',
+  community: '社群活动',
+  partners: '合作伙伴',
+  about: '关于我们',
+  'community-events': '社群活动子页',
+  careers: '招贤纳士',
+  contact: '联系我们',
+  faq: '常见问题',
+  privacy: '隐私政策',
+  terms: '服务条款',
+}
+
+const hasChinese = (value?: string | null): boolean =>
+  !!value && /[\u4e00-\u9fff]/.test(value)
+
+const getPageZhName = (page: Page): string => {
+  const mapped = PAGE_ZH_NAME_MAP[page.slug]
+  if (mapped) return mapped
+  if (hasChinese(page.nameZh)) return page.nameZh
+  if (page.nameZh?.trim()) return page.nameZh
+  return page.slug
+}
+
 /**
  * 内容管理页面
  * Requirements: 2.1, 2.2
@@ -137,7 +164,7 @@ export default function ContentManagementPage() {
               <SelectContent>
                 {pages.map((page) => (
                   <SelectItem key={page.id} value={page.id}>
-                    {page.nameZh} ({page.nameEn})
+                    {getPageZhName(page)}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -319,7 +346,7 @@ export default function ContentManagementPage() {
       {showPreview && selectedPage && (
         <PreviewModal
           contentItems={contentItems}
-          pageName={selectedPage.nameZh}
+          pageName={getPageZhName(selectedPage)}
           pageSlug={selectedPage.slug}
           isOpen={showPreview}
           onClose={() => setShowPreview(false)}
@@ -332,7 +359,7 @@ export default function ContentManagementPage() {
       {/* Publish Dialog */}
       {showPublish && selectedPage && (
         <PublishDialog
-          pageName={selectedPage.nameZh}
+          pageName={getPageZhName(selectedPage)}
           isOpen={showPublish}
           onClose={() => setShowPublish(false)}
           onConfirm={handlePublish}

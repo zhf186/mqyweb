@@ -164,6 +164,13 @@ export function ImageEditDialog({
   if (!element) return null
 
   const hasChanges = imagePath !== element.contentZh
+  const formatFileSize = (bytes?: number | string | null) => {
+    const size = Number(bytes)
+    if (!Number.isFinite(size) || size <= 0) return '--'
+    if (size < 1024) return `${Math.round(size)} B`
+    if (size < 1024 * 1024) return `${(size / 1024).toFixed(1)} KB`
+    return `${(size / 1024 / 1024).toFixed(1)} MB`
+  }
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && handleCancel()}>
@@ -315,7 +322,7 @@ export function ImageEditDialog({
             <div className="bg-blue-50 border border-blue-200 px-4 py-3 rounded text-xs text-gray-700">
               <p><strong>文件名:</strong> {selectedAsset.originalFilename}</p>
               <p><strong>尺寸:</strong> {selectedAsset.width} × {selectedAsset.height}px</p>
-              <p><strong>大小:</strong> {(selectedAsset.fileSize / 1024).toFixed(2)} KB</p>
+              <p><strong>大小:</strong> {formatFileSize(selectedAsset.fileSize)}</p>
             </div>
           )}
 

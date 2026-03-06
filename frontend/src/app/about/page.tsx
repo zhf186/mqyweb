@@ -383,6 +383,9 @@ export default function AboutPage() {
                     className="object-cover transition-transform duration-700 group-hover:scale-110"
                     sizes="(max-width: 768px) 100vw, 50vw"
                     loading="lazy"
+                    data-editable={`about.manufacturing.images.${index + 1}`}
+                    data-editable-type="image"
+                    data-editable-label={`Manufacturing Image ${index + 1}`}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 </motion.div>
@@ -476,12 +479,29 @@ export default function AboutPage() {
                       className="object-cover transition-transform duration-700 group-hover:scale-110"
                       sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                       loading="lazy"
+                      data-editable={`about.stores.items.${index + 1}.image`}
+                      data-editable-type="image"
+                      data-editable-label={`Store ${index + 1} Image`}
                     />
                   </div>
                   <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent" />
                   <div className="absolute bottom-0 left-0 right-0 p-6">
-                    <h3 className="font-zh-heading text-2xl font-bold mb-2">{store.name}</h3>
-                    <p className="text-sm text-white/70">{store.location}</p>
+                    <h3
+                      className="font-zh-heading text-2xl font-bold mb-2"
+                      data-editable={`about.stores.items.${index + 1}.name`}
+                      data-editable-type="text"
+                      data-editable-label={`Store ${index + 1} Name`}
+                    >
+                      {store.name}
+                    </h3>
+                    <p
+                      className="text-sm text-white/70"
+                      data-editable={`about.stores.items.${index + 1}.location`}
+                      data-editable-type="text"
+                      data-editable-label={`Store ${index + 1} Location`}
+                    >
+                      {store.location}
+                    </p>
                   </div>
                 </motion.div>
               ))}
@@ -532,12 +552,18 @@ export default function AboutPage() {
                 <Link
                   href="/community"
                   className="rounded-full bg-brand-accent px-8 py-4 font-medium text-black shadow-lg transition-all hover:scale-105 hover:shadow-brand-accent/50"
+                  data-editable="about.cta.member"
+                  data-editable-type="text"
+                  data-editable-label="About CTA Member Button"
                 >
                   {t('about.cta.member')}
                 </Link>
                 <Link
                   href="/partners"
                   className="rounded-full border-2 border-white bg-white/20 px-8 py-4 font-medium text-white backdrop-blur-sm transition-all hover:bg-white hover:text-brand-primary"
+                  data-editable="about.cta.cooperate"
+                  data-editable-type="text"
+                  data-editable-label="About CTA Cooperate Button"
                 >
                   {t('about.cta.cooperate')}
                 </Link>

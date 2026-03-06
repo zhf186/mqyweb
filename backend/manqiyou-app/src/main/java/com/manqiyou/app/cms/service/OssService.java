@@ -123,6 +123,11 @@ public class OssService {
      * @param fileKey 文件键
      */
     public void deleteFile(String fileKey) {
+        if (!isOssConfigured()) {
+            deleteLocalFile(fileKey);
+            return;
+        }
+
         try {
             OSS ossClient = createOssClient();
             
@@ -146,6 +151,10 @@ public class OssService {
      * @return 是否存在
      */
     public boolean exists(String fileKey) {
+        if (!isOssConfigured()) {
+            return localFileExists(fileKey);
+        }
+
         try {
             OSS ossClient = createOssClient();
             
@@ -158,6 +167,35 @@ public class OssService {
         } catch (Exception e) {
             log.error("Failed to check file existence: {}", fileKey, e);
             return false;
+        }
+    }
+
+    /**
+     * 鑾峰彇鏂囦欢澶у皬锛堝瓧鑺傦級
+     *
+     * @param fileKey 鏂囦欢閿?
+     * @return 鏂囦欢澶у皬锛岃嫢鏃犳硶鑾峰彇鍒欒繑鍥?null
+     */
+    public Long getFileSize(String fileKey) {
+        if (fileKey == null || fileKey.isBlank()) {
+            return null;
+        }
+
+        if (!isOssConfigured()) {
+            return getLocalFileSize(fileKey);
+        }
+
+        try {
+            OSS ossClient = createOssClient();
+            try {
+                ObjectMetadata metadata = ossClient.getObjectMetadata(ossProperties.getBucket(), fileKey);
+                return metadata != null ? metadata.getContentLength() : null;
+            } finally {
+                ossClient.shutdown();
+            }
+        } catch (Exception e) {
+            log.warn("Failed to get file size from OSS: {}", fileKey, e);
+            return null;
         }
     }
     
@@ -181,6 +219,12 @@ public class OssService {
         String bucketDomain = ossProperties.getBucket() + "." + ossProperties.getEndpoint();
         if (url.contains(bucketDomain)) {
             return url.substring(url.indexOf(bucketDomain) + bucketDomain.length() + 1);
+        }
+
+        String uploadsPrefix = "/uploads/";
+        int uploadsIndex = url.indexOf(uploadsPrefix);
+        if (uploadsIndex >= 0) {
+            return url.substring(uploadsIndex + uploadsPrefix.length());
         }
         
         return url;
@@ -224,5 +268,48 @@ public class OssService {
         
         // 否则使用OSS默认域名
         return "https://" + ossProperties.getBucket() + "." + ossProperties.getEndpoint() + "/" + fileKey;
+    }
+
+    private Path resolveLocalPath(String fileKey) {
+        return Paths.get(LOCAL_UPLOAD_DIR).resolve(fileKey);
+    }
+
+    private void deleteLocalFile(String fileKey) {
+        if (fileKey == null || fileKey.isBlank()) {
+            return;
+        }
+        try {
+            Files.deleteIfExists(resolveLocalPath(fileKey));
+        } catch (IOException e) {
+            log.warn("Failed to delete local file: {}", fileKey, e);
+        }
+    }
+
+    private boolean localFileExists(String fileKey) {
+        if (fileKey == null || fileKey.isBlank()) {
+            return false;
+        }
+        try {
+            return Files.exists(resolveLocalPath(fileKey));
+        } catch (Exception e) {
+            log.warn("Failed to check local file existence: {}", fileKey, e);
+            return false;
+        }
+    }
+
+    private Long getLocalFileSize(String fileKey) {
+        if (fileKey == null || fileKey.isBlank()) {
+            return null;
+        }
+        try {
+            Path path = resolveLocalPath(fileKey);
+            if (!Files.exists(path)) {
+                return null;
+            }
+            return Files.size(path);
+        } catch (Exception e) {
+            log.warn("Failed to get local file size: {}", fileKey, e);
+            return null;
+        }
     }
 }

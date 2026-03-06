@@ -171,7 +171,14 @@ export default function CommunityPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 0.3 }}
             >
-              <span className="text-sm tracking-[0.3em] text-brand-accent">{t('communityPage.heroBadge')}</span>
+              <span
+                className="text-sm tracking-[0.3em] text-brand-accent"
+                data-editable="communityPage.heroBadge"
+                data-editable-type="text"
+                data-editable-label="Community Hero Badge"
+              >
+                {t('communityPage.heroBadge')}
+              </span>
               <h1 
                 className="mt-4 font-zh-display text-5xl font-bold md:text-7xl"
                 data-editable="communityPage.heroTitle"
@@ -237,10 +244,22 @@ export default function CommunityPage() {
                   transition={{ duration: 0.6, delay: index * 0.15 }}
                   className="text-center"
                 >
-                  <div className="font-en-display text-6xl font-light md:text-7xl">
+                  <div
+                    className="font-en-display text-6xl font-light md:text-7xl"
+                    data-editable={`communityPage.stats.${stat.key}.value`}
+                    data-editable-type="text"
+                    data-editable-label={`Community Stat ${stat.key} Value`}
+                  >
                     {stat.key === 'distance' && locale === 'zh' ? t('communityPage.stats.distanceZh') : stat.value}
                   </div>
-                  <p className="mt-2 text-white/50">{t(`communityPage.stats.${stat.key}`)}</p>
+                  <p
+                    className="mt-2 text-white/50"
+                    data-editable={`communityPage.stats.${stat.key}.label`}
+                    data-editable-type="text"
+                    data-editable-label={`Community Stat ${stat.key} Label`}
+                  >
+                    {t(`communityPage.stats.${stat.key}`)}
+                  </p>
                 </motion.div>
               ))}
             </div>
@@ -273,7 +292,13 @@ export default function CommunityPage() {
                   {t('communityPage.activities.title')}
                 </h2>
               </div>
-              <Link href="/community/events" className="text-brand-accent hover:underline">
+              <Link
+                href="/community/events"
+                className="text-brand-accent hover:underline"
+                data-editable="communityPage.activities.viewAll"
+                data-editable-type="text"
+                data-editable-label="Community Activities View All"
+              >
                 {t('common.viewAll')}
               </Link>
             </motion.div>
@@ -297,6 +322,9 @@ export default function CommunityPage() {
                       quality={75}
                       sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                       className="object-cover transition-transform duration-500 group-hover:scale-110"
+                      data-editable={`communityPage.activities.items.${activity.id}.image`}
+                      data-editable-type="image"
+                      data-editable-label={`Community Activity ${activity.id} Image`}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
                     <span className={`absolute right-4 top-4 rounded-full px-3 py-1 text-xs font-medium ${
@@ -305,21 +333,45 @@ export default function CommunityPage() {
                         : activity.status === 'ongoing'
                         ? 'bg-white/20 text-white'
                         : 'bg-white/10 text-white/60'
-                    }`}>
+                    }`}
+                    data-editable={`communityPage.activities.items.${activity.id}.status`}
+                    data-editable-type="text"
+                    data-editable-label={`Community Activity ${activity.id} Status`}>
                       {t(`communityPage.activities.status.${activity.status}`)}
                     </span>
                     <div className="absolute bottom-4 left-4 right-4">
-                      <h3 className="font-zh-heading text-xl font-bold">
+                      <h3
+                        className="font-zh-heading text-xl font-bold"
+                        data-editable={`communityPage.activities.items.${activity.id}.title`}
+                        data-editable-type="text"
+                        data-editable-label={`Community Activity ${activity.id} Title`}
+                      >
                         {locale === 'en' ? activity.titleEn : t(activity.titleKey)}
                       </h3>
                     </div>
                   </div>
                   <div className="mt-4 flex items-center justify-between text-sm text-white/50">
                     <div className="flex gap-4">
-                      <span>{locale === 'en' ? activity.dateEn : t(activity.dateKey)}</span>
-                      <span>{locale === 'en' ? activity.locationEn : t(activity.locationKey)}</span>
+                      <span
+                        data-editable={`communityPage.activities.items.${activity.id}.date`}
+                        data-editable-type="text"
+                        data-editable-label={`Community Activity ${activity.id} Date`}
+                      >
+                        {locale === 'en' ? activity.dateEn : t(activity.dateKey)}
+                      </span>
+                      <span
+                        data-editable={`communityPage.activities.items.${activity.id}.location`}
+                        data-editable-type="text"
+                        data-editable-label={`Community Activity ${activity.id} Location`}
+                      >
+                        {locale === 'en' ? activity.locationEn : t(activity.locationKey)}
+                      </span>
                     </div>
-                    <span>
+                    <span
+                      data-editable={`communityPage.activities.items.${activity.id}.participants`}
+                      data-editable-type="text"
+                      data-editable-label={`Community Activity ${activity.id} Participants`}
+                    >
                       {locale === 'en'
                         ? `${activity.participants} ${t('communityPage.activities.participantsUnit')}`
                         : `${activity.participants}${t('communityPage.activities.participantsUnit')}`}
@@ -384,6 +436,9 @@ export default function CommunityPage() {
                     quality={75}
                     sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
                     className="object-cover transition-all duration-500 group-hover:scale-110 group-hover:brightness-75"
+                    data-editable={`communityPage.gallery.images.${index + 1}`}
+                    data-editable-type="image"
+                    data-editable-label={`Community Gallery Image ${index + 1}`}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                   <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100">
@@ -425,11 +480,21 @@ export default function CommunityPage() {
                 {t('communityPage.cta.desc')}
               </p>
               <div className="mt-12 flex flex-wrap justify-center gap-4">
-                <button className="group relative overflow-hidden rounded-full bg-white px-10 py-5 text-lg font-semibold text-black transition-all hover:scale-105 hover:shadow-2xl hover:shadow-white/20">
+                <button
+                  className="group relative overflow-hidden rounded-full bg-white px-10 py-5 text-lg font-semibold text-black transition-all hover:scale-105 hover:shadow-2xl hover:shadow-white/20"
+                  data-editable="communityPage.cta.joinNow"
+                  data-editable-type="text"
+                  data-editable-label="Community CTA Join Button"
+                >
                   <span className="relative z-10">{t('communityPage.cta.joinNow')}</span>
                   <div className="absolute inset-0 -z-0 bg-gradient-to-r from-brand-accent to-white opacity-0 transition-opacity group-hover:opacity-100" />
                 </button>
-                <button className="rounded-full border-2 border-white/30 px-10 py-5 text-lg font-semibold transition-all hover:border-white/60 hover:bg-white/10">
+                <button
+                  className="rounded-full border-2 border-white/30 px-10 py-5 text-lg font-semibold transition-all hover:border-white/60 hover:bg-white/10"
+                  data-editable="communityPage.cta.learnMore"
+                  data-editable-type="text"
+                  data-editable-label="Community CTA Learn More Button"
+                >
                   {t('common.learnMore')}
                 </button>
               </div>
@@ -448,8 +513,22 @@ export default function CommunityPage() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                     </svg>
                   </div>
-                  <h3 className="font-semibold">{t('communityPage.cta.benefits.community')}</h3>
-                  <p className="mt-2 text-sm text-white/50">{t('communityPage.cta.benefits.communityDesc')}</p>
+                  <h3
+                    className="font-semibold"
+                    data-editable="communityPage.cta.benefits.community"
+                    data-editable-type="text"
+                    data-editable-label="Community CTA Benefit 1 Title"
+                  >
+                    {t('communityPage.cta.benefits.community')}
+                  </h3>
+                  <p
+                    className="mt-2 text-sm text-white/50"
+                    data-editable="communityPage.cta.benefits.communityDesc"
+                    data-editable-type="text"
+                    data-editable-label="Community CTA Benefit 1 Desc"
+                  >
+                    {t('communityPage.cta.benefits.communityDesc')}
+                  </p>
                 </motion.div>
                 
                 <motion.div
@@ -464,8 +543,22 @@ export default function CommunityPage() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
                   </div>
-                  <h3 className="font-semibold">{t('communityPage.cta.benefits.events')}</h3>
-                  <p className="mt-2 text-sm text-white/50">{t('communityPage.cta.benefits.eventsDesc')}</p>
+                  <h3
+                    className="font-semibold"
+                    data-editable="communityPage.cta.benefits.events"
+                    data-editable-type="text"
+                    data-editable-label="Community CTA Benefit 2 Title"
+                  >
+                    {t('communityPage.cta.benefits.events')}
+                  </h3>
+                  <p
+                    className="mt-2 text-sm text-white/50"
+                    data-editable="communityPage.cta.benefits.eventsDesc"
+                    data-editable-type="text"
+                    data-editable-label="Community CTA Benefit 2 Desc"
+                  >
+                    {t('communityPage.cta.benefits.eventsDesc')}
+                  </p>
                 </motion.div>
                 
                 <motion.div
@@ -480,8 +573,22 @@ export default function CommunityPage() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
                     </svg>
                   </div>
-                  <h3 className="font-semibold">{t('communityPage.cta.benefits.rewards')}</h3>
-                  <p className="mt-2 text-sm text-white/50">{t('communityPage.cta.benefits.rewardsDesc')}</p>
+                  <h3
+                    className="font-semibold"
+                    data-editable="communityPage.cta.benefits.rewards"
+                    data-editable-type="text"
+                    data-editable-label="Community CTA Benefit 3 Title"
+                  >
+                    {t('communityPage.cta.benefits.rewards')}
+                  </h3>
+                  <p
+                    className="mt-2 text-sm text-white/50"
+                    data-editable="communityPage.cta.benefits.rewardsDesc"
+                    data-editable-type="text"
+                    data-editable-label="Community CTA Benefit 3 Desc"
+                  >
+                    {t('communityPage.cta.benefits.rewardsDesc')}
+                  </p>
                 </motion.div>
               </div>
             </motion.div>

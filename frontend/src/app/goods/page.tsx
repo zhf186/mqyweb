@@ -169,6 +169,9 @@ export default function GoodsPage() {
                       ? 'bg-white text-black'
                       : 'text-white/60 hover:text-white'
                   }`}
+                  data-editable={`goodsPage.categories.${cat.id}`}
+                  data-editable-type="text"
+                  data-editable-label={`Goods Category ${cat.id}`}
                 >
                   {t(`goodsPage.categories.${cat.id}`)}
                 </button>
@@ -198,13 +201,26 @@ export default function GoodsPage() {
                         className="object-cover transition-transform duration-500 group-hover:scale-110"
                         sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
                         loading="lazy"
+                        data-editable={`goodsPage.products.${product.id}.image`}
+                        data-editable-type="image"
+                        data-editable-label={`Goods Product ${product.id} Image`}
                       />
                     </div>
                     <div className="mt-3 sm:mt-4">
-                      <h3 className="text-sm font-medium text-white group-hover:text-brand-accent transition-colors sm:text-base">
+                      <h3
+                        className="text-sm font-medium text-white group-hover:text-brand-accent transition-colors sm:text-base"
+                        data-editable={`goodsPage.products.${product.id}.name`}
+                        data-editable-type="text"
+                        data-editable-label={`Goods Product ${product.id} Name`}
+                      >
                         {locale === 'en' ? product.nameEn : t(product.nameKey)}
                       </h3>
-                      <p className="mt-1 text-base font-bold text-brand-accent sm:text-lg">
+                      <p
+                        className="mt-1 text-base font-bold text-brand-accent sm:text-lg"
+                        data-editable={`goodsPage.products.${product.id}.price`}
+                        data-editable-type="text"
+                        data-editable-label={`Goods Product ${product.id} Price`}
+                      >
                         ¥{product.price}
                       </p>
                     </div>
@@ -280,6 +296,9 @@ export default function GoodsPage() {
                       height={400}
                       className="h-full w-full object-cover"
                       loading="lazy"
+                      data-editable={`goodsPage.feature.images.${i}`}
+                      data-editable-type="image"
+                      data-editable-label={`Goods Feature Image ${i}`}
                     />
                   </div>
                 ))}

@@ -13,6 +13,7 @@ import { detectEditableElements, updateElementContent, findElementBySelector, in
 import type { IframeBridgeMessage } from '@/lib/visual-editor/types'
 
 import { api, type PageResponse } from '@/lib/api/client'
+import { getPageContent, getContent, type CMSContent } from '@/lib/api/public-content'
 
 type DifficultyFilter = 'all' | 'easy' | 'medium' | 'hard'
 
@@ -95,10 +96,17 @@ export default function RoutesPage() {
   const { t, locale } = useTranslation()
   const searchParams = useSearchParams()
   const isEditMode = searchParams.get('editMode') === 'true'
+  const [cmsContent, setCmsContent] = React.useState<CMSContent>({})
   const [filter, setFilter] = React.useState<DifficultyFilter>('all')
   const [categoryId, setCategoryId] = React.useState<number | null>(null)
   const [page, setPage] = React.useState(1)
   const size = 9
+  const contentLocale: 'zh' | 'en' = locale === 'en' ? 'en' : 'zh'
+
+  const getEditableText = React.useCallback(
+    (fieldKey: string, fallback: string) => getContent(cmsContent, fieldKey, contentLocale, fallback),
+    [cmsContent, contentLocale]
+  )
 
   const difficultyParam = filter === 'all' ? undefined : DIFFICULTY_TO_API[filter]
 
@@ -125,6 +133,12 @@ export default function RoutesPage() {
 
   const routeRecords = routesQuery.data?.records ?? []
   const totalPages = routesQuery.data?.pages ?? 1
+
+  React.useEffect(() => {
+    getPageContent('routes').then((content) => {
+      setCmsContent(content)
+    })
+  }, [])
 
   // 编辑模式支持
   React.useEffect(() => {
@@ -197,7 +211,7 @@ export default function RoutesPage() {
         <section className="relative h-[70vh] min-h-[500px] overflow-hidden">
           <div className="absolute inset-0">
             <Image
-              src="/brand_assets/page12_img1.jpeg"
+              src={getEditableText('routes.hero.background', '/brand_assets/page12_img1.jpeg')}
               alt={t('routesPage.heroImageAlt')}
               fill
               priority
@@ -222,14 +236,14 @@ export default function RoutesPage() {
                 data-editable="routesPage.heroBadge"
                 data-editable-type="text"
                 data-editable-label="路线页徽章"
-              >{t('routesPage.heroBadge')}</span>
+              >{getEditableText('routesPage.heroBadge', t('routesPage.heroBadge'))}</span>
               <h1 
                 className="mt-4 font-zh-display text-5xl font-bold md:text-7xl"
                 data-editable="routesPage.heroTitle"
                 data-editable-type="text"
                 data-editable-label="路线页标题"
               >
-                {t('routesPage.heroTitle')}
+                {getEditableText('routesPage.heroTitle', t('routesPage.heroTitle'))}
               </h1>
               <p 
                 className="mx-auto mt-6 max-w-xl text-lg text-white/70"
@@ -237,7 +251,7 @@ export default function RoutesPage() {
                 data-editable-type="text"
                 data-editable-label="路线页描述"
               >
-                {t('routesPage.heroDesc')}
+                {getEditableText('routesPage.heroDesc', t('routesPage.heroDesc'))}
               </p>
             </motion.div>
           </div>
@@ -253,7 +267,7 @@ export default function RoutesPage() {
                 data-editable-type="text"
                 data-editable-label="路线特色徽章"
               >
-                {t('routesPage.features.badge')}
+                {getEditableText('routesPage.features.badge', t('routesPage.features.badge'))}
               </span>
               <h2 
                 className="mt-4 text-3xl font-bold sm:text-4xl md:text-5xl"
@@ -261,7 +275,7 @@ export default function RoutesPage() {
                 data-editable-type="text"
                 data-editable-label="路线特色标题"
               >
-                {t('routesPage.features.title')}
+                {getEditableText('routesPage.features.title', t('routesPage.features.title'))}
               </h2>
             </div>
             
@@ -275,11 +289,14 @@ export default function RoutesPage() {
               >
                 <div className="relative aspect-[4/3]">
                   <Image
-                    src="/brand_assets/routes/page12_img3.jpeg"
+                    src={getEditableText('routesPage.features.culture.image', '/brand_assets/routes/page12_img3.jpeg')}
                     alt={t('routesPage.features.culture.title')}
                     fill
                     className="object-cover transition-transform duration-700 group-hover:scale-110"
                     sizes="(max-width: 768px) 100vw, 33vw"
+                    data-editable="routesPage.features.culture.image"
+                    data-editable-type="image"
+                    data-editable-label="routes-features-culture-image"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-black/20" />
                 </div>
@@ -290,7 +307,7 @@ export default function RoutesPage() {
                     data-editable-type="text"
                     data-editable-label="文化深度标题"
                   >
-                    {t('routesPage.features.culture.title')}
+                    {getEditableText('routesPage.features.culture.title', t('routesPage.features.culture.title'))}
                   </h3>
                   <p 
                     className="text-white/80 leading-relaxed text-sm"
@@ -298,7 +315,7 @@ export default function RoutesPage() {
                     data-editable-type="text"
                     data-editable-label="文化深度描述"
                   >
-                    {t('routesPage.features.culture.desc')}
+                    {getEditableText('routesPage.features.culture.desc', t('routesPage.features.culture.desc'))}
                   </p>
                 </div>
               </motion.div>
@@ -312,11 +329,14 @@ export default function RoutesPage() {
               >
                 <div className="relative aspect-[4/3]">
                   <Image
-                    src="/brand_assets/ebike/page10_img1.jpeg"
+                    src={getEditableText('routesPage.features.ebike.image', '/brand_assets/ebike/page10_img1.jpeg')}
                     alt={t('routesPage.features.ebike.title')}
                     fill
                     className="object-cover transition-transform duration-700 group-hover:scale-110"
                     sizes="(max-width: 768px) 100vw, 33vw"
+                    data-editable="routesPage.features.ebike.image"
+                    data-editable-type="image"
+                    data-editable-label="routes-features-ebike-image"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-black/20" />
                 </div>
@@ -326,14 +346,14 @@ export default function RoutesPage() {
                     data-editable="routesPage.features.ebike.title"
                     data-editable-type="text"
                     data-editable-label="E-BIKE助力标题"
-                  >{t('routesPage.features.ebike.title')}</h3>
+                  >{getEditableText('routesPage.features.ebike.title', t('routesPage.features.ebike.title'))}</h3>
                   <p
                     className="text-white/80 leading-relaxed text-sm"
                     data-editable="routesPage.features.ebike.desc"
                     data-editable-type="text"
                     data-editable-label="E-BIKE助力描述"
                   >
-                    {t('routesPage.features.ebike.desc')}
+                    {getEditableText('routesPage.features.ebike.desc', t('routesPage.features.ebike.desc'))}
                   </p>
                 </div>
               </motion.div>
@@ -347,11 +367,14 @@ export default function RoutesPage() {
               >
                 <div className="relative aspect-[4/3]">
                   <Image
-                    src="/brand_assets/community/page14_img1.jpeg"
+                    src={getEditableText('routesPage.features.experience.image', '/brand_assets/community/page14_img1.jpeg')}
                     alt={t('routesPage.features.experience.title')}
                     fill
                     className="object-cover transition-transform duration-700 group-hover:scale-110"
                     sizes="(max-width: 768px) 100vw, 33vw"
+                    data-editable="routesPage.features.experience.image"
+                    data-editable-type="image"
+                    data-editable-label="routes-features-experience-image"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-black/20" />
                 </div>
@@ -361,14 +384,14 @@ export default function RoutesPage() {
                     data-editable="routesPage.features.experience.title"
                     data-editable-type="text"
                     data-editable-label="沉浸体验标题"
-                  >{t('routesPage.features.experience.title')}</h3>
+                  >{getEditableText('routesPage.features.experience.title', t('routesPage.features.experience.title'))}</h3>
                   <p
                     className="text-white/80 leading-relaxed text-sm"
                     data-editable="routesPage.features.experience.desc"
                     data-editable-type="text"
                     data-editable-label="沉浸体验描述"
                   >
-                    {t('routesPage.features.experience.desc')}
+                    {getEditableText('routesPage.features.experience.desc', t('routesPage.features.experience.desc'))}
                   </p>
                 </div>
               </motion.div>
@@ -393,8 +416,14 @@ export default function RoutesPage() {
                         ? 'bg-white text-black'
                         : 'text-white/60 hover:text-white'
                     }`}
+                    data-editable={d === 'all' ? 'routesPage.filters.difficulty.all' : `routesPage.filters.difficulty.${d}`}
+                    data-editable-type="text"
+                    data-editable-label={`routes-filter-difficulty-${d}`}
                   >
-                    {d === 'all' ? t('routesPage.filters.allDifficulty') : t(`routes.difficulty.${d}`)}
+                    {getEditableText(
+                      d === 'all' ? 'routesPage.filters.difficulty.all' : `routesPage.filters.difficulty.${d}`,
+                      d === 'all' ? t('routesPage.filters.allDifficulty') : t(`routes.difficulty.${d}`)
+                    )}
                   </button>
                 ))}
               </div>
@@ -411,8 +440,11 @@ export default function RoutesPage() {
                         ? 'bg-white text-black'
                         : 'text-white/60 hover:text-white'
                     }`}
+                    data-editable="routesPage.filters.categories.all"
+                    data-editable-type="text"
+                    data-editable-label="routes-filter-category-all"
                   >
-                    {t('routesPage.filters.allCategories')}
+                    {getEditableText('routesPage.filters.categories.all', t('routesPage.filters.allCategories'))}
                   </button>
                   {categoriesQuery.data.map((c) => (
                     <button
@@ -426,8 +458,14 @@ export default function RoutesPage() {
                           ? 'bg-white text-black'
                           : 'text-white/60 hover:text-white'
                       }`}
+                      data-editable={`routesPage.filters.categories.${c.id}`}
+                      data-editable-type="text"
+                      data-editable-label={`routes-filter-category-${c.id}`}
                     >
-                      {locale === 'en' ? c.nameEn || c.name : c.name}
+                      {getEditableText(
+                        `routesPage.filters.categories.${c.id}`,
+                        locale === 'en' ? c.nameEn || c.name : c.name
+                      )}
                     </button>
                   ))}
                 </div>
@@ -440,11 +478,32 @@ export default function RoutesPage() {
         <section className="py-12 sm:py-16 md:py-20">
           <div className="mx-auto max-w-7xl px-4 sm:px-6">
             {routesQuery.isLoading ? (
-              <div className="py-16 text-center text-white/60 sm:py-20">{t('common.loading')}</div>
+              <div
+                className="py-16 text-center text-white/60 sm:py-20"
+                data-editable="routesPage.states.loading"
+                data-editable-type="text"
+                data-editable-label="routes-state-loading"
+              >
+                {getEditableText('routesPage.states.loading', t('common.loading'))}
+              </div>
             ) : routesQuery.isError ? (
-              <div className="py-16 text-center text-white/60 sm:py-20">{t('routesPage.states.loadFailed')}</div>
+              <div
+                className="py-16 text-center text-white/60 sm:py-20"
+                data-editable="routesPage.states.loadFailed"
+                data-editable-type="text"
+                data-editable-label="routes-state-load-failed"
+              >
+                {getEditableText('routesPage.states.loadFailed', t('routesPage.states.loadFailed'))}
+              </div>
             ) : routeRecords.length === 0 ? (
-              <div className="py-16 text-center text-white/60 sm:py-20">{t('routesPage.states.empty')}</div>
+              <div
+                className="py-16 text-center text-white/60 sm:py-20"
+                data-editable="routesPage.states.empty"
+                data-editable-type="text"
+                data-editable-label="routes-state-empty"
+              >
+                {getEditableText('routesPage.states.empty', t('routesPage.states.empty'))}
+              </div>
             ) : (
               <div className="grid gap-6 sm:gap-8 md:grid-cols-2 lg:grid-cols-3">
                 {routeRecords.map((route, index) => (
@@ -458,32 +517,71 @@ export default function RoutesPage() {
                     <Link href={`/routes/${route.id}`} className="group block">
                       <div className="relative aspect-[4/3] overflow-hidden rounded-xl sm:rounded-2xl">
                         <Image
-                          src={route.coverImage || '/brand_assets/page12_img1.jpeg'}
+                          src={getEditableText(`routesPage.cards.${route.id}.image`, route.coverImage || '/brand_assets/page12_img1.jpeg')}
                           alt={route.name}
                           fill
                           className="object-cover transition-transform duration-700 group-hover:scale-110"
                           sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                           loading="lazy"
+                          data-editable={`routesPage.cards.${route.id}.image`}
+                          data-editable-type="image"
+                          data-editable-label={`routes-card-${route.id}-image`}
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
                         <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6">
-                          <span className="inline-block rounded-full bg-brand-accent/90 px-2.5 py-1 text-xs font-medium text-black sm:px-3">
-                            {formatDifficultyLabel(t, route.difficulty)}
+                          <span
+                            className="inline-block rounded-full bg-brand-accent/90 px-2.5 py-1 text-xs font-medium text-black sm:px-3"
+                            data-editable={`routesPage.cards.${route.id}.difficulty`}
+                            data-editable-type="text"
+                            data-editable-label={`routes-card-${route.id}-difficulty`}
+                          >
+                            {getEditableText(`routesPage.cards.${route.id}.difficulty`, formatDifficultyLabel(t, route.difficulty))}
                           </span>
-                          <h3 className="mt-2 font-zh-heading text-xl font-bold sm:mt-3 sm:text-2xl">
-                            {locale === 'en' ? route.nameEn || route.name : route.name}
+                          <h3
+                            className="mt-2 font-zh-heading text-xl font-bold sm:mt-3 sm:text-2xl"
+                            data-editable={`routesPage.cards.${route.id}.title`}
+                            data-editable-type="text"
+                            data-editable-label={`routes-card-${route.id}-title`}
+                          >
+                            {getEditableText(`routesPage.cards.${route.id}.title`, locale === 'en' ? route.nameEn || route.name : route.name)}
                           </h3>
-                          <p className="mt-1 text-xs text-white/60 sm:text-sm">{locale === 'en' ? route.name : route.nameEn}</p>
+                          <p
+                            className="mt-1 text-xs text-white/60 sm:text-sm"
+                            data-editable={`routesPage.cards.${route.id}.subtitle`}
+                            data-editable-type="text"
+                            data-editable-label={`routes-card-${route.id}-subtitle`}
+                          >
+                            {getEditableText(`routesPage.cards.${route.id}.subtitle`, locale === 'en' ? route.name : route.nameEn || '')}
+                          </p>
                         </div>
                       </div>
                       <div className="mt-3 flex items-center justify-between sm:mt-4">
                         <div className="flex gap-3 text-xs text-white/50 sm:gap-4 sm:text-sm">
-                          <span>{formatDuration(locale, t, route.duration)}</span>
-                          <span>{formatDistance(locale, t, route.distance)}</span>
+                          <span
+                            data-editable={`routesPage.cards.${route.id}.duration`}
+                            data-editable-type="text"
+                            data-editable-label={`routes-card-${route.id}-duration`}
+                          >
+                            {getEditableText(`routesPage.cards.${route.id}.duration`, formatDuration(locale, t, route.duration))}
+                          </span>
+                          <span
+                            data-editable={`routesPage.cards.${route.id}.distance`}
+                            data-editable-type="text"
+                            data-editable-label={`routes-card-${route.id}-distance`}
+                          >
+                            {getEditableText(`routesPage.cards.${route.id}.distance`, formatDistance(locale, t, route.distance))}
+                          </span>
                         </div>
                         <div className="text-right">
                           <span className="text-lg font-bold text-brand-accent sm:text-xl">¥{formatPrice(route.price)}</span>
-                          <span className="ml-1 text-xs text-white/50 sm:text-sm">{t('routesPage.perPersonFrom')}</span>
+                          <span
+                            className="ml-1 text-xs text-white/50 sm:text-sm"
+                            data-editable="routesPage.perPersonFrom"
+                            data-editable-type="text"
+                            data-editable-label="routes-per-person-from"
+                          >
+                            {getEditableText('routesPage.perPersonFrom', t('routesPage.perPersonFrom'))}
+                          </span>
                         </div>
                       </div>
                     </Link>
@@ -497,16 +595,22 @@ export default function RoutesPage() {
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={page <= 1}
                 className="rounded-full border border-white/15 px-5 py-2 text-xs text-white/80 transition-all hover:border-white/30 disabled:cursor-not-allowed disabled:opacity-40 sm:px-6 sm:text-sm"
+                data-editable="routesPage.pagination.prev"
+                data-editable-type="text"
+                data-editable-label="routes-pagination-prev"
               >
-                {t('routesPage.pagination.prev')}
+                {getEditableText('routesPage.pagination.prev', t('routesPage.pagination.prev'))}
               </button>
               <span className="text-xs text-white/50 sm:text-sm">{page} / {totalPages}</span>
               <button
                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                 disabled={page >= totalPages}
                 className="rounded-full border border-white/15 px-5 py-2 text-xs text-white/80 transition-all hover:border-white/30 disabled:cursor-not-allowed disabled:opacity-40 sm:px-6 sm:text-sm"
+                data-editable="routesPage.pagination.next"
+                data-editable-type="text"
+                data-editable-label="routes-pagination-next"
               >
-                {t('routesPage.pagination.next')}
+                {getEditableText('routesPage.pagination.next', t('routesPage.pagination.next'))}
               </button>
             </div>
           </div>
@@ -522,7 +626,7 @@ export default function RoutesPage() {
                 data-editable-type="text"
                 data-editable-label="精彩瞬间徽章"
               >
-                {t('routesPage.gallery.badge')}
+                {getEditableText('routesPage.gallery.badge', t('routesPage.gallery.badge'))}
               </span>
               <h2 
                 className="mt-4 text-3xl font-bold sm:text-4xl md:text-5xl"
@@ -530,7 +634,7 @@ export default function RoutesPage() {
                 data-editable-type="text"
                 data-editable-label="精彩瞬间标题"
               >
-                {t('routesPage.gallery.title')}
+                {getEditableText('routesPage.gallery.title', t('routesPage.gallery.title'))}
               </h2>
               <p 
                 className="mt-4 text-white/60"
@@ -538,7 +642,7 @@ export default function RoutesPage() {
                 data-editable-type="text"
                 data-editable-label="精彩瞬间描述"
               >
-                {t('routesPage.gallery.desc')}
+                {getEditableText('routesPage.gallery.desc', t('routesPage.gallery.desc'))}
               </p>
             </div>
 
@@ -553,12 +657,15 @@ export default function RoutesPage() {
                   className="group relative aspect-square overflow-hidden rounded-xl"
                 >
                   <Image
-                    src={`/brand_assets/page12_img${num}.jpeg`}
+                    src={getEditableText(`routesPage.gallery.images.${num}`, `/brand_assets/page12_img${num}.jpeg`)}
                     alt={`骑行瞬间 ${num}`}
                     fill
                     className="object-cover transition-transform duration-700 group-hover:scale-110"
                     sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
                     loading="lazy"
+                    data-editable={`routesPage.gallery.images.${num}`}
+                    data-editable-type="image"
+                    data-editable-label={`routes-gallery-image-${num}`}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                 </motion.div>
@@ -582,7 +689,7 @@ export default function RoutesPage() {
                 data-editable-type="text"
                 data-editable-label="定制路线CTA标题"
               >
-                {t('routesPage.customCta.title')}
+                {getEditableText('routesPage.customCta.title', t('routesPage.customCta.title'))}
               </h2>
               <p 
                 className="mt-5 text-lg text-white/60 sm:mt-6 sm:text-xl"
@@ -590,20 +697,26 @@ export default function RoutesPage() {
                 data-editable-type="text"
                 data-editable-label="定制路线CTA描述"
               >
-                {t('routesPage.customCta.desc')}
+                {getEditableText('routesPage.customCta.desc', t('routesPage.customCta.desc'))}
               </p>
               <div className="mt-8 flex flex-col justify-center gap-4 sm:mt-10 sm:flex-row sm:gap-6">
                 <Link
                   href="/contact"
                   className="rounded-full bg-orange-500 px-8 py-4 font-medium text-black transition-all hover:scale-105 hover:bg-orange-600"
+                  data-editable="routesPage.customCta.button"
+                  data-editable-type="text"
+                  data-editable-label="routes-custom-cta-button"
                 >
-                  {t('routesPage.customCta.button')}
+                  {getEditableText('routesPage.customCta.button', t('routesPage.customCta.button'))}
                 </Link>
                 <Link
                   href="/routes"
                   className="rounded-full border-2 border-white bg-transparent px-8 py-4 font-medium text-white transition-all hover:bg-white hover:text-black"
+                  data-editable="routesPage.browseMore"
+                  data-editable-type="text"
+                  data-editable-label="routes-browse-more"
                 >
-                  {t('routesPage.browseMore')}
+                  {getEditableText('routesPage.browseMore', t('routesPage.browseMore'))}
                 </Link>
               </div>
             </motion.div>

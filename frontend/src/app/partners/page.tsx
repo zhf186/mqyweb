@@ -124,7 +124,12 @@ export default function PartnersPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black" />
         
         <div className="relative z-10 flex h-full flex-col items-center justify-center px-4 text-center">
-          <div className="inline-block px-4 py-2 mb-6 text-sm font-medium tracking-widest border border-white/30 rounded-full backdrop-blur-sm">
+          <div
+            className="inline-block px-4 py-2 mb-6 text-sm font-medium tracking-widest border border-white/30 rounded-full backdrop-blur-sm"
+            data-editable="partnersPage.heroBadge"
+            data-editable-type="text"
+            data-editable-label="Partners Hero Badge"
+          >
             {t('partnersPage.heroBadge')}
           </div>
           <h1 
@@ -262,7 +267,12 @@ export default function PartnersPage() {
       <section className="py-24 md:py-32 bg-zinc-950">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <div className="inline-block px-4 py-2 mb-4 text-sm font-medium tracking-widest text-orange-500 border border-orange-500/30 rounded-full">
+            <div
+              className="inline-block px-4 py-2 mb-4 text-sm font-medium tracking-widest text-orange-500 border border-orange-500/30 rounded-full"
+              data-editable="partnersPage.partners.badge"
+              data-editable-type="text"
+              data-editable-label="Partners Section Badge"
+            >
               {t('partnersPage.heroBadge')}
             </div>
             <h2
@@ -278,10 +288,22 @@ export default function PartnersPage() {
             <div className="bg-zinc-900 rounded-2xl overflow-hidden border border-white/10 hover:border-orange-500/50 transition-all duration-300 group">
               <div className="relative h-80 bg-gradient-to-br from-red-900/20 via-zinc-900 to-zinc-900 flex items-center justify-center p-12">
                 <div className="text-center">
-                  <div className="text-8xl font-bold text-red-500 mb-4 group-hover:scale-110 transition-transform duration-300">
+                  <div
+                    className="text-8xl font-bold text-red-500 mb-4 group-hover:scale-110 transition-transform duration-300"
+                    data-editable="partnersPage.yadea.brandText"
+                    data-editable-type="text"
+                    data-editable-label="Yadea Brand Text"
+                  >
                     雅迪
                   </div>
-                  <div className="text-sm text-white/40 tracking-widest">YADEA</div>
+                  <div
+                    className="text-sm text-white/40 tracking-widest"
+                    data-editable="partnersPage.yadea.brandSubtext"
+                    data-editable-type="text"
+                    data-editable-label="Yadea Brand Subtext"
+                  >
+                    YADEA
+                  </div>
                 </div>
               </div>
               <div className="p-10">
@@ -310,10 +332,23 @@ export default function PartnersPage() {
             <div className="bg-zinc-900 rounded-2xl overflow-hidden border border-white/10 hover:border-orange-500/50 transition-all duration-300 group">
               <div className="relative h-80 bg-gradient-to-br from-blue-900/20 via-zinc-900 to-zinc-900 flex items-center justify-center p-12">
                 <div className="text-center">
-                  <div className="text-7xl font-bold text-blue-400 mb-4 group-hover:scale-110 transition-transform duration-300" style={{ fontFamily: 'serif' }}>
+                  <div
+                    className="text-7xl font-bold text-blue-400 mb-4 group-hover:scale-110 transition-transform duration-300"
+                    style={{ fontFamily: 'serif' }}
+                    data-editable="partnersPage.gazelle.brandText"
+                    data-editable-type="text"
+                    data-editable-label="Gazelle Brand Text"
+                  >
                     Gazelle
                   </div>
-                  <div className="text-sm text-white/40 tracking-widest">ROYAL DUTCH</div>
+                  <div
+                    className="text-sm text-white/40 tracking-widest"
+                    data-editable="partnersPage.gazelle.brandSubtext"
+                    data-editable-type="text"
+                    data-editable-label="Gazelle Brand Subtext"
+                  >
+                    ROYAL DUTCH
+                  </div>
                 </div>
               </div>
               <div className="p-10">
@@ -345,7 +380,12 @@ export default function PartnersPage() {
       <section className="py-24 md:py-32 bg-black">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <div className="inline-block px-4 py-2 mb-4 text-sm font-medium tracking-widest text-orange-500 border border-orange-500/30 rounded-full">
+            <div
+              className="inline-block px-4 py-2 mb-4 text-sm font-medium tracking-widest text-orange-500 border border-orange-500/30 rounded-full"
+              data-editable="partnersPage.scenic.badge"
+              data-editable-type="text"
+              data-editable-label="Scenic Section Badge"
+            >
               {t('partnersPage.types.badge')}
             </div>
             <h2
@@ -371,10 +411,20 @@ export default function PartnersPage() {
                     alt={locale === 'en' ? area.nameEn : area.name}
                     fill
                     className="object-cover group-hover:scale-110 transition-transform duration-500"
+                    data-editable={`partnersPage.scenic.items.${area.id}.image`}
+                    data-editable-type="image"
+                    data-editable-label={`Scenic Area ${area.id} Image`}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300" />
                   <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
-                    <h3 className="font-semibold text-sm md:text-base">{locale === 'en' ? area.nameEn : area.name}</h3>
+                    <h3
+                      className="font-semibold text-sm md:text-base"
+                      data-editable={`partnersPage.scenic.items.${area.id}.name`}
+                      data-editable-type="text"
+                      data-editable-label={`Scenic Area ${area.id} Name`}
+                    >
+                      {locale === 'en' ? area.nameEn : area.name}
+                    </h3>
                   </div>
                 </div>
               </div>
@@ -387,7 +437,12 @@ export default function PartnersPage() {
       <section className="py-24 md:py-32 bg-gradient-to-b from-black via-zinc-900 to-black">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <div className="inline-block px-4 py-2 mb-4 text-sm font-medium tracking-widest text-orange-500 border border-orange-500/30 rounded-full">
+            <div
+              className="inline-block px-4 py-2 mb-4 text-sm font-medium tracking-widest text-orange-500 border border-orange-500/30 rounded-full"
+              data-editable="partnersPage.types.badge"
+              data-editable-type="text"
+              data-editable-label="Cooperation Types Badge"
+            >
               {t('partnersPage.types.badge')}
             </div>
             <h2
@@ -407,6 +462,9 @@ export default function PartnersPage() {
                   alt={t('partnersPage.types.scenic.title')}
                   fill
                   className="object-cover"
+                  data-editable="partnersPage.types.scenic.image"
+                  data-editable-type="image"
+                  data-editable-label="Scenic Cooperation Image"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-black/60" />
               </div>
@@ -426,15 +484,36 @@ export default function PartnersPage() {
                 <ul className="space-y-2">
                   <li className="flex items-start">
                     <span className="text-orange-500 mr-2">✓</span>
-                    <span className="text-white/80">{t('partnersPage.types.scenic.benefits.1')}</span>
+                    <span
+                      className="text-white/80"
+                      data-editable="partnersPage.types.scenic.benefits.1"
+                      data-editable-type="text"
+                      data-editable-label="Scenic Benefit 1"
+                    >
+                      {t('partnersPage.types.scenic.benefits.1')}
+                    </span>
                   </li>
                   <li className="flex items-start">
                     <span className="text-orange-500 mr-2">✓</span>
-                    <span className="text-white/80">{t('partnersPage.types.scenic.benefits.2')}</span>
+                    <span
+                      className="text-white/80"
+                      data-editable="partnersPage.types.scenic.benefits.2"
+                      data-editable-type="text"
+                      data-editable-label="Scenic Benefit 2"
+                    >
+                      {t('partnersPage.types.scenic.benefits.2')}
+                    </span>
                   </li>
                   <li className="flex items-start">
                     <span className="text-orange-500 mr-2">✓</span>
-                    <span className="text-white/80">{t('partnersPage.types.scenic.benefits.3')}</span>
+                    <span
+                      className="text-white/80"
+                      data-editable="partnersPage.types.scenic.benefits.3"
+                      data-editable-type="text"
+                      data-editable-label="Scenic Benefit 3"
+                    >
+                      {t('partnersPage.types.scenic.benefits.3')}
+                    </span>
                   </li>
                 </ul>
               </div>
@@ -448,6 +527,9 @@ export default function PartnersPage() {
                   alt={t('partnersPage.types.hotel.title')}
                   fill
                   className="object-cover"
+                  data-editable="partnersPage.types.hotel.image"
+                  data-editable-type="image"
+                  data-editable-label="Hotel Cooperation Image"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-black/60" />
               </div>
@@ -467,15 +549,36 @@ export default function PartnersPage() {
                 <ul className="space-y-2">
                   <li className="flex items-start">
                     <span className="text-orange-500 mr-2">✓</span>
-                    <span className="text-white/80">{t('partnersPage.types.hotel.benefits.1')}</span>
+                    <span
+                      className="text-white/80"
+                      data-editable="partnersPage.types.hotel.benefits.1"
+                      data-editable-type="text"
+                      data-editable-label="Hotel Benefit 1"
+                    >
+                      {t('partnersPage.types.hotel.benefits.1')}
+                    </span>
                   </li>
                   <li className="flex items-start">
                     <span className="text-orange-500 mr-2">✓</span>
-                    <span className="text-white/80">{t('partnersPage.types.hotel.benefits.2')}</span>
+                    <span
+                      className="text-white/80"
+                      data-editable="partnersPage.types.hotel.benefits.2"
+                      data-editable-type="text"
+                      data-editable-label="Hotel Benefit 2"
+                    >
+                      {t('partnersPage.types.hotel.benefits.2')}
+                    </span>
                   </li>
                   <li className="flex items-start">
                     <span className="text-orange-500 mr-2">✓</span>
-                    <span className="text-white/80">{t('partnersPage.types.hotel.benefits.3')}</span>
+                    <span
+                      className="text-white/80"
+                      data-editable="partnersPage.types.hotel.benefits.3"
+                      data-editable-type="text"
+                      data-editable-label="Hotel Benefit 3"
+                    >
+                      {t('partnersPage.types.hotel.benefits.3')}
+                    </span>
                   </li>
                 </ul>
               </div>
@@ -489,6 +592,9 @@ export default function PartnersPage() {
                   alt={t('partnersPage.types.sponsor.title')}
                   fill
                   className="object-cover"
+                  data-editable="partnersPage.types.sponsor.image"
+                  data-editable-type="image"
+                  data-editable-label="Sponsor Cooperation Image"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-black/60" />
               </div>
@@ -508,15 +614,36 @@ export default function PartnersPage() {
                 <ul className="space-y-2">
                   <li className="flex items-start">
                     <span className="text-orange-500 mr-2">✓</span>
-                    <span className="text-white/80">{t('partnersPage.types.sponsor.benefits.1')}</span>
+                    <span
+                      className="text-white/80"
+                      data-editable="partnersPage.types.sponsor.benefits.1"
+                      data-editable-type="text"
+                      data-editable-label="Sponsor Benefit 1"
+                    >
+                      {t('partnersPage.types.sponsor.benefits.1')}
+                    </span>
                   </li>
                   <li className="flex items-start">
                     <span className="text-orange-500 mr-2">✓</span>
-                    <span className="text-white/80">{t('partnersPage.types.sponsor.benefits.2')}</span>
+                    <span
+                      className="text-white/80"
+                      data-editable="partnersPage.types.sponsor.benefits.2"
+                      data-editable-type="text"
+                      data-editable-label="Sponsor Benefit 2"
+                    >
+                      {t('partnersPage.types.sponsor.benefits.2')}
+                    </span>
                   </li>
                   <li className="flex items-start">
                     <span className="text-orange-500 mr-2">✓</span>
-                    <span className="text-white/80">{t('partnersPage.types.sponsor.benefits.3')}</span>
+                    <span
+                      className="text-white/80"
+                      data-editable="partnersPage.types.sponsor.benefits.3"
+                      data-editable-type="text"
+                      data-editable-label="Sponsor Benefit 3"
+                    >
+                      {t('partnersPage.types.sponsor.benefits.3')}
+                    </span>
                   </li>
                 </ul>
               </div>
@@ -557,10 +684,20 @@ export default function PartnersPage() {
             {t('partnersPage.cta.desc')}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="rounded-full bg-orange-500 px-8 py-4 text-base font-medium text-black hover:bg-orange-600 transition-all hover:scale-105 shadow-lg">
+            <button
+              className="rounded-full bg-orange-500 px-8 py-4 text-base font-medium text-black hover:bg-orange-600 transition-all hover:scale-105 shadow-lg"
+              data-editable="partnersPage.cta.consult"
+              data-editable-type="text"
+              data-editable-label="Partners CTA Consult Button"
+            >
               {t('partnersPage.cta.consult')}
             </button>
-            <button className="rounded-full border-2 border-white bg-white/10 px-8 py-4 text-base font-medium text-white backdrop-blur-sm hover:bg-white hover:text-black transition-all">
+            <button
+              className="rounded-full border-2 border-white bg-white/10 px-8 py-4 text-base font-medium text-white backdrop-blur-sm hover:bg-white hover:text-black transition-all"
+              data-editable="partnersPage.cta.download"
+              data-editable-type="text"
+              data-editable-label="Partners CTA Download Button"
+            >
               {t('partnersPage.cta.download')}
             </button>
           </div>

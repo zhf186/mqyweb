@@ -1,5 +1,5 @@
 /**
- * API 客户端配置
+ * API client configuration
  */
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api'
@@ -8,16 +8,39 @@ interface RequestOptions extends RequestInit {
   params?: Record<string, string | number | boolean | undefined>
 }
 
+function getStoredToken(): string | null {
+  if (typeof window === 'undefined') {
+    return null
+  }
+
+  const adminToken = localStorage.getItem('admin_token')
+  if (adminToken) {
+    return adminToken
+  }
+
+  const persistedAuth = localStorage.getItem('manqiyou-admin-auth')
+  if (persistedAuth) {
+    try {
+      const parsed = JSON.parse(persistedAuth)
+      const token = parsed?.state?.token
+      if (typeof token === 'string' && token.trim()) {
+        localStorage.setItem('admin_token', token)
+        return token
+      }
+    } catch {
+      // Ignore malformed persisted data.
+    }
+  }
+
+  return localStorage.getItem('token')
+}
+
 /**
- * 发送 API 请求
+ * Send API request
  */
-async function request<T>(
-  endpoint: string,
-  options: RequestOptions = {}
-): Promise<T> {
+async function request<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
   const { params, ...fetchOptions } = options
 
-  // 构建 URL
   let url = `${API_BASE_URL}${endpoint}`
   if (params) {
     const searchParams = new URLSearchParams()
@@ -32,20 +55,14 @@ async function request<T>(
     }
   }
 
-  // 默认请求头
   const headers = new Headers(fetchOptions.headers)
   if (!headers.has('Content-Type')) {
     headers.set('Content-Type', 'application/json')
   }
 
-  // 添加认证 token
-  if (typeof window !== 'undefined') {
-    // 优先使用 admin token (用于 CMS 后台)
-    const adminToken = localStorage.getItem('admin_token')
-    const token = adminToken || localStorage.getItem('token')
-    if (token) {
-      headers.set('Authorization', `Bearer ${token}`)
-    }
+  const token = getStoredToken()
+  if (token) {
+    headers.set('Authorization', `Bearer ${token}`)
   }
 
   const response = await fetch(url, {
@@ -54,9 +71,7 @@ async function request<T>(
   })
 
   if (!response.ok) {
-    const error = await response
-      .json()
-      .catch(() => ({ message: 'Request failed' }))
+    const error = await response.json().catch(() => ({ message: 'Request failed' }))
     throw new Error(error.message || `HTTP error! status: ${response.status}`)
   }
 
@@ -73,7 +88,7 @@ async function request<T>(
 }
 
 /**
- * API 响应类型
+ * API response type
  */
 export interface ApiResponse<T> {
   code: number
@@ -83,7 +98,7 @@ export interface ApiResponse<T> {
 }
 
 /**
- * 分页响应类型
+ * Page response type
  */
 export interface PageResponse<T> {
   records: T[]
@@ -94,7 +109,7 @@ export interface PageResponse<T> {
 }
 
 /**
- * API 客户端
+ * API client
  */
 export const api = {
   get: <T>(endpoint: string, params?: Record<string, string | number | boolean | undefined>) =>
@@ -112,8 +127,7 @@ export const api = {
       body: data ? JSON.stringify(data) : undefined,
     }),
 
-  delete: <T>(endpoint: string) =>
-    request<ApiResponse<T>>(endpoint, { method: 'DELETE' }),
+  delete: <T>(endpoint: string) => request<ApiResponse<T>>(endpoint, { method: 'DELETE' }),
 }
 
 export default api

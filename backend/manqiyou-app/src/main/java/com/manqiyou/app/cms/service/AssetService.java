@@ -17,9 +17,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 /**
  * 资源管理服务
@@ -27,6 +31,8 @@ import java.util.Map;
 @Slf4j
 @Service
 public class AssetService {
+
+    private static final String[] IMAGE_EXTENSIONS = { ".jpg", ".jpeg", ".png", ".webp", ".gif", ".bmp" };
     
     @Autowired
     private AssetMapper assetMapper;
@@ -212,6 +218,8 @@ public class AssetService {
      * @return 分页结果
      */
     public IPage<Asset> listAssets(String category, String search, int page, int limit) {
+        bootstrapAssetsIfEmpty();
+
         Page<Asset> pageParam = new Page<>(page, limit);
         LambdaQueryWrapper<Asset> wrapper = new LambdaQueryWrapper<>();
         
@@ -230,8 +238,12 @@ public class AssetService {
         }
         
         wrapper.orderByDesc(Asset::getCreatedAt);
-        
-        return assetMapper.selectPage(pageParam, wrapper);
+
+        IPage<Asset> result = assetMapper.selectPage(pageParam, wrapper);
+        if (result.getRecords() != null) {
+            result.getRecords().forEach(this::repairAssetFileSizeIfNeeded);
+        }
+        return result;
     }
     
     /**
@@ -245,6 +257,7 @@ public class AssetService {
         if (asset == null) {
             throw new RuntimeException("资源不存在");
         }
+        repairAssetFileSizeIfNeeded(asset);
         return asset;
     }
     
@@ -444,6 +457,244 @@ public class AssetService {
             if (!imageProcessingService.isValidImage(inputStream)) {
                 throw new IOException("无效的图片文件");
             }
+        }
+    }
+    private void repairAssetFileSizeIfNeeded(Asset asset) {
+        if (asset == null) {
+            return;
+        }
+
+        Long fileSize = asset.getFileSize();
+        if (fileSize != null && fileSize > 0) {
+            return;
+        }
+
+        String fileKey = asset.getFileKey();
+        if (fileKey == null || fileKey.isBlank()) {
+            fileKey = ossService.extractFileKey(asset.getFileUrl());
+        }
+
+        if (fileKey == null || fileKey.isBlank()) {
+            return;
+        }
+
+        Long detectedSize = ossService.getFileSize(fileKey);
+        if (detectedSize == null || detectedSize <= 0) {
+            return;
+        }
+
+        asset.setFileSize(detectedSize);
+
+        try {
+            assetMapper.updateById(asset);
+            log.info("Repaired asset fileSize: id={}, size={}", asset.getId(), detectedSize);
+        } catch (Exception e) {
+            log.warn("Failed to persist repaired fileSize for asset id={}", asset.getId(), e);
+        }
+    }
+
+    private void bootstrapAssetsIfEmpty() {
+        synchronized (this) {
+            Long count = assetMapper.selectCount(new LambdaQueryWrapper<>());
+            if (count != null && count > 0) {
+                return;
+            }
+
+            int inserted = 0;
+            inserted += importBrandAssets();
+            inserted += importLocalUploads();
+
+            if (inserted > 0) {
+                log.info("Bootstrapped {} asset records from local files", inserted);
+            }
+        }
+    }
+
+    private int importBrandAssets() {
+        Path baseDir = resolveBrandAssetsDir();
+        if (baseDir == null) {
+            return 0;
+        }
+
+        int inserted = 0;
+
+        try (Stream<Path> stream = Files.walk(baseDir)) {
+            List<Path> files = stream
+                .filter(Files::isRegularFile)
+                .filter(this::isImageFile)
+                .toList();
+
+            for (Path file : files) {
+                Path relativePath = baseDir.relativize(file);
+                String relative = normalizePath(relativePath);
+                String fileKey = "brand_assets/" + relative;
+
+                Asset asset = new Asset();
+                asset.setCategory(inferBrandAssetCategory(relative));
+                asset.setOriginalFilename(file.getFileName().toString());
+                asset.setFileKey(fileKey);
+                String url = "/brand_assets/" + relative;
+                asset.setFileUrl(url);
+                asset.setLargeUrl(url);
+                asset.setMediumUrl(url);
+                asset.setSmallUrl(url);
+                asset.setThumbnailUrl(url);
+                asset.setFileSize(safeFileSize(file));
+                fillImageMeta(asset, file);
+                asset.setIsProcessed(true);
+                asset.setWebpConverted(false);
+                asset.setProcessingStatus("completed");
+                asset.setAltTextZh(asset.getOriginalFilename());
+                asset.setAltTextEn(asset.getOriginalFilename());
+
+                try {
+                    assetMapper.insert(asset);
+                    inserted++;
+                } catch (Exception e) {
+                    // Duplicate or invalid row, skip only this file.
+                    log.debug("Skip brand asset bootstrap for file {}: {}", file, e.getMessage());
+                }
+            }
+        } catch (Exception e) {
+            log.warn("Failed to import brand assets from {}", baseDir, e);
+        }
+
+        return inserted;
+    }
+
+    private int importLocalUploads() {
+        Path uploadsDir = Paths.get("uploads").toAbsolutePath().normalize();
+        if (!Files.exists(uploadsDir) || !Files.isDirectory(uploadsDir)) {
+            return 0;
+        }
+
+        int inserted = 0;
+
+        try (Stream<Path> stream = Files.walk(uploadsDir)) {
+            List<Path> files = stream
+                .filter(Files::isRegularFile)
+                .filter(this::isImageFile)
+                .toList();
+
+            for (Path file : files) {
+                Path relativePath = uploadsDir.relativize(file);
+                String relative = normalizePath(relativePath);
+
+                Asset asset = new Asset();
+                asset.setCategory("home");
+                asset.setOriginalFilename(file.getFileName().toString());
+                asset.setFileKey(relative);
+                String url = "http://localhost:8080/uploads/" + relative;
+                asset.setFileUrl(url);
+                asset.setLargeUrl(url);
+                asset.setMediumUrl(url);
+                asset.setSmallUrl(url);
+                asset.setThumbnailUrl(url);
+                asset.setFileSize(safeFileSize(file));
+                fillImageMeta(asset, file);
+                asset.setIsProcessed(false);
+                asset.setWebpConverted(false);
+                asset.setProcessingStatus("completed");
+                asset.setAltTextZh(asset.getOriginalFilename());
+                asset.setAltTextEn(asset.getOriginalFilename());
+
+                try {
+                    assetMapper.insert(asset);
+                    inserted++;
+                } catch (Exception e) {
+                    // Duplicate or invalid row, skip only this file.
+                    log.debug("Skip upload asset bootstrap for file {}: {}", file, e.getMessage());
+                }
+            }
+        } catch (Exception e) {
+            log.warn("Failed to import local uploads from {}", uploadsDir, e);
+        }
+
+        return inserted;
+    }
+
+    private Path resolveBrandAssetsDir() {
+        Path[] candidates = new Path[] {
+            Paths.get("frontend/public/brand_assets").toAbsolutePath().normalize(),
+            Paths.get("../frontend/public/brand_assets").toAbsolutePath().normalize(),
+            Paths.get("../../frontend/public/brand_assets").toAbsolutePath().normalize()
+        };
+
+        for (Path candidate : candidates) {
+            if (Files.exists(candidate) && Files.isDirectory(candidate)) {
+                return candidate;
+            }
+        }
+
+        return null;
+    }
+
+    private String inferBrandAssetCategory(String relativePath) {
+        String path = relativePath.toLowerCase();
+        if (path.startsWith("ebike/")) return "ebike";
+        if (path.startsWith("routes/")) return "routes";
+        if (path.startsWith("goods/")) return "goods";
+        if (path.startsWith("community/")) return "community";
+        if (path.startsWith("partner/")) return "partners";
+        if (path.startsWith("cities/")) return "partners";
+        if (path.startsWith("about/")) return "about";
+        if (path.startsWith("page1_") || path.startsWith("page11_")) return "about";
+        return "home";
+    }
+
+    private boolean isImageFile(Path file) {
+        String name = file.getFileName().toString().toLowerCase();
+        for (String ext : IMAGE_EXTENSIONS) {
+            if (name.endsWith(ext)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private String normalizePath(Path path) {
+        return path.toString().replace('\\', '/');
+    }
+
+    private long safeFileSize(Path file) {
+        try {
+            return Files.size(file);
+        } catch (Exception e) {
+            return 0L;
+        }
+    }
+
+    private void fillImageMeta(Asset asset, Path file) {
+        String mimeType = null;
+        try {
+            mimeType = Files.probeContentType(file);
+        } catch (Exception ignored) {
+            // no-op
+        }
+
+        if (mimeType == null || !mimeType.startsWith("image/")) {
+            String lowerName = file.getFileName().toString().toLowerCase();
+            if (lowerName.endsWith(".png")) {
+                mimeType = "image/png";
+            } else if (lowerName.endsWith(".webp")) {
+                mimeType = "image/webp";
+            } else if (lowerName.endsWith(".gif")) {
+                mimeType = "image/gif";
+            } else if (lowerName.endsWith(".bmp")) {
+                mimeType = "image/bmp";
+            } else {
+                mimeType = "image/jpeg";
+            }
+        }
+        asset.setMimeType(mimeType);
+
+        try (InputStream inputStream = Files.newInputStream(file)) {
+            int[] dimensions = imageProcessingService.getImageDimensions(inputStream);
+            asset.setWidth(dimensions[0]);
+            asset.setHeight(dimensions[1]);
+        } catch (Exception e) {
+            asset.setWidth(0);
+            asset.setHeight(0);
         }
     }
 }

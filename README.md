@@ -399,4 +399,44 @@ DROP DATABASE manqiyou;
 CREATE DATABASE manqiyou CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 ```
 
+---
+
+## Startup Scripts Update (2026-03)
+
+Recommended script entry points on Windows:
+
+```bash
+# Full stack with Docker MySQL/Redis (recommended)
+start-all-with-mysql.bat
+
+# Only MySQL/Redis in Docker
+start-mysql.bat
+
+# Full stack with existing local DB
+start-all.bat
+```
+
+Split startup:
+
+```bash
+start-backend.bat
+start-frontend.bat
+```
+
+Notes:
+
+- `start-backend.bat`, `start-all.bat`, and `start-all-with-mysql.bat` prefer the embedded JDK17 in `.runlogs/jdk17/...`.
+- Startup scripts check `3000/8080` usage and print PID before launch.
+- Skip frontend dependency install when needed:
+`set SKIP_NPM_INSTALL=1 && start-all.bat`
+`set SKIP_NPM_INSTALL=1 && start-frontend.bat`
+
+Port conflict quick fix:
+
+```cmd
+netstat -ano | findstr :3000
+netstat -ano | findstr :8080
+taskkill /PID <PID> /F /T
+```
+
 更多数据库相关问题，请查看 [MySQL 配置指南](backend/manqiyou-app/MYSQL-SETUP.md)

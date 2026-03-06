@@ -22,7 +22,7 @@ export default function AdminRootLayout({
 }) {
   const router = useRouter()
   const pathname = usePathname()
-  const isAuthenticated = useAdminAuthStore((state) => state.isAuthenticated)
+  const hasHydrated = useAdminAuthStore((state) => state.hasHydrated)
   const token = useAdminAuthStore((state) => state.token)
 
   // Route guard
@@ -32,12 +32,17 @@ export default function AdminRootLayout({
       return
     }
 
-    // Check authentication
-    if (!isAuthenticated || !token) {
-      // Redirect to login
-      router.push('/admin/login')
+    // Wait persist state hydration
+    if (!hasHydrated) {
+      return
     }
-  }, [isAuthenticated, token, pathname, router])
+
+    // Check authentication
+    if (!token) {
+      // Redirect to login
+      router.replace('/admin/login')
+    }
+  }, [hasHydrated, token, pathname, router])
 
   // If on login page, render without layout
   if (pathname === '/admin/login') {
@@ -45,7 +50,18 @@ export default function AdminRootLayout({
   }
 
   // If not authenticated, show loading or nothing while redirecting
-  if (!isAuthenticated || !token) {
+  if (!hasHydrated) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">正在恢复登录状态...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (!token) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">

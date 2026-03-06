@@ -50,10 +50,12 @@ const AssetGrid = memo(function AssetGrid({
     }
   }
 
-  const formatFileSize = (bytes: number) => {
-    if (bytes < 1024) return `${bytes} B`
-    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
-    return `${(bytes / 1024 / 1024).toFixed(1)} MB`
+  const formatFileSize = (bytes?: number | string | null) => {
+    const size = Number(bytes)
+    if (!Number.isFinite(size) || size <= 0) return '--'
+    if (size < 1024) return `${Math.round(size)} B`
+    if (size < 1024 * 1024) return `${(size / 1024).toFixed(1)} KB`
+    return `${(size / 1024 / 1024).toFixed(1)} MB`
   }
 
   const formatDate = (dateString: string) => {

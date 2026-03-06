@@ -7,7 +7,8 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useToast } from '@/hooks/use-toast'
-import { Upload, Search, Filter, Trash2, RefreshCw, Eye } from 'lucide-react'
+import { useAdminAuthStore } from '@/stores/admin-auth'
+import { Upload, Search, Filter, Trash2, RefreshCw } from 'lucide-react'
 import AssetGrid from '@/components/admin/AssetGrid'
 import AssetUploader from '@/components/admin/AssetUploader'
 import AssetDetail from '@/components/admin/AssetDetail'
@@ -16,7 +17,7 @@ const CATEGORIES = [
   { value: 'all', label: '全部分类' },
   { value: 'home', label: '首页' },
   { value: 'about', label: '关于我们' },
-  { value: 'ebike', label: 'E-BIKE页面' },
+  { value: 'ebike', label: 'E-BIKE 页面' },
   { value: 'routes', label: '骑行路线' },
   { value: 'goods', label: '在地好物' },
   { value: 'community', label: '社群活动' },
@@ -30,25 +31,33 @@ export default function AssetsPage() {
   const [selectedAssets, setSelectedAssets] = useState<string[]>([])
   const [showUploader, setShowUploader] = useState(false)
   const [selectedAsset, setSelectedAsset] = useState<Asset | null>(null)
-  
+
+  const hasHydrated = useAdminAuthStore((state) => state.hasHydrated)
+  const token = useAdminAuthStore((state) => state.token)
   const { toast } = useToast()
   const queryClient = useQueryClient()
 
-  // Fetch assets
-  const { data: response, isLoading, refetch } = useQuery({
-    queryKey: ['assets', category, search, page],
-    queryFn: () => assetApi.getAssets({
-      category: category === 'all' ? undefined : category,
-      search: search || undefined,
-      page,
-      limit: 20,
-    }),
+  const {
+    data: response,
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ['assets', category, search, page, token],
+    queryFn: () =>
+      assetApi.getAssets({
+        category: category === 'all' ? undefined : category,
+        search: search || undefined,
+        page,
+        limit: 20,
+      }),
+    enabled: hasHydrated && !!token,
   })
 
-  // Extract data from ApiResponse wrapper
   const data = response?.data
+  const errorMessage = error instanceof Error ? error.message : '加载失败，请稍后重试'
 
-  // Delete mutation
   const deleteMutation = useMutation({
     mutationFn: (assetId: string) => assetApi.deleteAsset(assetId),
     onSuccess: () => {
@@ -59,10 +68,10 @@ export default function AssetsPage() {
       queryClient.invalidateQueries({ queryKey: ['assets'] })
       setSelectedAssets([])
     },
-    onError: (error: any) => {
+    onError: (err: unknown) => {
       toast({
         title: '删除失败',
-        description: error.message || '删除图片时出错',
+        description: err instanceof Error ? err.message : '删除图片时出错',
         variant: 'destructive',
       })
     },
@@ -99,24 +108,40 @@ export default function AssetsPage() {
         description: '图片已成功替换',
       })
       refetch()
-    } catch (error: any) {
+    } catch (err: unknown) {
       toast({
         title: '替换失败',
-        description: error.message || '替换图片时出错',
+        description: err instanceof Error ? err.message : '替换图片时出错',
         variant: 'destructive',
       })
     }
   }
 
+  if (!hasHydrated || (hasHydrated && !!token && isLoading)) {
+    return (
+      <div className="p-4 sm:p-6">
+        <div className="text-center py-12">
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+          <p className="mt-2 text-muted-foreground text-sm">加载中...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (hasHydrated && !token) {
+    return (
+      <div className="p-4 sm:p-6">
+        <div className="text-center py-12 text-muted-foreground text-sm">登录状态校验中...</div>
+      </div>
+    )
+  }
+
   return (
     <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
-      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold">图片管理</h1>
-          <p className="text-muted-foreground mt-1 text-sm sm:text-base">
-            管理网站图片资源，支持上传、替换和删除
-          </p>
+          <p className="text-muted-foreground mt-1 text-sm sm:text-base">管理网站图片资源，支持上传、替换和删除</p>
         </div>
         <Button onClick={() => setShowUploader(true)} className="w-full sm:w-auto">
           <Upload className="w-4 h-4 mr-2" />
@@ -124,7 +149,6 @@ export default function AssetsPage() {
         </Button>
       </div>
 
-      {/* Filters */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
         <div className="flex-1 relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -154,12 +178,9 @@ export default function AssetsPage() {
         </Button>
       </div>
 
-      {/* Selected Actions */}
       {selectedAssets.length > 0 && (
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-muted rounded-lg">
-          <span className="text-sm font-medium">
-            已选择 {selectedAssets.length} 张图片
-          </span>
+          <span className="text-sm font-medium">已选择 {selectedAssets.length} 张图片</span>
           <div className="flex gap-2">
             <Button
               variant="destructive"
@@ -182,11 +203,13 @@ export default function AssetsPage() {
         </div>
       )}
 
-      {/* Asset Grid */}
-      {isLoading ? (
+      {isError ? (
         <div className="text-center py-12">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-          <p className="mt-2 text-muted-foreground text-sm">加载中...</p>
+          <p className="text-red-600 text-sm sm:text-base">图片加载失败：{errorMessage}</p>
+          <Button variant="outline" className="mt-4" onClick={() => refetch()}>
+            <RefreshCw className="w-4 h-4 mr-2" />
+            重试
+          </Button>
         </div>
       ) : data && data.records && data.records.length > 0 ? (
         <>
@@ -199,7 +222,6 @@ export default function AssetsPage() {
             onViewDetail={setSelectedAsset}
           />
 
-          {/* Pagination */}
           {data.total > 20 && (
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-2">
               <Button
@@ -227,18 +249,13 @@ export default function AssetsPage() {
       ) : (
         <div className="text-center py-12">
           <p className="text-muted-foreground text-sm sm:text-base">暂无图片</p>
-          <Button
-            variant="outline"
-            className="mt-4"
-            onClick={() => setShowUploader(true)}
-          >
+          <Button variant="outline" className="mt-4" onClick={() => setShowUploader(true)}>
             <Upload className="w-4 h-4 mr-2" />
             上传第一张图片
           </Button>
         </div>
       )}
 
-      {/* Uploader Modal */}
       {showUploader && (
         <AssetUploader
           category={category === 'all' ? 'home' : category}
@@ -247,7 +264,6 @@ export default function AssetsPage() {
         />
       )}
 
-      {/* Asset Detail Modal */}
       {selectedAsset && (
         <AssetDetail
           asset={selectedAsset}
