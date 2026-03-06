@@ -115,6 +115,7 @@ export default function EbikePage() {
               alt={t('ebikePage.heroImageAlt')}
               fill
               priority
+              sizes="100vw"
               quality={85}
               className="object-cover"
               style={{ objectPosition: 'left 72%' }}
@@ -323,6 +324,7 @@ export default function EbikePage() {
               alt={t('ebikePage.designImageAlt')}
               fill
               loading="lazy"
+              sizes="100vw"
               quality={80}
               className="object-cover"
               data-editable="ebikePage.design.background"
@@ -409,6 +411,7 @@ export default function EbikePage() {
               alt={t('ebikePage.carbonImageAlt')}
               fill
               loading="lazy"
+              sizes="100vw"
               quality={80}
               className="object-cover"
               style={{ objectPosition: 'left 50%' }}

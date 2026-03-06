@@ -20,6 +20,7 @@ export function HeroSection() {
           alt="漫骑游骑行风景"
           fill
           priority
+          sizes="100vw"
           quality={85}
           className="object-cover"
         />

@@ -156,6 +156,7 @@ export default function CommunityPage() {
               alt={t('communityPage.heroImageAlt')}
               fill
               priority
+              sizes="100vw"
               quality={85}
               className="object-cover"
               data-editable="community.hero.background"

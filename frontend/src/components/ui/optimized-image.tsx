@@ -17,9 +17,11 @@ interface OptimizedImageProps extends Omit<ImageProps, 'onLoad'> {
 export function OptimizedImage({ 
   lowQualitySrc, 
   className = '',
+  alt,
   ...props 
 }: OptimizedImageProps) {
   const [isLoading, setIsLoading] = useState(true)
+  const resolvedSizes = props.sizes ?? (props.fill ? '100vw' : undefined)
 
   return (
     <div className="relative overflow-hidden">
@@ -27,19 +29,23 @@ export function OptimizedImage({
         <Image
           {...props}
           src={lowQualitySrc}
+          alt=""
           className={`${className} absolute inset-0 blur-sm scale-110`}
           quality={10}
+          sizes={resolvedSizes}
           priority={false}
           aria-hidden="true"
         />
       )}
       <Image
         {...props}
+        alt={alt}
         className={`${className} transition-opacity duration-300 ${
           isLoading ? 'opacity-0' : 'opacity-100'
         }`}
         onLoad={() => setIsLoading(false)}
         loading={props.priority ? undefined : 'lazy'}
+        sizes={resolvedSizes}
         quality={props.quality || 85}
       />
     </div>

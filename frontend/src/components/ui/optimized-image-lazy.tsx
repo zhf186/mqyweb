@@ -31,6 +31,7 @@ export function OptimizedImageLazy({
 }: OptimizedImageProps) {
   const [isLoading, setIsLoading] = useState(true)
   const [hasError, setHasError] = useState(false)
+  const resolvedSizes = sizes ?? (fill ? '100vw' : undefined)
 
   if (hasError) {
     return (
@@ -57,7 +58,7 @@ export function OptimizedImageLazy({
           objectFit === 'cover' && 'object-cover',
           objectFit === 'contain' && 'object-contain',
         )}
-        sizes={sizes}
+        sizes={resolvedSizes}
         quality={quality}
         priority={priority}
         loading={priority ? 'eager' : 'lazy'}

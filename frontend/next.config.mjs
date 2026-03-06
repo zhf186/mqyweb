@@ -3,7 +3,7 @@ const nextConfig = {
   // 图片优化配置
   images: {
     // 优先使用 AVIF 格式（更小的文件大小），回退到 WebP
-    formats: ['image/avif', 'image/webp'],
+    formats: ['image/webp', 'image/avif'],
     remotePatterns: [
       {
         protocol: 'https',
@@ -35,7 +35,7 @@ const nextConfig = {
       },
     ],
     // 响应式图片尺寸 - 针对常见设备优化
-    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1600, 1920, 2560],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
     // 启用图片优化
     unoptimized: process.env.NODE_ENV !== 'production',
@@ -75,6 +75,24 @@ const nextConfig = {
   // Headers 配置 - 添加缓存控制
   async headers() {
     return [
+      {
+        source: '/_next/static/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+      {
+        source: '/_next/image',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, stale-while-revalidate=86400',
+          },
+        ],
+      },
       {
         source: '/brand_assets/:path*',
         headers: [

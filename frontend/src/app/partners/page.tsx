@@ -117,6 +117,7 @@ export default function PartnersPage() {
           fill
           className="object-cover"
           priority
+          sizes="100vw"
           data-editable="partners.hero.background"
           data-editable-type="image"
           data-editable-label="合作页Hero背景图"
@@ -410,6 +411,7 @@ export default function PartnersPage() {
                     src={area.image}
                     alt={locale === 'en' ? area.nameEn : area.name}
                     fill
+                    sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
                     className="object-cover group-hover:scale-110 transition-transform duration-500"
                     data-editable={`partnersPage.scenic.items.${area.id}.image`}
                     data-editable-type="image"
@@ -461,6 +463,7 @@ export default function PartnersPage() {
                   src="/brand_assets/cities/page19_img1.jpeg"
                   alt={t('partnersPage.types.scenic.title')}
                   fill
+                  sizes="(max-width: 768px) 100vw, 33vw"
                   className="object-cover"
                   data-editable="partnersPage.types.scenic.image"
                   data-editable-type="image"
@@ -526,6 +529,7 @@ export default function PartnersPage() {
                   src="/brand_assets/page10_img3.jpeg"
                   alt={t('partnersPage.types.hotel.title')}
                   fill
+                  sizes="(max-width: 768px) 100vw, 33vw"
                   className="object-cover"
                   data-editable="partnersPage.types.hotel.image"
                   data-editable-type="image"
@@ -591,6 +595,7 @@ export default function PartnersPage() {
                   src="/brand_assets/page12_img3.jpeg"
                   alt={t('partnersPage.types.sponsor.title')}
                   fill
+                  sizes="(max-width: 768px) 100vw, 33vw"
                   className="object-cover"
                   data-editable="partnersPage.types.sponsor.image"
                   data-editable-type="image"
@@ -659,6 +664,7 @@ export default function PartnersPage() {
             src="/brand_assets/page11_img3.jpeg"
             alt={t('partnersPage.cta.title')}
             fill
+            sizes="100vw"
             className="object-cover"
             data-editable="partnersPage.cta.background"
             data-editable-type="image"

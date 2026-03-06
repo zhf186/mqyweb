@@ -2,6 +2,7 @@
 
 import * as React from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { useTranslation } from '@/hooks/useTranslation'
 
 const footerLinks = {
@@ -150,7 +151,13 @@ export function Footer() {
                   rel="noopener noreferrer"
                   className="flex items-center gap-1.5 text-xs text-white/40 hover:text-white/60 transition-colors"
                 >
-                  <img src="/备案图标.png" alt="备案图标" className="h-4 w-4" />
+                  <Image
+                    src="/备案图标.png"
+                    alt="备案图标"
+                    width={16}
+                    height={16}
+                    className="h-4 w-4"
+                  />
                   浙公网安备33020502001320号
                 </a>
               </div>

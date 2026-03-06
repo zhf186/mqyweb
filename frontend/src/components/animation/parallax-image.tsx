@@ -43,6 +43,7 @@ export function ParallaxImage({
           alt={alt}
           fill
           loading="lazy"
+          sizes="100vw"
           quality={80}
           className={cn('object-cover', className)}
         />
@@ -88,6 +89,7 @@ export function ParallaxSection({
           alt=""
           fill
           loading="lazy"
+          sizes="100vw"
           quality={80}
           className="object-cover"
         />

@@ -294,6 +294,7 @@ export default function GoodsPage() {
                       alt={`${t('goodsPage.feature.imageAlt')} ${i}`}
                       width={400}
                       height={400}
+                      sizes="(max-width: 768px) 45vw, 22vw"
                       className="h-full w-full object-cover"
                       loading="lazy"
                       data-editable={`goodsPage.feature.images.${i}`}

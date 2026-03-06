@@ -150,9 +150,9 @@ export default function Home() {
               src={getContent(cmsContent, 'hero.background.image', locale, '/brand_assets/page1_img2.jpeg')}
               alt={dict.home.heroImageAlt}
               fill
-              priority
               className="object-cover"
               sizes="100vw"
+              priority
               data-editable="hero.background.image"
               data-editable-type="image"
               data-editable-label="Hero背景图"
@@ -214,7 +214,6 @@ export default function Home() {
               fill
               className="object-cover"
               sizes="100vw"
-              priority
               data-editable="brand.background.image"
               data-editable-type="image"
               data-editable-label="品牌介绍背景图"
