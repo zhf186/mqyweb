@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # SSL 证书配置脚本 - Let's Encrypt
-# 域名: www.manqiyou.cn
+# 域名: www.zjmqy.cc
 
 set -e
 
@@ -10,7 +10,7 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m'
 
-DOMAIN="www.manqiyou.cn"
+DOMAIN="www.zjmqy.cc"
 EMAIL="56742186@qq.com"  # 请修改为实际邮箱
 
 echo -e "${GREEN}========================================${NC}"
@@ -48,7 +48,7 @@ fi
 certbot certonly --webroot \
     -w /var/www/certbot \
     -d $DOMAIN \
-    -d manqiyou.cn \
+    -d zjmqy.cc \
     --email $EMAIL \
     --agree-tos \
     --no-eff-email \

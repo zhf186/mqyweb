@@ -12,7 +12,7 @@ echo ""
 # 配置变量
 PROJECT_DIR="/var/www/manqiyou"
 GIT_REPO="git@github.com:zhf186/mqyweb.git"
-EMAIL="deploy@manqiyou.cn"
+EMAIL="deploy@zjmqy.cc"
 
 # 颜色输出
 GREEN='\033[0;32m'
@@ -167,10 +167,10 @@ echo ""
 
 # 步骤 8: 配置 SSL
 echo "[8/8] 配置 SSL 证书..."
-if sudo certbot certificates 2>&1 | grep -q "www.manqiyou.cn"; then
+if sudo certbot certificates 2>&1 | grep -q "www.zjmqy.cc"; then
     success "SSL 证书已存在"
     echo "证书信息:"
-    sudo certbot certificates | grep -A 5 "www.manqiyou.cn"
+    sudo certbot certificates | grep -A 5 "www.zjmqy.cc"
 else
     echo "配置 SSL 证书..."
     if [ -f deploy/setup-ssl.sh ]; then
@@ -217,7 +217,7 @@ fi
 echo ""
 
 echo "测试 HTTPS 访问:"
-if curl -s -I https://www.manqiyou.cn 2>&1 | head -n 1 | grep -q "200"; then
+if curl -s -I https://www.zjmqy.cc 2>&1 | head -n 1 | grep -q "200"; then
     success "HTTPS 访问正常"
 else
     warning "HTTPS 访问可能未就绪（可能需要等待 DNS 生效）"
@@ -229,7 +229,7 @@ echo "=========================================="
 echo "部署完成！"
 echo "=========================================="
 echo ""
-echo "访问地址: https://www.manqiyou.cn"
+echo "访问地址: https://www.zjmqy.cc"
 echo ""
 echo "常用命令:"
 echo "  查看日志: cd $PROJECT_DIR && docker-compose -f docker-compose.prod.yml logs -f"

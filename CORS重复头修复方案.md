@@ -4,10 +4,10 @@
 
 浏览器控制台报错：
 ```
-The 'Access-Control-Allow-Origin' header contains multiple values 'https://manqiyou.cn, *', but only one is allowed.
+The 'Access-Control-Allow-Origin' header contains multiple values 'https://zjmqy.cc, *', but only one is allowed.
 ```
 
-这表明 CORS 头被添加了两次，导致值变成了 `'https://manqiyou.cn, *'`。
+这表明 CORS 头被添加了两次，导致值变成了 `'https://zjmqy.cc, *'`。
 
 ## 问题原因
 
@@ -88,26 +88,26 @@ docker-compose -f docker-compose.prod.yml logs --tail=50 backend
 
 ```bash
 # 测试后端直接响应（应该只有一个 Access-Control-Allow-Origin 头）
-curl -I -H "Origin: https://manqiyou.cn" http://127.0.0.1:8081/api/categories
+curl -I -H "Origin: https://zjmqy.cc" http://127.0.0.1:8081/api/categories
 
 # 测试通过 Nginx 的响应（应该只有一个 Access-Control-Allow-Origin 头）
-curl -I -H "Origin: https://manqiyou.cn" https://www.manqiyou.cn/api/categories
+curl -I -H "Origin: https://zjmqy.cc" https://www.zjmqy.cc/api/categories
 ```
 
 预期结果：
 ```
-access-control-allow-origin: https://manqiyou.cn
+access-control-allow-origin: https://zjmqy.cc
 access-control-allow-credentials: true
 access-control-max-age: 3600
 ```
 
 **不应该**看到：
-- `access-control-allow-origin: https://manqiyou.cn, *`
+- `access-control-allow-origin: https://zjmqy.cc, *`
 - 多个 `access-control-allow-origin` 头
 
 ## 验证修复
 
-1. 打开浏览器访问 https://www.manqiyou.cn/routes
+1. 打开浏览器访问 https://www.zjmqy.cc/routes
 2. 打开开发者工具（F12）
 3. 刷新页面
 4. 检查控制台是否还有 CORS 错误
@@ -123,10 +123,10 @@ access-control-max-age: 3600
 config.setAllowedOrigins(Arrays.asList(
     "http://localhost:3000",
     "http://127.0.0.1:3000",
-    "https://www.manqiyou.cn",
-    "https://manqiyou.cn",
-    "http://www.manqiyou.cn",
-    "http://manqiyou.cn"
+    "https://www.zjmqy.cc",
+    "https://zjmqy.cc",
+    "http://www.zjmqy.cc",
+    "http://zjmqy.cc"
 ));
 ```
 
@@ -163,10 +163,10 @@ A: 检查以下几点：
 A: 使用 curl 测试：
 ```bash
 # 测试后端直接响应
-curl -v -H "Origin: https://manqiyou.cn" http://127.0.0.1:8081/api/categories 2>&1 | grep -i "access-control"
+curl -v -H "Origin: https://zjmqy.cc" http://127.0.0.1:8081/api/categories 2>&1 | grep -i "access-control"
 
 # 测试通过 Nginx
-curl -v -H "Origin: https://manqiyou.cn" https://www.manqiyou.cn/api/categories 2>&1 | grep -i "access-control"
+curl -v -H "Origin: https://zjmqy.cc" https://www.zjmqy.cc/api/categories 2>&1 | grep -i "access-control"
 ```
 
 如果后端直接响应正常，但通过 Nginx 有问题，说明是 Nginx 添加了额外的头。
@@ -179,18 +179,18 @@ curl -v -H "Origin: https://manqiyou.cn" https://www.manqiyou.cn/api/categories 
 
 #### CORS 头测试
 ```bash
-# 测试 www.manqiyou.cn
-curl -I -H 'Origin: https://www.manqiyou.cn' https://www.manqiyou.cn/api/routes
-# 结果：access-control-allow-origin: https://www.manqiyou.cn ✅
+# 测试 www.zjmqy.cc
+curl -I -H 'Origin: https://www.zjmqy.cc' https://www.zjmqy.cc/api/routes
+# 结果：access-control-allow-origin: https://www.zjmqy.cc ✅
 
-# 测试 manqiyou.cn
-curl -I -H 'Origin: https://manqiyou.cn' https://www.manqiyou.cn/api/routes
-# 结果：access-control-allow-origin: https://manqiyou.cn ✅
+# 测试 zjmqy.cc
+curl -I -H 'Origin: https://zjmqy.cc' https://www.zjmqy.cc/api/routes
+# 结果：access-control-allow-origin: https://zjmqy.cc ✅
 ```
 
 #### API 数据测试
 ```bash
-curl -s -H 'Origin: https://www.manqiyou.cn' https://www.manqiyou.cn/api/routes
+curl -s -H 'Origin: https://www.zjmqy.cc' https://www.zjmqy.cc/api/routes
 # 结果：返回完整的路线数据，HTTP 200 ✅
 ```
 
@@ -211,7 +211,7 @@ curl -s -H 'Origin: https://www.manqiyou.cn' https://www.manqiyou.cn/api/routes
 - 2026-01-30 02:14: **问题已解决** ✅
   - CORS 头重复问题已修复
   - API 正常返回数据
-  - 两个域名（www.manqiyou.cn 和 manqiyou.cn）都工作正常
+  - 两个域名（www.zjmqy.cc 和 zjmqy.cc）都工作正常
 - 2026-01-30 00:00: 创建修复方案文档
-  - 问题：CORS 头重复（`'https://manqiyou.cn, *'`）
+  - 问题：CORS 头重复（`'https://zjmqy.cc, *'`）
   - 解决方案：确保只有后端添加 CORS 头，Nginx 不添加

@@ -49,7 +49,7 @@ bash quick-deploy.sh
 
 ### 服务器信息
 - **IP 地址**: 47.97.21.33
-- **域名**: www.manqiyou.cn
+- **域名**: www.zjmqy.cc
 - **操作系统**: Ubuntu 24.04
 - **Web 服务器**: Nginx
 
@@ -200,7 +200,7 @@ docker-compose -f docker-compose.prod.yml ps
 sudo certbot certificates
 
 # 重新获取证书
-sudo certbot delete --cert-name www.manqiyou.cn
+sudo certbot delete --cert-name www.zjmqy.cc
 sudo bash /var/www/manqiyou/deploy/setup-ssl.sh
 ```
 

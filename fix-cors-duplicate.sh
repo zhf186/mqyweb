@@ -50,5 +50,5 @@ curl -I http://127.0.0.1:8081/api/routes 2>&1 | grep -i "access-control" || echo
 echo ""
 echo "=== 修复完成 ==="
 echo ""
-echo "请访问 https://www.manqiyou.cn/routes 测试"
+echo "请访问 https://www.zjmqy.cc/routes 测试"
 echo "检查浏览器控制台是否还有 CORS 错误"

@@ -18,8 +18,8 @@ ssh root@47.97.21.33
 
 # 使用 DNS 验证方式获取证书
 sudo certbot certonly --manual --preferred-challenges dns \
-  -d www.manqiyou.cn \
-  -d manqiyou.cn \
+  -d www.zjmqy.cc \
+  -d zjmqy.cc \
   --email 56742186@qq.com \
   --agree-tos
 ```
@@ -30,7 +30,7 @@ Certbot 会显示类似以下信息：
 
 ```
 Please deploy a DNS TXT record under the name:
-_acme-challenge.www.manqiyou.cn
+_acme-challenge.www.zjmqy.cc
 
 with the following value:
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
@@ -38,7 +38,7 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 Before continuing, verify the TXT record has been deployed. Depending on the DNS
 provider, this may take some time, from a few seconds to multiple minutes. You can
 check if it has finished deploying with aid of online tools, such as the Google
-Admin Toolbox: https://toolbox.googleapps.com/apps/dig/#TXT/_acme-challenge.www.manqiyou.cn
+Admin Toolbox: https://toolbox.googleapps.com/apps/dig/#TXT/_acme-challenge.www.zjmqy.cc
 ```
 
 **重要**：不要按 Enter，先完成 DNS 配置！
@@ -49,7 +49,7 @@ Admin Toolbox: https://toolbox.googleapps.com/apps/dig/#TXT/_acme-challenge.www.
    - 访问：https://dns.console.aliyun.com/
 
 2. **进入域名解析**
-   - 找到域名：manqiyou.cn
+   - 找到域名：zjmqy.cc
    - 点击"解析设置"
 
 3. **添加第一条 TXT 记录（www 子域名）**
@@ -64,7 +64,7 @@ Admin Toolbox: https://toolbox.googleapps.com/apps/dig/#TXT/_acme-challenge.www.
    - 显示类似信息：
      ```
      Please deploy a DNS TXT record under the name:
-     _acme-challenge.manqiyou.cn
+     _acme-challenge.zjmqy.cc
      
      with the following value:
      yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy
@@ -83,17 +83,17 @@ Admin Toolbox: https://toolbox.googleapps.com/apps/dig/#TXT/_acme-challenge.www.
 
 ```bash
 # 验证第一条记录（www）
-dig _acme-challenge.www.manqiyou.cn TXT +short
+dig _acme-challenge.www.zjmqy.cc TXT +short
 
 # 验证第二条记录（根域名）
-dig _acme-challenge.manqiyou.cn TXT +short
+dig _acme-challenge.zjmqy.cc TXT +short
 
 # 应该看到刚才添加的 TXT 记录值
 ```
 
 **或者使用在线工具**：
-- https://toolbox.googleapps.com/apps/dig/#TXT/_acme-challenge.www.manqiyou.cn
-- https://toolbox.googleapps.com/apps/dig/#TXT/_acme-challenge.manqiyou.cn
+- https://toolbox.googleapps.com/apps/dig/#TXT/_acme-challenge.www.zjmqy.cc
+- https://toolbox.googleapps.com/apps/dig/#TXT/_acme-challenge.zjmqy.cc
 
 ### 步骤 5：继续 Certbot 验证
 
@@ -108,11 +108,11 @@ Certbot 会验证 DNS 记录并获取证书。
 sudo certbot certificates
 
 # 应该看到类似输出：
-# Certificate Name: www.manqiyou.cn
-#   Domains: www.manqiyou.cn manqiyou.cn
+# Certificate Name: www.zjmqy.cc
+#   Domains: www.zjmqy.cc zjmqy.cc
 #   Expiry Date: 2026-04-29 (VALID: 89 days)
-#   Certificate Path: /etc/letsencrypt/live/www.manqiyou.cn/fullchain.pem
-#   Private Key Path: /etc/letsencrypt/live/www.manqiyou.cn/privkey.pem
+#   Certificate Path: /etc/letsencrypt/live/www.zjmqy.cc/fullchain.pem
+#   Private Key Path: /etc/letsencrypt/live/www.zjmqy.cc/privkey.pem
 ```
 
 ### 步骤 7：启用完整的 HTTPS Nginx 配置
@@ -160,7 +160,7 @@ sudo systemctl status certbot.timer
 
 ```bash
 # 测试 HTTPS 访问
-curl -I https://www.manqiyou.cn
+curl -I https://www.zjmqy.cc
 
 # 应该看到：
 # HTTP/2 200
@@ -169,7 +169,7 @@ curl -I https://www.manqiyou.cn
 ```
 
 **在浏览器中访问**：
-- https://www.manqiyou.cn
+- https://www.zjmqy.cc
 - 应该看到安全锁图标 🔒
 
 ---
@@ -201,7 +201,7 @@ SSL 证书配置成功！您的网站现在可以通过 HTTPS 安全访问。
 
 ```bash
 # 检查 DNS 记录
-dig _acme-challenge.www.manqiyou.cn TXT +short
+dig _acme-challenge.www.zjmqy.cc TXT +short
 
 # 如果没有返回值，等待几分钟后重试
 # 阿里云 DNS 通常在 1-5 分钟内生效
@@ -215,8 +215,8 @@ sudo tail -f /var/log/letsencrypt/letsencrypt.log
 
 # 重新运行 Certbot
 sudo certbot certonly --manual --preferred-challenges dns \
-  -d www.manqiyou.cn \
-  -d manqiyou.cn \
+  -d www.zjmqy.cc \
+  -d zjmqy.cc \
   --email 56742186@qq.com \
   --agree-tos
 ```
@@ -228,7 +228,7 @@ sudo certbot certonly --manual --preferred-challenges dns \
 sudo nginx -t
 
 # 检查证书文件是否存在
-ls -la /etc/letsencrypt/live/www.manqiyou.cn/
+ls -la /etc/letsencrypt/live/www.zjmqy.cc/
 
 # 应该看到：
 # fullchain.pem

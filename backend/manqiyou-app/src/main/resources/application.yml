@@ -86,7 +86,7 @@ logging:
 
 app:
   cors:
-    allowed-origins: ${APP_CORS_ALLOWED_ORIGINS:http://localhost:3000,http://127.0.0.1:3000,https://www.manqiyou.cn,https://manqiyou.cn,http://www.manqiyou.cn,http://manqiyou.cn,https://www.zjmqy.cc,https://zjmqy.cc,http://www.zjmqy.cc,http://zjmqy.cc}
+    allowed-origins: ${APP_CORS_ALLOWED_ORIGINS:http://localhost:3000,http://127.0.0.1:3000,https://www.zjmqy.cc,https://zjmqy.cc,http://www.zjmqy.cc,http://zjmqy.cc}
   security:
     allow-dev-endpoints: false
     allow-h2-console: false

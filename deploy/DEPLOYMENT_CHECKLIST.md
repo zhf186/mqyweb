@@ -25,8 +25,8 @@
 - [ ] Nginx 已安装并运行
 - [ ] SSH 密钥已配置（用于 Git）
 - [ ] 域名 DNS 已解析到服务器 IP
-  - [ ] www.manqiyou.cn → 47.97.21.33
-  - [ ] manqiyou.cn → 47.97.21.33
+  - [ ] www.zjmqy.cc → 47.97.21.33
+  - [ ] zjmqy.cc → 47.97.21.33
 
 ### 端口检查
 - [ ] 80 端口可用（HTTP）
@@ -92,7 +92,7 @@ nano .env
 - [ ] DB_PASSWORD 已设置（强密码）
 - [ ] REDIS_PASSWORD 已设置（强密码）
 - [ ] JWT_SECRET 已设置（随机字符串）
-- [ ] NEXT_PUBLIC_API_URL 已确认（https://www.manqiyou.cn/api）
+- [ ] NEXT_PUBLIC_API_URL 已确认（https://www.zjmqy.cc/api）
 
 ### 第六步：构建并启动 Docker 容器
 ```bash
@@ -153,7 +153,7 @@ sudo systemctl reload nginx
 ## ✅ 部署后验证
 
 ### 功能测试
-- [ ] 访问 https://www.manqiyou.cn 正常
+- [ ] 访问 https://www.zjmqy.cc 正常
 - [ ] HTTP 自动跳转到 HTTPS
 - [ ] SSL 证书有效（浏览器显示锁图标）
 - [ ] 首页加载正常
@@ -175,7 +175,7 @@ sudo systemctl reload nginx
 
 ### 性能测试
 ```bash
-curl -w "@-" -o /dev/null -s https://www.manqiyou.cn/ <<'EOF'
+curl -w "@-" -o /dev/null -s https://www.zjmqy.cc/ <<'EOF'
     time_total:  %{time_total}\n
 EOF
 ```
@@ -307,7 +307,7 @@ df -h
 - 部署日期: _______________
 - 部署人员: _______________
 - 服务器 IP: 47.97.21.33
-- 域名: www.manqiyou.cn
+- 域名: www.zjmqy.cc
 - Git Commit: _______________
 
 ### 服务版本
@@ -334,7 +334,7 @@ df -h
 
 所有检查项都已完成，项目已成功部署！
 
-**访问地址**: https://www.manqiyou.cn
+**访问地址**: https://www.zjmqy.cc
 
 **下一步**:
 1. 通知团队部署完成

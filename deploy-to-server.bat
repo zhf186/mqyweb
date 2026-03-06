@@ -39,7 +39,7 @@ echo # 配置 SSH 密钥
 echo echo "[2/8] 配置 GitHub SSH 密钥..."
 echo if [ ! -f ~/.ssh/id_ed25519 ]; then
 echo   echo "生成 SSH 密钥..."
-echo   ssh-keygen -t ed25519 -C "deploy@manqiyou.cn" -f ~/.ssh/id_ed25519 -N ""
+echo   ssh-keygen -t ed25519 -C "deploy@zjmqy.cc" -f ~/.ssh/id_ed25519 -N ""
 echo   echo ""
 echo   echo "=========================================="
 echo   echo "重要: 请将以下公钥添加到 GitHub"
@@ -122,7 +122,7 @@ echo echo ""
 echo.
 echo # 配置 SSL
 echo echo "[8/8] 配置 SSL 证书..."
-echo if sudo certbot certificates 2^>^&1 ^| grep -q "www.manqiyou.cn"; then
+echo if sudo certbot certificates 2^>^&1 ^| grep -q "www.zjmqy.cc"; then
 echo   echo "✓ SSL 证书已存在"
 echo else
 echo   echo "配置 SSL 证书..."
@@ -142,14 +142,14 @@ echo docker-compose -f docker-compose.prod.yml ps
 echo echo ""
 echo.
 echo echo "测试 HTTPS 访问:"
-echo curl -I https://www.manqiyou.cn 2^>^&1 ^| head -n 1
+echo curl -I https://www.zjmqy.cc 2^>^&1 ^| head -n 1
 echo echo ""
 echo.
 echo echo "=========================================="
 echo echo "部署完成！"
 echo echo "=========================================="
 echo echo ""
-echo echo "访问地址: https://www.manqiyou.cn"
+echo echo "访问地址: https://www.zjmqy.cc"
 echo echo ""
 echo echo "常用命令:"
 echo echo "  查看日志: cd %PROJECT_DIR% && docker-compose -f docker-compose.prod.yml logs -f"
@@ -179,6 +179,6 @@ echo ========================================
 echo 部署流程已完成！
 echo ========================================
 echo.
-echo 请在浏览器中访问: https://www.manqiyou.cn
+echo 请在浏览器中访问: https://www.zjmqy.cc
 echo.
 pause

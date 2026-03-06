@@ -74,10 +74,6 @@ public class CorsConfig {
         return Arrays.asList(
                 "http://localhost:3000",
                 "http://127.0.0.1:3000",
-                "https://www.manqiyou.cn",
-                "https://manqiyou.cn",
-                "http://www.manqiyou.cn",
-                "http://manqiyou.cn",
                 "https://www.zjmqy.cc",
                 "https://zjmqy.cc",
                 "http://www.zjmqy.cc",

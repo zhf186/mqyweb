@@ -12,7 +12,7 @@
 - **项目名称**: 漫骑游官方网站
 - **Git 仓库**: git@github.com:zhf186/mqyweb.git
 - **服务器 IP**: 47.97.21.33
-- **域名**: www.manqiyou.cn
+- **域名**: www.zjmqy.cc
 - **部署方式**: Docker + Nginx + Let's Encrypt
 
 ### 技术栈
@@ -85,7 +85,7 @@ sudo nano deploy/setup-ssl.sh  # 修改邮箱地址
 sudo bash deploy/setup-ssl.sh
 
 # 7. 验证部署
-curl https://www.manqiyou.cn
+curl https://www.zjmqy.cc
 ```
 
 ### 方式二：按照完整文档部署
@@ -137,7 +137,7 @@ EMAIL="your-email@example.com"  # 改为你的实际邮箱
 
 ```bash
 # 在本地执行
-nslookup www.manqiyou.cn
+nslookup www.zjmqy.cc
 # 应该返回 47.97.21.33
 ```
 
@@ -183,7 +183,7 @@ ssh -T git@github.com
 
 部署成功后，你应该能够：
 
-1. ✅ 通过 https://www.manqiyou.cn 访问网站
+1. ✅ 通过 https://www.zjmqy.cc 访问网站
 2. ✅ HTTP 自动跳转到 HTTPS
 3. ✅ 浏览器显示安全锁图标
 4. ✅ 所有页面正常加载
@@ -262,10 +262,10 @@ sudo tail -f /var/log/nginx/manqiyou_error.log
 ### 问题 3：SSL 证书问题
 ```bash
 # 检查域名解析
-nslookup www.manqiyou.cn
+nslookup www.zjmqy.cc
 
 # 重新获取证书
-sudo certbot delete --cert-name www.manqiyou.cn
+sudo certbot delete --cert-name www.zjmqy.cc
 sudo bash /var/www/manqiyou/deploy/setup-ssl.sh
 ```
 
@@ -316,7 +316,7 @@ sudo bash /var/www/manqiyou/deploy/setup-ssl.sh
 1. 打开 `deploy/阿里云部署完整方案.md`
 2. 按照文档逐步执行
 3. 使用 `deploy/DEPLOYMENT_CHECKLIST.md` 检查每一步
-4. 部署完成后访问 https://www.manqiyou.cn
+4. 部署完成后访问 https://www.zjmqy.cc
 
 **祝部署顺利！** 🚀
 

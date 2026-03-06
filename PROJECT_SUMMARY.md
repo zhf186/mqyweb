@@ -161,7 +161,7 @@ manqiyou/
 - **云服务商**: 阿里云
 - **服务器 IP**: 47.97.21.33
 - **操作系统**: Ubuntu 24.04
-- **域名**: www.manqiyou.cn
+- **域名**: www.zjmqy.cc
 
 ### 部署方式
 - **容器化**: Docker + Docker Compose
@@ -303,7 +303,7 @@ manqiyou/
 
 ### 服务器
 - **IP 地址**: 47.97.21.33
-- **域名**: www.manqiyou.cn
+- **域名**: www.zjmqy.cc
 - **SSH 端口**: 22
 
 ### 技术支持

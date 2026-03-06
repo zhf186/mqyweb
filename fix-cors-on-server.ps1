@@ -44,7 +44,7 @@ Write-Host ""
 Write-Host "=== 修复完成 ===" -ForegroundColor Green
 Write-Host ""
 Write-Host "请执行以下操作验证修复：" -ForegroundColor Cyan
-Write-Host "1. 访问 https://www.manqiyou.cn/routes"
+Write-Host "1. 访问 https://www.zjmqy.cc/routes"
 Write-Host "2. 打开浏览器开发者工具（F12）"
 Write-Host "3. 刷新页面（Ctrl+Shift+R 硬刷新）"
 Write-Host "4. 检查控制台是否还有 CORS 错误"

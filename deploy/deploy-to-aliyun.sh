@@ -2,7 +2,7 @@
 
 # 漫骑游项目 - 阿里云自动化部署脚本
 # 服务器: 47.97.21.33
-# 域名: www.manqiyou.cn
+# 域名: www.zjmqy.cc
 
 set -e  # 遇到错误立即退出
 
@@ -14,7 +14,7 @@ NC='\033[0m' # No Color
 
 # 配置变量
 SERVER_IP="47.97.21.33"
-DOMAIN="www.manqiyou.cn"
+DOMAIN="www.zjmqy.cc"
 PROJECT_DIR="/var/www/manqiyou"
 GIT_REPO="git@github.com:zhf186/mqyweb.git"
 

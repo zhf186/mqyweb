@@ -18,13 +18,13 @@ grep -n "Access-Control" /etc/nginx/sites-enabled/manqiyou || echo "✓ Nginx �
 echo ""
 echo "2. 测试后端直接响应（绕过 Nginx）..."
 echo "测试 http://127.0.0.1:8081/api/categories:"
-curl -I -H "Origin: https://manqiyou.cn" http://127.0.0.1:8081/api/categories 2>&1 | grep -i "access-control"
+curl -I -H "Origin: https://zjmqy.cc" http://127.0.0.1:8081/api/categories 2>&1 | grep -i "access-control"
 
 # 3. 测试通过 Nginx 的响应
 echo ""
 echo "3. 测试通过 Nginx 的响应..."
-echo "测试 https://www.manqiyou.cn/api/categories:"
-curl -I -H "Origin: https://manqiyou.cn" https://www.manqiyou.cn/api/categories 2>&1 | grep -i "access-control"
+echo "测试 https://www.zjmqy.cc/api/categories:"
+curl -I -H "Origin: https://zjmqy.cc" https://www.zjmqy.cc/api/categories 2>&1 | grep -i "access-control"
 
 # 4. 检查后端容器日志
 echo ""

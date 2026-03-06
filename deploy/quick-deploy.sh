@@ -18,7 +18,7 @@ echo ""
 # 配置变量
 PROJECT_DIR="/var/www/manqiyou"
 GIT_REPO="git@github.com:zhf186/mqyweb.git"
-DOMAIN="www.manqiyou.cn"
+DOMAIN="www.zjmqy.cc"
 
 # 步骤 1: 检查环境
 echo -e "${YELLOW}>>> 步骤 1/8: 检查环境${NC}"
