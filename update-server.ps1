@@ -34,13 +34,13 @@ Write-Host "Path   : $ProjectDir"
 Write-Host ""
 
 try {
-    Invoke-RemoteStep -StepLabel "1/4" -RemoteCommand "cd '$ProjectDir' && git pull origin main"
+    Invoke-RemoteStep -StepLabel "1/4" -RemoteCommand "cd '$ProjectDir' && git pull --ff-only origin main"
     Write-Host ""
 
-    Invoke-RemoteStep -StepLabel "2/4" -RemoteCommand "cd '$ProjectDir' && docker-compose -f docker-compose.prod.yml build"
+    Invoke-RemoteStep -StepLabel "2/4" -RemoteCommand "cd '$ProjectDir' && docker-compose -f docker-compose.prod.yml rm -sf backend frontend"
     Write-Host ""
 
-    Invoke-RemoteStep -StepLabel "3/4" -RemoteCommand "cd '$ProjectDir' && docker-compose -f docker-compose.prod.yml up -d"
+    Invoke-RemoteStep -StepLabel "3/4" -RemoteCommand "cd '$ProjectDir' && docker-compose -f docker-compose.prod.yml up -d --build backend frontend"
     Write-Host ""
 
     Start-Sleep -Seconds 10
