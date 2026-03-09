@@ -231,6 +231,7 @@ CREATE TABLE IF NOT EXISTS cms_products (
     view_count INT DEFAULT 0,
     sale_count INT DEFAULT 0,
     created_by BIGINT REFERENCES cms_admin_users(id),
+    version INT DEFAULT 0 NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -268,6 +269,7 @@ CREATE TABLE IF NOT EXISTS cms_partners (
     website_url VARCHAR(500),
     display_order INT DEFAULT 0,
     is_active BOOLEAN DEFAULT TRUE,
+    version INT DEFAULT 0 NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
