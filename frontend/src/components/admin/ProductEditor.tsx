@@ -36,6 +36,14 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useToast } from '@/hooks/use-toast'
 
+const PRODUCT_CATEGORY_OPTIONS = [
+  { value: 'clothing', label: 'Clothing' },
+  { value: 'food', label: 'Food' },
+  { value: 'accommodation', label: 'Accommodation' },
+  { value: 'transportation', label: 'Transportation' },
+  { value: 'entertainment', label: 'Entertainment' },
+] as const
+
 const productSchema = z.object({
   nameZh: z.string().min(1, '请输入中文名称').max(200, '名称不能超过200个字符'),
   nameEn: z.string().min(1, '请输入英文名称').max(200, '名称不能超过200个字符'),
@@ -244,11 +252,11 @@ export default function ProductEditor({
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="衣">衣</SelectItem>
-                          <SelectItem value="食">食</SelectItem>
-                          <SelectItem value="住">住</SelectItem>
-                          <SelectItem value="行">行</SelectItem>
-                          <SelectItem value="乐">乐</SelectItem>
+                          {PRODUCT_CATEGORY_OPTIONS.map((option) => (
+                            <SelectItem key={option.value} value={option.value}>
+                              {option.label}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                       <FormMessage />

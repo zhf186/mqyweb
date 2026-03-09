@@ -409,6 +409,7 @@ export const productApi = {
    */
   getProducts: (params?: {
     status?: 'draft' | 'active' | 'inactive'
+    category?: 'clothing' | 'food' | 'accommodation' | 'transportation' | 'entertainment'
     search?: string
     page?: number
     limit?: number
@@ -466,7 +467,7 @@ export const partnerApi = {
    * 重新排序
    */
   reorderPartners: (partnerIds: string[]) =>
-    api.put<void>('/admin/partners/reorder', { partnerIds }),
+    api.put<void>('/admin/partners/reorder', partnerIds),
 }
 
 /**

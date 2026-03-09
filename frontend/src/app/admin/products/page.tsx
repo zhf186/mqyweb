@@ -34,6 +34,23 @@ import { Plus, Search, Edit, Trash2, Eye, CheckCircle, XCircle } from 'lucide-re
 import ProductEditor from '@/components/admin/ProductEditor'
 import ProductPreview from '@/components/admin/ProductPreview'
 
+const PRODUCT_CATEGORY_OPTIONS = [
+  { value: 'all', label: 'All Categories' },
+  { value: 'clothing', label: 'Clothing' },
+  { value: 'food', label: 'Food' },
+  { value: 'accommodation', label: 'Accommodation' },
+  { value: 'transportation', label: 'Transportation' },
+  { value: 'entertainment', label: 'Entertainment' },
+] as const
+
+const PRODUCT_CATEGORY_LABELS: Record<string, string> = {
+  clothing: 'Clothing',
+  food: 'Food',
+  accommodation: 'Accommodation',
+  transportation: 'Transportation',
+  entertainment: 'Entertainment',
+}
+
 export default function ProductsPage() {
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState<string>('all')
@@ -54,6 +71,7 @@ export default function ProductsPage() {
     queryFn: () =>
       productApi.getProducts({
         status: statusFilter === 'all' ? undefined : (statusFilter as any),
+        category: categoryFilter === 'all' ? undefined : (categoryFilter as any),
         search: search || undefined,
         page,
         limit: 20,
@@ -136,10 +154,6 @@ export default function ProductsPage() {
     )
   }
 
-  // Filter by category on the client side (backend also supports it)
-  const filteredRecords = productsData?.data?.records?.filter((p) =>
-    categoryFilter === 'all' ? true : p.category === categoryFilter
-  )
 
   return (
     <div className="space-y-6">
@@ -171,12 +185,11 @@ export default function ProductsPage() {
             <SelectValue placeholder="筛选分类" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">全部分类</SelectItem>
-            <SelectItem value="衣">衣</SelectItem>
-            <SelectItem value="食">食</SelectItem>
-            <SelectItem value="住">住</SelectItem>
-            <SelectItem value="行">行</SelectItem>
-            <SelectItem value="乐">乐</SelectItem>
+            {PRODUCT_CATEGORY_OPTIONS.map((option) => (
+              <SelectItem key={option.value} value={option.value}>
+                {option.label}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
         <Select value={statusFilter} onValueChange={setStatusFilter}>
@@ -214,8 +227,8 @@ export default function ProductsPage() {
                   加载中...
                 </TableCell>
               </TableRow>
-            ) : filteredRecords && filteredRecords.length > 0 ? (
-              filteredRecords.map((product) => (
+            ) : productsData?.data?.records && productsData.data.records.length > 0 ? (
+              productsData.data.records.map((product) => (
                 <TableRow key={product.id}>
                   <TableCell>
                     <div>
@@ -224,7 +237,7 @@ export default function ProductsPage() {
                     </div>
                   </TableCell>
                   <TableCell>
-                    <Badge variant="outline">{product.category}</Badge>
+                    <Badge variant="outline">{PRODUCT_CATEGORY_LABELS[product.category] || product.category}</Badge>
                   </TableCell>
                   <TableCell>
                     <div>
