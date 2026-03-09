@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -46,6 +47,11 @@ public class CmsRouteService {
 
     @Autowired
     private RouteMapper publicRouteMapper;
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    private volatile Boolean publicRoutesTableAvailable;
 
     @Autowired
     private AssetService assetService;
@@ -253,6 +259,10 @@ public class CmsRouteService {
      * 将 CMS 路线信息同步到公开 routes 表，确保官网 /routes 页面展示最新内容。
      */
     private void syncPublicRoute(Route cmsRoute) {
+        if (!isPublicRoutesTableAvailable()) {
+            return;
+        }
+
         try {
             com.manqiyou.app.entity.Route publicRoute = publicRouteMapper.selectById(cmsRoute.getId());
             if (publicRoute == null) {
@@ -267,7 +277,7 @@ public class CmsRouteService {
                 publicRoute.setNameEn(cmsRoute.getNameEn());
             }
 
-            // 封面图：cms_routes.coverImageId -> cms_assets.url -> routes.coverImage
+            // Map cms_routes.coverImageId to the public routes cover image when sync is available.
             if (cmsRoute.getCoverImageId() != null) {
                 Asset asset = assetService.getAssetById(cmsRoute.getCoverImageId());
                 String url = asset.getLargeUrl();
@@ -280,13 +290,35 @@ public class CmsRouteService {
 
             publicRouteMapper.updateById(publicRoute);
         } catch (Exception e) {
-            // 同步失败不影响主流程
+            // Sync failures should not break CMS writes.
             log.warn("Failed to sync public route for cmsRouteId={}: {}", cmsRoute.getId(), e.getMessage());
         }
     }
-    
+
+    private boolean isPublicRoutesTableAvailable() {
+        if (publicRoutesTableAvailable != null) {
+            return publicRoutesTableAvailable;
+        }
+
+        try {
+            Integer count = jdbcTemplate.queryForObject(
+                "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = current_schema() AND table_name = 'routes'",
+                Integer.class
+            );
+            publicRoutesTableAvailable = count != null && count > 0;
+            if (!publicRoutesTableAvailable) {
+                log.info("Public routes table 'routes' not found, skip route sync.");
+            }
+        } catch (Exception e) {
+            publicRoutesTableAvailable = false;
+            log.warn("Failed to inspect public routes table: {}", e.getMessage());
+        }
+
+        return publicRoutesTableAvailable;
+    }
+
     /**
-     * 获取路线统计
+     * Get route statistics.
      */
     public RouteStatistics getRouteStatistics(Long routeId) {
         Route route = routeMapper.selectById(routeId);
