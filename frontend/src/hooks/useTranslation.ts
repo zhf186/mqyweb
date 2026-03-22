@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useLocaleStore } from '@/stores/locale'
-import { getDictionary, Locale } from '@/lib/i18n'
+import { getCachedDictionary, getDictionary, preloadDictionary, Locale } from '@/lib/i18n'
 
 type Dictionary = Awaited<ReturnType<typeof getDictionary>>
 
@@ -11,20 +11,38 @@ type Dictionary = Awaited<ReturnType<typeof getDictionary>>
  */
 export function useTranslation() {
   const { locale, setLocale, toggleLocale } = useLocaleStore()
-  const [dictionary, setDictionary] = useState<Dictionary | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const [dictionary, setDictionary] = useState<Dictionary | null>(() => getCachedDictionary(locale))
+  const [isLoading, setIsLoading] = useState(() => !getCachedDictionary(locale))
 
   useEffect(() => {
-    setIsLoading(true)
+    let isMounted = true
+    const cachedDictionary = getCachedDictionary(locale)
+
+    if (cachedDictionary) {
+      setDictionary(cachedDictionary)
+      setIsLoading(false)
+    } else {
+      setIsLoading(true)
+    }
+
     getDictionary(locale)
       .then((dict) => {
+        if (!isMounted) return
+
         setDictionary(dict)
         setIsLoading(false)
+        preloadDictionary(locale === 'zh' ? 'en' : 'zh')
       })
       .catch((error) => {
+        if (!isMounted) return
+
         console.error('Failed to load dictionary:', error)
         setIsLoading(false)
       })
+
+    return () => {
+      isMounted = false
+    }
   }, [locale])
 
   /**

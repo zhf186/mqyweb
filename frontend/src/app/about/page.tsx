@@ -112,7 +112,7 @@ export default function AboutPage() {
       <Header transparent />
       <main className="bg-black text-white">
         {/* Hero Section */}
-        <section className="relative h-screen overflow-hidden">
+        <section className="theme-preserve-dark relative h-screen overflow-hidden">
           <div className="absolute inset-0">
             <Image
               src="/brand_assets/page1_img1.jpeg"
@@ -363,10 +363,10 @@ export default function AboutPage() {
             {/* Factory Images */}
             <div className="grid gap-6 md:grid-cols-2">
               {[
-                '/pics/工厂/日本展会三折页NEW-03.jpg',
-                '/pics/工厂/日本展会三折页NEW-04.jpg',
-                '/pics/工厂/日本展会三折页NEW-05.jpg',
-                '/pics/工厂/日本展会三折页NEW-06.jpg',
+                '/pics/工厂/日本展会三折页NEW-03.webp',
+                '/pics/工厂/日本展会三折页NEW-04.webp',
+                '/pics/工厂/日本展会三折页NEW-05.webp',
+                '/pics/工厂/日本展会三折页NEW-06.webp',
               ].map((img, index) => (
                 <motion.div
                   key={img}
@@ -433,27 +433,27 @@ export default function AboutPage() {
             <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
               {[
                 { 
-                  img: '/pics/慈城店/DSC09413.JPG', 
+                  img: '/pics/慈城店/DSC09413.webp', 
                   name: storeCities[0]?.name || (locale === 'en' ? 'Ningbo Dongqian Lake Store' : '宁波东钱湖店'),
                   location: storeCities[0]?.location || (locale === 'en' ? 'Zhejiang · Ningbo' : '浙江·宁波')
                 },
                 { 
-                  img: '/pics/慈城店/DSC09441.JPG', 
+                  img: '/pics/慈城店/DSC09441.webp', 
                   name: storeCities[1]?.name || (locale === 'en' ? 'Ningbo Cicheng Store' : '宁波慈城店'),
                   location: storeCities[1]?.location || (locale === 'en' ? 'Zhejiang · Ningbo' : '浙江·宁波')
                 },
                 { 
-                  img: '/pics/漫骑游姚江店/微信图片_20260106145203_918_.png', 
+                  img: '/pics/漫骑游姚江店/微信图片_20260106145203_918_.webp', 
                   name: storeCities[2]?.name || (locale === 'en' ? 'Ningbo Yaojiang Store' : '宁波姚江店'),
                   location: storeCities[2]?.location || (locale === 'en' ? 'Zhejiang · Ningbo' : '浙江·宁波')
                 },
                 { 
-                  img: '/pics/海南儋州/微信图片_20260105163320_59_2525.jpg', 
+                  img: '/pics/海南儋州/微信图片_20260105163320_59_2525.webp', 
                   name: storeCities[3]?.name || (locale === 'en' ? 'Hainan Danzhou Store' : '海南儋州店'),
                   location: storeCities[3]?.location || (locale === 'en' ? 'Hainan · Danzhou' : '海南·儋州')
                 },
                 { 
-                  img: '/pics/贵州兴义市/未标题-4-23.jpg', 
+                  img: '/pics/贵州兴义市/未标题-4-23.webp', 
                   name: storeCities[4]?.name || (locale === 'en' ? 'Guizhou Xingyi Store' : '贵州兴义店'),
                   location: storeCities[4]?.location || (locale === 'en' ? 'Guizhou · Xingyi' : '贵州·兴义')
                 },
@@ -469,7 +469,7 @@ export default function AboutPage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.6, delay: index * 0.1 }}
-                  className="group relative overflow-hidden rounded-2xl"
+                  className="theme-preserve-dark group relative overflow-hidden rounded-2xl"
                 >
                   <div className="aspect-[4/3] overflow-hidden relative">
                     <Image
@@ -510,7 +510,7 @@ export default function AboutPage() {
         </section>
 
         {/* CTA Section */}
-        <section className="relative py-32 overflow-hidden">
+        <section className="theme-preserve-dark relative overflow-hidden py-32">
           <div className="absolute inset-0">
             <Image
               src="/brand_assets/page11_img3.jpeg"
@@ -550,7 +550,7 @@ export default function AboutPage() {
               </p>
               <div className="mt-10 flex flex-wrap justify-center gap-4">
                 <Link
-                  href="/community"
+                  href={t('about.cta.member.href', '/community')}
                   className="rounded-full bg-brand-accent px-8 py-4 font-medium text-black shadow-lg transition-all hover:scale-105 hover:shadow-brand-accent/50"
                   data-editable="about.cta.member"
                   data-editable-type="text"
@@ -559,7 +559,7 @@ export default function AboutPage() {
                   {t('about.cta.member')}
                 </Link>
                 <Link
-                  href="/partners"
+                  href={t('about.cta.cooperate.href', '/partners')}
                   className="rounded-full border-2 border-white bg-white/20 px-8 py-4 font-medium text-white backdrop-blur-sm transition-all hover:bg-white hover:text-brand-primary"
                   data-editable="about.cta.cooperate"
                   data-editable-type="text"

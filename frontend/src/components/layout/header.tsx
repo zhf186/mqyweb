@@ -2,6 +2,7 @@
 
 import * as React from 'react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import { useTranslation } from '@/hooks/useTranslation'
@@ -24,6 +25,7 @@ interface HeaderProps {
 }
 
 export function Header({ transparent = false }: HeaderProps) {
+  const pathname = usePathname()
   const { t } = useTranslation()
   const { locale, setLocale } = useLocaleStore()
   const { style, toggleStyle } = useStyleStore()
@@ -42,16 +44,37 @@ export function Header({ transparent = false }: HeaderProps) {
     setLocale(locale === 'zh' ? 'en' : 'zh')
   }
 
-  const showBackground = !transparent || isScrolled || isMobileMenuOpen
+  const isNavItemActive = React.useCallback(
+    (href: string) => {
+      if (!pathname) return false
+      if (href === '/') {
+        return pathname === '/'
+      }
+      return pathname === href || pathname.startsWith(`${href}/`)
+    },
+    [pathname]
+  )
+
+  const showBackground = style === 'bright' || !transparent || isScrolled || isMobileMenuOpen
+  const brightHeaderStyle = showBackground && style === 'bright'
+    ? {
+        backgroundColor: 'rgba(255, 255, 255, 0.96)',
+        borderBottom: '1px solid rgba(226, 232, 240, 0.82)',
+        boxShadow: '0 10px 32px rgba(15, 23, 42, 0.10)',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+      }
+    : undefined
 
   return (
     <>
       <header
+        style={brightHeaderStyle}
         className={cn(
           'fixed left-0 right-0 top-0 z-50 transition-all duration-500',
           showBackground
             ? style === 'bright'
-              ? 'bg-white/90 backdrop-blur-md'
+              ? ''
               : 'bg-black/90 backdrop-blur-md'
             : 'bg-transparent'
         )}
@@ -62,7 +85,7 @@ export function Header({ transparent = false }: HeaderProps) {
             <span
               className={cn(
                 'font-zh-display text-2xl font-bold',
-                style === 'bright' ? 'text-black' : 'text-white'
+                style === 'bright' ? 'text-slate-950' : 'text-white'
               )}
             >
               {t('common.brand')}
@@ -72,18 +95,29 @@ export function Header({ transparent = false }: HeaderProps) {
           {/* Desktop Navigation */}
           <nav className="hidden items-center gap-1 lg:flex">
             {navItems.map((item) => (
-              <Link
-                key={item.key}
-                href={item.href}
-                className={cn(
-                  'px-4 py-2 text-sm transition-colors',
-                  style === 'bright'
-                    ? 'text-black/70 hover:text-black'
-                    : 'text-white/70 hover:text-white'
-                )}
-              >
-                {t(`nav.${item.key}`)}
-              </Link>
+              (() => {
+                const isActive = isNavItemActive(item.href)
+
+                return (
+                  <Link
+                    key={item.key}
+                    href={item.href}
+                    aria-current={isActive ? 'page' : undefined}
+                    className={cn(
+                      'rounded-full px-4 py-2 text-sm font-medium transition-all duration-200',
+                      isActive
+                        ? style === 'bright'
+                          ? 'theme-preserve-dark bg-brand-primary text-white shadow-[0_8px_20px_rgba(15,76,58,0.18)]'
+                          : 'bg-white text-black shadow-sm'
+                        : style === 'bright'
+                          ? 'text-slate-700 hover:bg-slate-900/[0.06] hover:text-slate-950'
+                          : 'text-white/70 hover:bg-white/10 hover:text-white'
+                    )}
+                  >
+                    {t(`nav.${item.key}`)}
+                  </Link>
+                )
+              })()
             ))}
           </nav>
 
@@ -95,7 +129,7 @@ export function Header({ transparent = false }: HeaderProps) {
               className={cn(
                 'hidden text-sm transition-colors sm:block',
                 style === 'bright'
-                  ? 'text-black/70 hover:text-black'
+                  ? 'text-slate-700 hover:text-slate-950'
                   : 'text-white/70 hover:text-white'
               )}
             >
@@ -108,7 +142,7 @@ export function Header({ transparent = false }: HeaderProps) {
               className={cn(
                 'hidden text-sm transition-colors sm:block',
                 style === 'bright'
-                  ? 'text-black/70 hover:text-black'
+                  ? 'text-slate-700 hover:text-slate-950'
                   : 'text-white/70 hover:text-white'
               )}
             >
@@ -121,7 +155,7 @@ export function Header({ transparent = false }: HeaderProps) {
               className={cn(
                 'hidden rounded-full px-5 py-2 text-sm font-medium transition-transform hover:scale-105 sm:block',
                 style === 'bright'
-                  ? 'bg-brand-primary text-white'
+                  ? 'theme-preserve-dark bg-slate-900 text-white shadow-[0_10px_24px_rgba(15,23,42,0.12)] hover:bg-slate-800'
                   : 'bg-white text-black'
               )}
             >
@@ -173,7 +207,10 @@ export function Header({ transparent = false }: HeaderProps) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-40 bg-black lg:hidden"
+            className={cn(
+              'fixed inset-0 z-40 lg:hidden',
+              style === 'bright' ? 'bg-white/[0.96] backdrop-blur-xl' : 'bg-black'
+            )}
           >
             <div className="flex h-full flex-col items-center justify-center">
               <nav className="flex flex-col items-center gap-6">
@@ -184,13 +221,27 @@ export function Header({ transparent = false }: HeaderProps) {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.3, delay: index * 0.05 }}
                   >
+                    {(() => {
+                      const isActive = isNavItemActive(item.href)
+
+                      return (
                     <Link
                       href={item.href}
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className="font-zh-display text-3xl font-bold text-white transition-colors hover:text-brand-accent"
+                      aria-current={isActive ? 'page' : undefined}
+                      className={cn(
+                        'font-zh-display text-3xl font-bold transition-colors',
+                        isActive
+                          ? 'text-brand-accent underline underline-offset-8'
+                          : style === 'bright'
+                            ? 'text-slate-800 hover:text-brand-primary'
+                            : 'text-white hover:text-brand-accent'
+                      )}
                     >
                       {t(`nav.${item.key}`)}
                     </Link>
+                      )
+                    })()}
                   </motion.div>
                 ))}
               </nav>
@@ -203,20 +254,29 @@ export function Header({ transparent = false }: HeaderProps) {
               >
                 <button
                   onClick={toggleStyle}
-                  className="text-white/60 transition-colors hover:text-white"
+                  className={cn(
+                    'transition-colors',
+                    style === 'bright' ? 'text-slate-500 hover:text-slate-900' : 'text-white/60 hover:text-white'
+                  )}
                 >
                   {locale === 'zh' ? (style === 'default' ? '明亮风格' : '默认风格') : (style === 'default' ? 'Bright Style' : 'Default Style')}
                 </button>
                 <button
                   onClick={toggleLanguage}
-                  className="text-white/60 transition-colors hover:text-white"
+                  className={cn(
+                    'transition-colors',
+                    style === 'bright' ? 'text-slate-500 hover:text-slate-900' : 'text-white/60 hover:text-white'
+                  )}
                 >
                   {locale === 'zh' ? localeNames.en : localeNames.zh}
                 </button>
                 <Link
                   href="/routes"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="rounded-full bg-white px-8 py-3 font-medium text-black"
+                  className={cn(
+                    'rounded-full px-8 py-3 font-medium',
+                    style === 'bright' ? 'theme-preserve-dark bg-slate-900 text-white' : 'bg-white text-black'
+                  )}
                 >
                   {t('common.startRiding')}
                 </Link>

@@ -111,7 +111,7 @@ export default function ContactPage() {
           </p>
           <div className="mt-10">
             <Link
-              href="/"
+              href={getEditableText('contactPage.backHome.href', '/')}
               className="text-brand-accent hover:text-white"
               data-editable="contactPage.backHome"
               data-editable-type="text"

@@ -7,21 +7,35 @@ import { Footer } from '@/components/layout/footer'
 import { useLocaleStore } from '@/stores/locale'
 import { useEffect, useState } from 'react'
 import { getPageContent, getContent, type CMSContent } from '@/lib/api/public-content'
+import { getCachedDictionary, getDictionary } from '@/lib/i18n'
 import { useSearchParams } from 'next/navigation'
 import { detectEditableElements, updateElementContent, findElementBySelector, injectUpdateAnimationStyles } from '@/lib/visual-editor/editable-detector'
 import type { IframeBridgeMessage } from '@/lib/visual-editor/types'
 
 export default function Home() {
   const locale = useLocaleStore((state) => state.locale)
-  const [dict, setDict] = useState<any>(null)
+  const [dict, setDict] = useState<any>(() => getCachedDictionary(locale))
   const [cmsContent, setCmsContent] = useState<CMSContent>({})
   const searchParams = useSearchParams()
   const isEditMode = searchParams.get('editMode') === 'true'
 
   useEffect(() => {
-    import(`@/lib/i18n/dictionaries/${locale}.json`).then((module) => {
-      setDict(module.default)
+    let isMounted = true
+    const cachedDictionary = getCachedDictionary(locale)
+
+    if (cachedDictionary) {
+      setDict(cachedDictionary)
+    }
+
+    getDictionary(locale).then((dictionary) => {
+      if (isMounted) {
+        setDict(dictionary)
+      }
     })
+
+    return () => {
+      isMounted = false
+    }
   }, [locale])
 
   useEffect(() => {
@@ -144,7 +158,7 @@ export default function Home() {
       <Header transparent />
       <main className="bg-black text-white">
         {/* Hero Section - Full Screen Minimal */}
-        <section className="relative h-screen overflow-hidden">
+        <section className="theme-preserve-dark relative h-screen overflow-hidden">
           <div className="absolute inset-0">
             <Image
               src={getContent(cmsContent, 'hero.background.image', locale, '/brand_assets/page1_img2.jpeg')}
@@ -194,7 +208,7 @@ export default function Home() {
         </section>
 
         {/* Transition Spacer - 图片间隔过渡 */}
-        <div className="relative h-32 sm:h-40 md:h-48 bg-black overflow-hidden">
+        <div className="theme-preserve-dark relative h-32 overflow-hidden bg-black sm:h-40 md:h-48">
           {/* 上方图片的延伸渐变 */}
           <div className="absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-black to-transparent" />
           {/* 下方图片的预热渐变 */}
@@ -206,7 +220,7 @@ export default function Home() {
         </div>
 
         {/* Brand Intro - Text on Right */}
-        <section className="relative min-h-screen flex items-center">
+        <section className="theme-preserve-dark relative flex min-h-screen items-center">
           <div className="absolute inset-0">
             <Image
               src={getContent(cmsContent, 'brand.background.image', locale, '/brand_assets/page3_img4.jpeg')}
@@ -417,7 +431,7 @@ export default function Home() {
               ].map((route, index) => (
                 <div
                   key={`route-${index}`}
-                  className="group relative overflow-hidden rounded-xl aspect-[4/3] sm:rounded-2xl"
+                  className="theme-preserve-dark group relative aspect-[4/3] overflow-hidden rounded-xl sm:rounded-2xl"
                 >
                   <Image
                     src={route.img}
@@ -429,10 +443,10 @@ export default function Home() {
                     data-editable-type="image"
                     data-editable-label={`路线${index + 1}图片`}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent" />
                   <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-6 md:p-8">
                     <h3 
-                      className="text-2xl font-bold mb-1.5 sm:text-3xl sm:mb-2"
+                      className="mb-1.5 text-2xl font-bold text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.72)] sm:mb-2 sm:text-3xl"
                       data-editable={route.nameKey}
                       data-editable-type="text"
                       data-editable-label={`路线${index + 1}名称`}
@@ -440,7 +454,7 @@ export default function Home() {
                       {route.name}
                     </h3>
                     <p 
-                      className="text-base text-white/70 sm:text-lg"
+                      className="text-base text-white/85 drop-shadow-[0_2px_10px_rgba(0,0,0,0.6)] sm:text-lg"
                       data-editable={route.distanceKey}
                       data-editable-type="text"
                       data-editable-label={`路线${index + 1}距离`}
@@ -467,7 +481,7 @@ export default function Home() {
         </section>
 
         {/* CTA Section */}
-        <section className="relative py-24 overflow-hidden sm:py-32 md:py-40">
+        <section className="theme-preserve-dark relative overflow-hidden py-24 sm:py-32 md:py-40">
           <div className="absolute inset-0">
             <Image
               src={getContent(cmsContent, 'cta.background.image', locale, '/brand_assets/page11_img3.jpeg')}
@@ -500,16 +514,22 @@ export default function Home() {
             </p>
             <div className="mt-10 flex flex-col justify-center gap-4 sm:mt-12 sm:flex-row sm:gap-6">
               <Link
-                href="/routes"
+                href={getContent(cmsContent, 'home.cta.primary.href', locale, '/routes')}
                 className="rounded-full bg-orange-500 px-8 py-4 text-base font-medium text-black shadow-2xl transition-all hover:scale-105 hover:bg-orange-600 sm:px-10 sm:py-5 sm:text-lg"
+                data-editable="home.cta.primary"
+                data-editable-type="text"
+                data-editable-label="首页 CTA 主按钮"
               >
-                {dict.common.exploreRoutes}
+                {getContent(cmsContent, 'home.cta.primary', locale, dict.common.exploreRoutes)}
               </Link>
               <Link
-                href="/ebike"
+                href={getContent(cmsContent, 'home.cta.secondary.href', locale, '/ebike')}
                 className="rounded-full border-2 border-white bg-white/10 px-8 py-4 text-base font-medium text-white backdrop-blur-sm transition-all hover:bg-white hover:text-black sm:px-10 sm:py-5 sm:text-lg"
+                data-editable="home.cta.secondary"
+                data-editable-type="text"
+                data-editable-label="首页 CTA 次按钮"
               >
-                {dict.common.learnEbike}
+                {getContent(cmsContent, 'home.cta.secondary', locale, dict.common.learnEbike)}
               </Link>
             </div>
           </div>

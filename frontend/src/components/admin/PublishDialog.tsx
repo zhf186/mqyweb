@@ -51,7 +51,7 @@ export function PublishDialog({
       await onConfirm(summary)
       toast({
         title: '发布成功',
-        description: '内容已应用到正式网站',
+        description: '已创建发布记录并写入操作日志',
       })
       setSummary('')
       onClose()
@@ -83,10 +83,10 @@ export function PublishDialog({
             <div className="text-sm text-blue-800">
               <p className="font-medium mb-1">发布后的影响：</p>
               <ul className="list-disc list-inside space-y-1">
-                <li>修改的内容将立即应用到正式网站</li>
-                <li>所有访问者都能看到新内容</li>
-                <li>系统会自动创建版本记录</li>
-                <li>操作日志会记录此次发布</li>
+                <li>系统会为当前页面内容创建一次发布版本快照</li>
+                <li>发布说明会写入版本记录和操作日志</li>
+                <li>后台统计会显示本次发布动作</li>
+                <li>后续回滚时可基于本次发布版本恢复</li>
               </ul>
             </div>
           </div>

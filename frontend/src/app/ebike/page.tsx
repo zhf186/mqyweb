@@ -108,7 +108,7 @@ export default function EbikePage() {
       <Header transparent />
       <main className="bg-black text-white">
         {/* Hero Section */}
-        <section className="relative h-screen overflow-hidden">
+        <section className="theme-preserve-dark relative h-screen overflow-hidden">
           <motion.div style={{ opacity }} className="absolute inset-0 bg-black">
             <Image
               src={getEditableText('ebike.hero.background', '/brand_assets/ebike/page11_img1.jpeg')}
@@ -317,7 +317,7 @@ export default function EbikePage() {
         </section>
 
         {/* Design Section - Large Image Display */}
-        <section className="relative min-h-screen">
+        <section className="theme-preserve-dark relative min-h-screen">
           <div className="sticky top-0 h-screen overflow-hidden">
             <Image
               src={getEditableText('ebikePage.design.background', '/brand_assets/ebike/page10_img2.jpeg')}
@@ -404,7 +404,7 @@ export default function EbikePage() {
         </section>
 
         {/* Carbon Fiber Section - Simplified */}
-        <section className="relative min-h-screen">
+        <section className="theme-preserve-dark relative min-h-screen">
           <div className="sticky top-0 h-screen overflow-hidden">
             <Image
               src={getEditableText('ebikePage.carbon.background', '/brand_assets/ebike/page10_img3.jpeg')}
@@ -560,27 +560,32 @@ export default function EbikePage() {
                 transition={{ duration: 0.8 }}
                 className="group"
               >
-                <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-red-900/20 to-black p-12 transition-all duration-500 hover:from-red-900/30">
+                <div className="theme-preserve-dark relative overflow-hidden rounded-3xl bg-gradient-to-br from-red-900/35 to-black p-12 transition-all duration-500 hover:from-red-900/45">
                   <div className="mb-8 text-center">
-                    <div className="text-6xl font-bold text-red-500 transition-transform duration-500 group-hover:scale-110">
-                      闂傚倸鍊稿Λ妤呭箠閹炬剚鍤曢柍?
+                    <div
+                      className="text-6xl font-bold text-red-500 transition-transform duration-500 group-hover:scale-110"
+                      data-editable="ebikePage.partners.yadea.brand"
+                      data-editable-type="text"
+                      data-editable-label="ebikePage.partners.yadea.brand"
+                    >
+                      {getEditableText('ebikePage.partners.yadea.brand', locale === 'en' ? 'YADEA' : '雅迪')}
                     </div>
-                    <div className="mt-2 text-sm tracking-widest text-white/40">YADEA</div>
+                    <div className="mt-2 text-sm tracking-widest text-white/55">YADEA</div>
                   </div>
                   <h3
-                    className="mb-3 text-center text-2xl font-bold"
+                    className="mb-3 text-center text-2xl font-bold text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.68)]"
                     data-editable="ebikePage.partners.yadea.title"
                     data-editable-type="text"
                     data-editable-label="ebikePage.partners.yadea.title"
                   >{getEditableText('ebikePage.partners.yadea.title', t('partners.yadea.title'))}</h3>
                   <p
-                    className="mb-4 text-center text-lg text-white/60"
+                    className="mb-4 text-center text-lg text-white/85 drop-shadow-[0_2px_10px_rgba(0,0,0,0.58)]"
                     data-editable="ebikePage.partners.yadea.subtitle"
                     data-editable-type="text"
                     data-editable-label="ebikePage.partners.yadea.subtitle"
                   >{getEditableText('ebikePage.partners.yadea.subtitle', t('partners.yadea.subtitle'))}</p>
                   <p
-                    className="text-center text-white/50"
+                    className="text-center text-white/75 drop-shadow-[0_2px_10px_rgba(0,0,0,0.52)]"
                     data-editable="ebikePage.partners.yadea.desc"
                     data-editable-type="text"
                     data-editable-label="ebikePage.partners.yadea.desc"
@@ -596,27 +601,27 @@ export default function EbikePage() {
                 transition={{ duration: 0.8, delay: 0.2 }}
                 className="group"
               >
-                <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-blue-900/20 to-black p-12 transition-all duration-500 hover:from-blue-900/30">
+                <div className="theme-preserve-dark relative overflow-hidden rounded-3xl bg-gradient-to-br from-blue-900/35 to-black p-12 transition-all duration-500 hover:from-blue-900/45">
                   <div className="mb-8 text-center">
                     <div className="text-6xl font-bold text-blue-400 transition-transform duration-500 group-hover:scale-110" style={{ fontFamily: 'serif' }}>
                       Gazelle
                     </div>
-                    <div className="mt-2 text-sm tracking-widest text-white/40">ROYAL DUTCH</div>
+                    <div className="mt-2 text-sm tracking-widest text-white/55">ROYAL DUTCH</div>
                   </div>
                   <h3
-                    className="mb-3 text-center text-2xl font-bold"
+                    className="mb-3 text-center text-2xl font-bold text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.68)]"
                     data-editable="ebikePage.partners.gazelle.title"
                     data-editable-type="text"
                     data-editable-label="ebikePage.partners.gazelle.title"
                   >{getEditableText('ebikePage.partners.gazelle.title', t('partners.gazelle.title'))}</h3>
                   <p
-                    className="mb-4 text-center text-lg text-white/60"
+                    className="mb-4 text-center text-lg text-white/85 drop-shadow-[0_2px_10px_rgba(0,0,0,0.58)]"
                     data-editable="ebikePage.partners.gazelle.subtitle"
                     data-editable-type="text"
                     data-editable-label="ebikePage.partners.gazelle.subtitle"
                   >{getEditableText('ebikePage.partners.gazelle.subtitle', t('partners.gazelle.subtitle'))}</p>
                   <p
-                    className="text-center text-white/50"
+                    className="text-center text-white/75 drop-shadow-[0_2px_10px_rgba(0,0,0,0.52)]"
                     data-editable="ebikePage.partners.gazelle.desc"
                     data-editable-type="text"
                     data-editable-label="ebikePage.partners.gazelle.desc"
@@ -724,7 +729,7 @@ export default function EbikePage() {
                       data-editable="ebikePage.models.tour1s.price"
                       data-editable-type="text"
                       data-editable-label="ebikePage.models.tour1s.price"
-                    >濠?,999</span>
+                    >{getEditableText('ebikePage.models.tour1s.price', '¥9,999')}</span>
                   </div>
                 </div>
               </motion.div>
@@ -805,7 +810,7 @@ export default function EbikePage() {
                       data-editable="ebikePage.models.tour1.price"
                       data-editable-type="text"
                       data-editable-label="ebikePage.models.tour1.price"
-                    >濠?,999</span>
+                    >{getEditableText('ebikePage.models.tour1.price', '¥9,999')}</span>
                   </div>
                 </div>
               </motion.div>
@@ -864,22 +869,24 @@ export default function EbikePage() {
                 {getEditableText('ebikePage.cta.desc', t('ebikePage.cta.desc'))}
               </p>
               <div className="mt-10 flex flex-wrap justify-center gap-4">
-                <button
+                <Link
+                  href={getEditableText('ebikePage.cta.testRide.href', '/contact')}
                   className="rounded-full bg-white px-8 py-4 font-medium text-black transition-transform hover:scale-105"
                   data-editable="ebikePage.cta.testRide"
                   data-editable-type="text"
                   data-editable-label="ebikePage.cta.testRide"
                 >
                   {getEditableText('ebikePage.cta.testRide', t('ebikePage.cta.testRide'))}
-                </button>
-                <button
+                </Link>
+                <Link
+                  href={getEditableText('ebikePage.cta.buyNow.href', '/contact')}
                   className="rounded-full border border-white/30 px-8 py-4 font-medium transition-colors hover:bg-white/10"
                   data-editable="ebikePage.cta.buyNow"
                   data-editable-type="text"
                   data-editable-label="ebikePage.cta.buyNow"
                 >
                   {getEditableText('ebikePage.cta.buyNow', t('ebikePage.cta.buyNow'))}
-                </button>
+                </Link>
               </div>
             </motion.div>
           </div>
@@ -898,7 +905,7 @@ export default function EbikePage() {
             </p>
             <div className="mt-4 flex flex-wrap justify-center gap-6">
               <Link
-                href="/faq"
+                href={getEditableText('ebikePage.help.faqLink.href', '/faq')}
                 className="text-brand-accent hover:underline"
                 data-editable="ebikePage.help.faqLink"
                 data-editable-type="text"
@@ -907,7 +914,7 @@ export default function EbikePage() {
                 {getEditableText('ebikePage.help.faqLink', t('footer.links.faq'))}
               </Link>
               <Link
-                href="/contact"
+                href={getEditableText('ebikePage.help.contactLink.href', '/contact')}
                 className="text-brand-accent hover:underline"
                 data-editable="ebikePage.help.contactLink"
                 data-editable-type="text"

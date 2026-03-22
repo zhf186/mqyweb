@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -35,6 +37,9 @@ public class AdminAuthService {
     private final JwtTokenProvider jwtTokenProvider;
     private final RedisTemplate<String, Object> redisTemplate;
     private final PasswordEncoder passwordEncoder;
+    private final ConcurrentMap<String, Integer> localLoginFailures = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, Long> localAccountLocks = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, Long> localTokenBlacklist = new ConcurrentHashMap<>();
 
     public AdminAuthService(AdminUserMapper adminUserMapper,
                             JwtTokenProvider jwtTokenProvider,
@@ -95,19 +100,28 @@ public class AdminAuthService {
         long remaining = jwtTokenProvider.getRemainingValidityMillis(token);
 
         if (remaining > 0) {
-            redisTemplate.opsForValue().set(
-                TOKEN_BLACKLIST_KEY_PREFIX + token,
-                userId,
-                remaining,
-                TimeUnit.MILLISECONDS
-            );
+            try {
+                redisTemplate.opsForValue().set(
+                    TOKEN_BLACKLIST_KEY_PREFIX + token,
+                    userId,
+                    remaining,
+                    TimeUnit.MILLISECONDS
+                );
+            } catch (Exception ex) {
+                localTokenBlacklist.put(token, System.currentTimeMillis() + remaining);
+                log.warn("Redis unavailable during logout, using in-memory token blacklist fallback for user {}", userId, ex);
+            }
         }
 
         log.info("User {} logged out", userId);
     }
 
     public boolean isTokenBlacklisted(String token) {
-        return Boolean.TRUE.equals(redisTemplate.hasKey(TOKEN_BLACKLIST_KEY_PREFIX + token));
+        try {
+            return Boolean.TRUE.equals(redisTemplate.hasKey(TOKEN_BLACKLIST_KEY_PREFIX + token));
+        } catch (Exception ex) {
+            return isTokenBlacklistedLocally(token);
+        }
     }
 
     public AdminUserDTO getCurrentUser(Long userId) {
@@ -142,14 +156,25 @@ public class AdminAuthService {
 
     private void recordLoginFailure(String username) {
         String failKey = LOGIN_FAIL_KEY_PREFIX + username;
-        Long failCount = redisTemplate.opsForValue().increment(failKey, 1);
+        Long failCount;
+        try {
+            failCount = redisTemplate.opsForValue().increment(failKey, 1);
+
+            if (failCount == null) {
+                return;
+            }
+
+            if (failCount == 1) {
+                redisTemplate.expire(failKey, LOCK_DURATION_MINUTES, TimeUnit.MINUTES);
+            }
+        } catch (Exception ex) {
+            int localFailCount = localLoginFailures.merge(username, 1, Integer::sum);
+            failCount = (long) localFailCount;
+            log.warn("Redis unavailable while recording login failure, using in-memory fallback for {}", username, ex);
+        }
 
         if (failCount == null) {
             return;
-        }
-
-        if (failCount == 1) {
-            redisTemplate.expire(failKey, LOCK_DURATION_MINUTES, TimeUnit.MINUTES);
         }
 
         if (failCount >= MAX_LOGIN_ATTEMPTS) {
@@ -159,20 +184,60 @@ public class AdminAuthService {
     }
 
     private void lockAccount(String username) {
-        redisTemplate.opsForValue().set(
-            ACCOUNT_LOCK_KEY_PREFIX + username,
-            true,
-            LOCK_DURATION_MINUTES,
-            TimeUnit.MINUTES
-        );
+        try {
+            redisTemplate.opsForValue().set(
+                ACCOUNT_LOCK_KEY_PREFIX + username,
+                true,
+                LOCK_DURATION_MINUTES,
+                TimeUnit.MINUTES
+            );
+        } catch (Exception ex) {
+            localAccountLocks.put(username, System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(LOCK_DURATION_MINUTES));
+            log.warn("Redis unavailable while locking account {}, using in-memory fallback", username, ex);
+        }
     }
 
     private boolean isAccountLocked(String username) {
-        return Boolean.TRUE.equals(redisTemplate.hasKey(ACCOUNT_LOCK_KEY_PREFIX + username));
+        try {
+            return Boolean.TRUE.equals(redisTemplate.hasKey(ACCOUNT_LOCK_KEY_PREFIX + username));
+        } catch (Exception ex) {
+            return isAccountLockedLocally(username);
+        }
     }
 
     private void clearLoginFailures(String username) {
-        redisTemplate.delete(LOGIN_FAIL_KEY_PREFIX + username);
+        try {
+            redisTemplate.delete(LOGIN_FAIL_KEY_PREFIX + username);
+        } catch (Exception ex) {
+            log.warn("Redis unavailable while clearing login failures for {}, clearing in-memory fallback only", username, ex);
+        }
+        localLoginFailures.remove(username);
+        localAccountLocks.remove(username);
+    }
+
+    private boolean isAccountLockedLocally(String username) {
+        Long lockUntil = localAccountLocks.get(username);
+        if (lockUntil == null) {
+            return false;
+        }
+        if (lockUntil <= System.currentTimeMillis()) {
+            localAccountLocks.remove(username);
+            localLoginFailures.remove(username);
+            return false;
+        }
+        return true;
+    }
+
+    private boolean isTokenBlacklistedLocally(String token) {
+        Long expiresAt = localTokenBlacklist.get(token);
+        if (expiresAt == null) {
+            return false;
+        }
+        if (expiresAt <= System.currentTimeMillis()) {
+            localTokenBlacklist.remove(token);
+            return false;
+        }
+        return true;
     }
 
     private void logLoginSuccess(AdminUser user) {

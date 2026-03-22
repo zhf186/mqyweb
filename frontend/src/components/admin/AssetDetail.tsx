@@ -1,14 +1,14 @@
 'use client'
 
+import Image from 'next/image'
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { Asset, assetApi, AssetUsage } from '@/lib/api/admin'
+import { Asset, assetApi } from '@/lib/api/admin'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Download, RefreshCw, Trash2, ExternalLink, AlertTriangle } from 'lucide-react'
-import { cn } from '@/lib/utils'
 
 interface AssetDetailProps {
   asset: Asset
@@ -25,13 +25,12 @@ export default function AssetDetail({
 }: AssetDetailProps) {
   const [selectedSize, setSelectedSize] = useState<'original' | 'large' | 'medium' | 'small' | 'thumbnail'>('original')
 
-  // Fetch usage information
   const { data: usagesResponse, isLoading: usagesLoading } = useQuery({
     queryKey: ['asset-usage', asset.id],
     queryFn: () => assetApi.getAssetUsage(asset.id),
   })
 
-  const usages = usagesResponse?.data
+  const usages = usagesResponse?.data ?? []
 
   const formatFileSize = (bytes?: number | string | null) => {
     const size = Number(bytes)
@@ -54,11 +53,16 @@ export default function AssetDetail({
 
   const getSizeUrl = () => {
     switch (selectedSize) {
-      case 'large': return asset.largeUrl
-      case 'medium': return asset.mediumUrl
-      case 'small': return asset.smallUrl
-      case 'thumbnail': return asset.thumbnailUrl
-      default: return asset.fileUrl
+      case 'large':
+        return asset.largeUrl
+      case 'medium':
+        return asset.mediumUrl
+      case 'small':
+        return asset.smallUrl
+      case 'thumbnail':
+        return asset.thumbnailUrl
+      default:
+        return asset.fileUrl
     }
   }
 
@@ -66,42 +70,54 @@ export default function AssetDetail({
     const input = document.createElement('input')
     input.type = 'file'
     input.accept = 'image/*'
-    input.onchange = async (e) => {
-      const file = (e.target as HTMLInputElement).files?.[0]
-      if (file) {
-        await onReplace(asset.id, file)
-        onClose()
-      }
+    input.onchange = async (event) => {
+      const file = (event.target as HTMLInputElement).files?.[0]
+      if (!file) return
+      await onReplace(asset.id, file)
+      onClose()
     }
     input.click()
   }
 
   const handleDelete = () => {
-    if (usages && usages.length > 0) {
-      if (!confirm(`此图片正在 ${usages.length} 个位置使用，确定要删除吗？删除后相关内容将无法显示图片。`)) {
-        return
-      }
-    } else {
-      if (!confirm('确定要删除此图片吗？')) {
-        return
-      }
+    const message = usages.length > 0
+      ? `该图片正在 ${usages.length} 个位置使用，删除后相关内容将无法显示图片。确认删除吗？`
+      : '确认删除这张图片吗？'
+
+    if (!confirm(message)) {
+      return
     }
+
     onDelete(asset.id)
   }
 
   const handleDownload = () => {
-    const url = getSizeUrl()
     const link = document.createElement('a')
-    link.href = url
+    link.href = getSizeUrl()
     link.download = asset.originalFilename
     link.click()
   }
 
-  const hasUsages = usages && usages.length > 0
+  const getStatusBadge = () => {
+    if (asset.processingStatus === 'completed') {
+      return <Badge variant="default">已处理</Badge>
+    }
+    if (asset.processingStatus === 'processing') {
+      return <Badge variant="secondary">处理中</Badge>
+    }
+    if (asset.processingStatus === 'failed') {
+      return <Badge variant="destructive">失败</Badge>
+    }
+    return <Badge variant="outline">待处理</Badge>
+  }
+
+  const previewUrl = getSizeUrl()
+  const previewWidth = asset.width && asset.width > 0 ? asset.width : 1200
+  const previewHeight = asset.height && asset.height > 0 ? asset.height : 800
 
   return (
     <Dialog open onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-h-[90vh] max-w-4xl overflow-y-auto">
         <DialogHeader>
           <DialogTitle>图片详情</DialogTitle>
         </DialogHeader>
@@ -113,9 +129,7 @@ export default function AssetDetail({
             <TabsTrigger value="usage">使用情况</TabsTrigger>
           </TabsList>
 
-          {/* Preview Tab */}
           <TabsContent value="preview" className="space-y-4">
-            {/* Size Selector */}
             <div className="flex items-center gap-2">
               <span className="text-sm font-medium">尺寸:</span>
               <div className="flex gap-2">
@@ -130,7 +144,7 @@ export default function AssetDetail({
                     key={size.key}
                     variant={selectedSize === size.key ? 'default' : 'outline'}
                     size="sm"
-                    onClick={() => setSelectedSize(size.key as any)}
+                    onClick={() => setSelectedSize(size.key as typeof selectedSize)}
                   >
                     {size.label}
                   </Button>
@@ -138,43 +152,44 @@ export default function AssetDetail({
               </div>
             </div>
 
-            {/* Image Preview */}
-            <div className="border rounded-lg overflow-hidden bg-muted">
-              <img
-                src={getSizeUrl()}
-                alt={asset.altTextZh || asset.originalFilename}
-                className="w-full h-auto"
-              />
+            <div className="overflow-hidden rounded-lg border bg-muted">
+              <div
+                className="relative w-full"
+                style={{ aspectRatio: `${previewWidth} / ${previewHeight}` }}
+              >
+                <Image
+                  key={previewUrl}
+                  src={previewUrl}
+                  alt={asset.altTextZh || asset.originalFilename}
+                  fill
+                  className="object-contain"
+                  sizes="(max-width: 1024px) 100vw, 960px"
+                />
+              </div>
             </div>
 
-            {/* Actions */}
             <div className="flex items-center gap-2">
               <Button onClick={handleDownload}>
-                <Download className="w-4 h-4 mr-2" />
+                <Download className="mr-2 h-4 w-4" />
                 下载
               </Button>
               <Button variant="outline" onClick={handleReplace}>
-                <RefreshCw className="w-4 h-4 mr-2" />
+                <RefreshCw className="mr-2 h-4 w-4" />
                 替换
               </Button>
-              <Button
-                variant="destructive"
-                onClick={handleDelete}
-                disabled={hasUsages}
-              >
-                <Trash2 className="w-4 h-4 mr-2" />
+              <Button variant="destructive" onClick={handleDelete} disabled={usages.length > 0}>
+                <Trash2 className="mr-2 h-4 w-4" />
                 删除
               </Button>
-              {hasUsages && (
-                <span className="text-sm text-muted-foreground flex items-center gap-1">
-                  <AlertTriangle className="w-4 h-4 text-yellow-500" />
+              {usages.length > 0 && (
+                <span className="flex items-center gap-1 text-sm text-muted-foreground">
+                  <AlertTriangle className="h-4 w-4 text-yellow-500" />
                   图片正在使用中
                 </span>
               )}
             </div>
           </TabsContent>
 
-          {/* Info Tab */}
           <TabsContent value="info" className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -201,20 +216,15 @@ export default function AssetDetail({
               </div>
               <div>
                 <label className="text-sm font-medium text-muted-foreground">处理状态</label>
-                <p className="mt-1">
-                  {asset.processingStatus === 'completed' && <Badge variant="default">已处理</Badge>}
-                  {asset.processingStatus === 'processing' && <Badge variant="secondary">处理中</Badge>}
-                  {asset.processingStatus === 'failed' && <Badge variant="destructive">失败</Badge>}
-                  {asset.processingStatus === 'pending' && <Badge variant="outline">待处理</Badge>}
-                </p>
+                <p className="mt-1">{getStatusBadge()}</p>
               </div>
               <div>
-                <label className="text-sm font-medium text-muted-foreground">WebP转换</label>
+                <label className="text-sm font-medium text-muted-foreground">优化输出</label>
                 <p className="mt-1">
                   {asset.webpConverted ? (
-                    <Badge variant="default">已转换</Badge>
+                    <Badge variant="default">已优化</Badge>
                   ) : (
-                    <Badge variant="outline">未转换</Badge>
+                    <Badge variant="outline">未优化</Badge>
                   )}
                 </p>
               </div>
@@ -232,7 +242,6 @@ export default function AssetDetail({
               </div>
             </div>
 
-            {/* URLs */}
             <div className="space-y-2">
               <label className="text-sm font-medium text-muted-foreground">图片链接</label>
               <div className="space-y-2">
@@ -244,8 +253,8 @@ export default function AssetDetail({
                   { label: '缩略图', url: asset.thumbnailUrl },
                 ].map((item) => (
                   <div key={item.label} className="flex items-center gap-2">
-                    <span className="text-sm w-16">{item.label}:</span>
-                    <code className="flex-1 text-xs bg-muted px-2 py-1 rounded">
+                    <span className="w-16 text-sm">{item.label}:</span>
+                    <code className="flex-1 rounded bg-muted px-2 py-1 text-xs">
                       {item.url}
                     </code>
                     <Button
@@ -253,7 +262,7 @@ export default function AssetDetail({
                       size="sm"
                       onClick={() => window.open(item.url, '_blank')}
                     >
-                      <ExternalLink className="w-4 h-4" />
+                      <ExternalLink className="h-4 w-4" />
                     </Button>
                   </div>
                 ))}
@@ -261,24 +270,20 @@ export default function AssetDetail({
             </div>
           </TabsContent>
 
-          {/* Usage Tab */}
           <TabsContent value="usage" className="space-y-4">
             {usagesLoading ? (
-              <div className="text-center py-8">
-                <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+              <div className="py-8 text-center">
+                <div className="inline-block h-8 w-8 animate-spin rounded-full border-b-2 border-primary" />
                 <p className="mt-2 text-muted-foreground">加载中...</p>
               </div>
-            ) : usages && usages.length > 0 ? (
+            ) : usages.length > 0 ? (
               <div className="space-y-2">
                 <p className="text-sm text-muted-foreground">
-                  此图片在以下 {usages.length} 个位置使用：
+                  该图片在以下 {usages.length} 个位置被使用:
                 </p>
                 <div className="space-y-2">
                   {usages.map((usage) => (
-                    <div
-                      key={usage.id}
-                      className="border rounded-lg p-3 space-y-1"
-                    >
+                    <div key={usage.id} className="space-y-1 rounded-lg border p-3">
                       <div className="flex items-center gap-2">
                         <Badge>{usage.usageType}</Badge>
                         <span className="text-sm font-medium">ID: {usage.usageId}</span>
@@ -296,8 +301,8 @@ export default function AssetDetail({
                 </div>
               </div>
             ) : (
-              <div className="text-center py-8">
-                <p className="text-muted-foreground">此图片暂未被使用</p>
+              <div className="py-8 text-center">
+                <p className="text-muted-foreground">该图片当前未被使用</p>
               </div>
             )}
           </TabsContent>

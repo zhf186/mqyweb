@@ -8,7 +8,7 @@
  * positioned relative to the iframe content.
  */
 
-import { Type, Image as ImageIcon } from 'lucide-react'
+import { Type, Image as ImageIcon, Link2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { EditableElement as EditableElementType } from '@/lib/visual-editor/types'
 
@@ -31,7 +31,7 @@ export function EditableElement({
   onClick,
   iframeOffset = { top: 0, left: 0 },
 }: EditableElementProps) {
-  const { rect, label, type } = element
+  const { rect, label, type, linkHref } = element
 
   // Calculate position accounting for iframe offset
   const top = rect.top + iframeOffset.top
@@ -53,7 +53,9 @@ export function EditableElement({
     : 'bg-transparent'
 
   const showLabel = isHovered || isSelected
-  const Icon = type === 'text' ? Type : ImageIcon
+  const isLinkButton = type === 'text' && linkHref !== undefined
+  const Icon = type === 'image' ? ImageIcon : isLinkButton ? Link2 : Type
+  const kindLabel = type === 'image' ? '图片' : isLinkButton ? '链接按钮' : '文本'
 
   return (
     <div

@@ -55,6 +55,9 @@ CREATE TABLE IF NOT EXISTS cms_content_items (
     field_type VARCHAR(20) NOT NULL CHECK (field_type IN ('text', 'textarea', 'richtext')),
     content_zh TEXT,
     content_en TEXT,
+    published_content_zh TEXT,
+    published_content_en TEXT,
+    published_at TIMESTAMP,
     max_length INT,
     is_required BOOLEAN DEFAULT FALSE,
     display_order INT DEFAULT 0,
@@ -365,6 +368,12 @@ INSERT INTO cms_content_items (page_id, field_key, field_type, content_zh, conte
 ON CONFLICT (page_id, field_key) DO NOTHING;
 
 -- 插入系统设置默认值
+UPDATE cms_content_items
+SET published_content_zh = COALESCE(published_content_zh, content_zh),
+    published_content_en = COALESCE(published_content_en, content_en),
+    published_at = COALESCE(published_at, CURRENT_TIMESTAMP)
+WHERE published_at IS NULL;
+
 INSERT INTO cms_system_settings (setting_key, setting_value, setting_type, description) VALUES
     ('site_name', '漫骑游', 'string', '网站名称'),
     ('site_name_en', 'Manqiyou', 'string', '网站英文名称'),

@@ -142,7 +142,8 @@
           "date": "Feb 2024",
           "location": "Online"
         }
-      }
+      },
+      "viewAll.href": "/community/events"
     },
     "gallery": {
       "badge": "MOMENTS",
@@ -154,6 +155,8 @@
       "title": "Join the Manqiyou Community",
       "desc": "Explore more routes and share the joy of cycling with like-minded riders",
       "joinNow": "Join Now",
+      "joinNow.href": "/community/events",
+      "learnMore.href": "/about",
       "benefits": {
         "community": "Active Community",
         "communityDesc": "Meet like-minded riders",
@@ -196,6 +199,20 @@
       "7": "Cycling Gloves",
       "8": "Sports Water Bottle"
     }
+  },
+  "partners": {
+    "title": "Partners",
+    "subtitle": "Government Cooperation · Industry Alliance · City Franchise",
+    "government": "Government Cooperation",
+    "alliance": "Industry Alliance",
+    "franchise": "City Franchise",
+    "model": {
+      "plan": "Joint Planning",
+      "resource": "Resource Sharing",
+      "market": "Market Expansion",
+      "profit": "Profit Sharing"
+    },
+    "applyNow": "Apply Now"
   },
   "partnersPage": {
     "heroImageAlt": "Partners",
@@ -259,7 +276,9 @@
       "title": "Become a Partner",
       "desc": "Join the Manqiyou ecosystem and grow the cycling tourism market together",
       "consult": "Consult Now",
-      "download": "Download Partnership Guide"
+      "download": "Download Partnership Guide",
+      "consult.href": "/contact",
+      "download.href": "/contact"
     }
   },
   "termsPage": {
@@ -409,9 +428,18 @@
       "subtitle": "Tour E-BIKE",
       "desc": "Scan to Ride, Smart Companion",
       "features": [
-        { "value": "11.9kg", "label": "Ultra Light" },
-        { "value": "100km", "label": "Range" },
-        { "value": "Smart System", "label": "Scan to Ride" }
+        {
+          "value": "11.9kg",
+          "label": "Ultra Light"
+        },
+        {
+          "value": "100km",
+          "label": "Range"
+        },
+        {
+          "value": "Smart System",
+          "label": "Scan to Ride"
+        }
       ]
     },
     "ebikeTitle": "German Heritage × Smart Cycling",
@@ -449,36 +477,28 @@
     "ctaTitle": "Start Your Cycling Journey",
     "ctaDesc": "Explore More Possibilities"
   },
-  "partners": {
-    "hero": {
-      "title": "Partners",
-      "subtitle": "Partnering with World-Class Brands"
-    },
-    "yadea": {
-      "title": "Yadea",
-      "subtitle": "World's Largest Electric Vehicle Brand",
-      "desc": "Strategic partner, building smart cycling ecosystem together"
-    },
-    "gazelle": {
-      "title": "Gazelle",
-      "subtitle": "Dutch Royal Brand",
-      "desc": "Introducing European advanced technology, German heritage E-BIKE"
-    },
-    "scenic": {
-      "title": "11 National Scenic Areas",
-      "desc": "Deep cooperation, creating new cycling experiences"
-    }
-  },
   "about": {
     "hero": {
       "title": "About Manqiyou",
       "subtitle": "Encounter Beautiful Life Through Cycling"
     },
     "stats": [
-      { "value": "2006", "label": "Founded" },
-      { "value": "32", "label": "Export Countries" },
-      { "value": "5000㎡", "label": "Smart Factory" },
-      { "value": "11", "label": "Scenic Partners" }
+      {
+        "value": "2006",
+        "label": "Founded"
+      },
+      {
+        "value": "32",
+        "label": "Export Countries"
+      },
+      {
+        "value": "5000㎡",
+        "label": "Smart Factory"
+      },
+      {
+        "value": "11",
+        "label": "Scenic Partners"
+      }
     ],
     "story": {
       "badge": "BRAND STORY",
@@ -489,12 +509,30 @@
       "badge": "TIMELINE",
       "title": "Our Journey",
       "milestones": [
-        { "year": "2006", "event": "Products exported to 32 countries" },
-        { "year": "2020", "event": "Manqiyou brand founded" },
-        { "year": "2021", "event": "First featured route launched" },
-        { "year": "2022", "event": "Membership exceeded 10,000" },
-        { "year": "2023", "event": "Tour E-BIKE released" },
-        { "year": "2024", "event": "11 scenic partnerships launched" }
+        {
+          "year": "2006",
+          "event": "Products exported to 32 countries"
+        },
+        {
+          "year": "2020",
+          "event": "Manqiyou brand founded"
+        },
+        {
+          "year": "2021",
+          "event": "First featured route launched"
+        },
+        {
+          "year": "2022",
+          "event": "Membership exceeded 10,000"
+        },
+        {
+          "year": "2023",
+          "event": "Tour E-BIKE released"
+        },
+        {
+          "year": "2024",
+          "event": "11 scenic partnerships launched"
+        }
       ]
     },
     "manufacturing": {
@@ -502,9 +540,18 @@
       "title": "Smart Manufacturing Base",
       "desc": "Ningbo Hongtu Smart Technology Co., Ltd., 20 years of professional manufacturing experience",
       "stats": [
-        { "value": "5000㎡", "label": "Factory Area" },
-        { "value": "20 Years", "label": "Experience" },
-        { "value": "200+", "label": "Employees" }
+        {
+          "value": "5000㎡",
+          "label": "Factory Area"
+        },
+        {
+          "value": "20 Years",
+          "label": "Experience"
+        },
+        {
+          "value": "200+",
+          "label": "Employees"
+        }
       ]
     },
     "stores": {
@@ -512,30 +559,47 @@
       "title": "Nationwide Layout",
       "desc": "5 city stores, expanding to more cities",
       "cities": [
-        { "name": "Ningbo Dongqian Lake Store", "location": "Zhejiang · Ningbo" },
-        { "name": "Ningbo Cicheng Store", "location": "Zhejiang · Ningbo" },
-        { "name": "Ningbo Yaojiang Store", "location": "Zhejiang · Ningbo" },
-        { "name": "Hainan Danzhou Store", "location": "Hainan · Danzhou" },
-        { "name": "Guizhou Xingyi Store", "location": "Guizhou · Xingyi" },
-        { "name": "More Stores", "location": "Coming Soon" }
+        {
+          "name": "Ningbo Dongqian Lake Store",
+          "location": "Zhejiang · Ningbo"
+        },
+        {
+          "name": "Ningbo Cicheng Store",
+          "location": "Zhejiang · Ningbo"
+        },
+        {
+          "name": "Ningbo Yaojiang Store",
+          "location": "Zhejiang · Ningbo"
+        },
+        {
+          "name": "Hainan Danzhou Store",
+          "location": "Hainan · Danzhou"
+        },
+        {
+          "name": "Guizhou Xingyi Store",
+          "location": "Guizhou · Xingyi"
+        },
+        {
+          "name": "More Stores",
+          "location": "Coming Soon"
+        }
       ]
     },
     "cta": {
       "title": "Join Manqiyou",
       "desc": "Whether you're a cycling enthusiast, a partner, or looking to join our team",
       "member": "Become a Member",
-      "cooperate": "Business Cooperation"
+      "cooperate": "Business Cooperation",
+      "member.href": "/community",
+      "cooperate.href": "/partners"
     }
   },
   "community": {
-    "hero": {
-      "title": "Cycling Community",
-      "subtitle": "Choice of 100k+ Riders"
-    },
-    "stats": [
-      { "value": "500+", "label": "Cycling Events" },
-      { "value": "100k+", "label": "Community Members" }
-    ]
+    "title": "Cycling Community",
+    "subtitle": "Building high-value user communities through shared values and interests",
+    "joinUs": "Join Community",
+    "memberPath": "Member Growth Path",
+    "fromFan": "From fan to loyal member, even becoming a partner in Manqiyou's business"
   },
   "sections": {
     "rental": "Rental",
@@ -670,7 +734,8 @@
     "perPersonFrom": "/person from",
     "actions": {
       "backToList": "Back to list",
-      "consultNow": "Consult now"
+      "consultNow": "Consult now",
+      "consultNow.href": "/contact"
     }
   },
   "ebike": {
@@ -769,7 +834,9 @@
       "title": "Experience Tour Now",
       "desc": "Book a test ride and feel the ultimate lightness",
       "testRide": "Book a Test Ride",
-      "buyNow": "Buy Now"
+      "buyNow": "Buy Now",
+      "testRide.href": "/contact",
+      "buyNow.href": "/contact"
     },
     "help": {
       "needHelp": "Need help?"
@@ -785,27 +852,6 @@
       "transportation": "Travel",
       "entertainment": "Fun"
     }
-  },
-  "community": {
-    "title": "Cycling Community",
-    "subtitle": "Building high-value user communities through shared values and interests",
-    "joinUs": "Join Community",
-    "memberPath": "Member Growth Path",
-    "fromFan": "From fan to loyal member, even becoming a partner in Manqiyou's business"
-  },
-  "partners": {
-    "title": "Partners",
-    "subtitle": "Government Cooperation · Industry Alliance · City Franchise",
-    "government": "Government Cooperation",
-    "alliance": "Industry Alliance",
-    "franchise": "City Franchise",
-    "model": {
-      "plan": "Joint Planning",
-      "resource": "Resource Sharing",
-      "market": "Market Expansion",
-      "profit": "Profit Sharing"
-    },
-    "applyNow": "Apply Now"
   },
   "cities": {
     "title": "City Network",

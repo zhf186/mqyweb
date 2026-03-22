@@ -111,7 +111,7 @@ export default function CareersPage() {
           </p>
           <div className="mt-10">
             <Link
-              href="/"
+              href={getEditableText('careersPage.backHome.href', '/')}
               className="text-brand-accent hover:text-white"
               data-editable="careersPage.backHome"
               data-editable-type="text"

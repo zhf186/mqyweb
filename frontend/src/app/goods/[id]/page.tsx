@@ -129,7 +129,8 @@ export default function GoodsDetailPage() {
               {getEditableText('goodsDetail.notFound.desc', "The product you're looking for doesn't exist.")}
             </p>
             <Button
-              onClick={() => router.push('/goods')}
+              onClick={() => router.push(getEditableText('goodsDetail.notFound.back.href', '/goods'))}
+              data-editable-href={getEditableText('goodsDetail.notFound.back.href', '/goods')}
               data-editable="goodsDetail.notFound.back"
               data-editable-type="text"
               data-editable-label="Goods Detail Not Found Back"
@@ -220,7 +221,8 @@ export default function GoodsDetailPage() {
                   <Button
                     size="lg"
                     variant="outline"
-                    onClick={() => router.push('/goods')}
+                    onClick={() => router.push(getEditableText('goodsDetail.actions.back.href', '/goods'))}
+                    data-editable-href={getEditableText('goodsDetail.actions.back.href', '/goods')}
                     className="border-white/20 text-white hover:bg-white/10"
                     data-editable="goodsDetail.actions.back"
                     data-editable-type="text"

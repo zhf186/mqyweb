@@ -22,15 +22,16 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Textarea } from '@/components/ui/textarea'
+import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Loader2 } from 'lucide-react'
+import { Link2, Loader2 } from 'lucide-react'
 import type { EditableElement } from '@/lib/visual-editor/types'
 
 interface TextEditDialogProps {
   element: EditableElement | null
   isOpen: boolean
   onClose: () => void
-  onSave: (contentZh: string, contentEn: string) => Promise<void>
+  onSave: (contentZh: string, contentEn: string, linkHref?: string) => Promise<void>
 }
 
 export function TextEditDialog({
@@ -41,6 +42,7 @@ export function TextEditDialog({
 }: TextEditDialogProps) {
   const [contentZh, setContentZh] = useState('')
   const [contentEn, setContentEn] = useState('')
+  const [linkHref, setLinkHref] = useState('')
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -49,6 +51,7 @@ export function TextEditDialog({
     if (element) {
       setContentZh(element.contentZh || '')
       setContentEn(element.contentEn || '')
+      setLinkHref(element.linkHref || '')
       setError(null)
     }
   }, [element])
@@ -79,7 +82,7 @@ export function TextEditDialog({
     setError(null)
 
     try {
-      await onSave(contentZh, contentEn)
+      await onSave(contentZh, contentEn, element.linkHref !== undefined ? linkHref : undefined)
       onClose()
     } catch (err) {
       console.error('Save failed:', err)
@@ -95,6 +98,7 @@ export function TextEditDialog({
     if (element) {
       setContentZh(element.contentZh || '')
       setContentEn(element.contentEn || '')
+      setLinkHref(element.linkHref || '')
     }
     setError(null)
     onClose()
@@ -133,6 +137,18 @@ export function TextEditDialog({
         </DialogHeader>
 
         <div className="space-y-4 py-4">
+          {element.linkHref !== undefined && (
+            <div className="flex items-start gap-3 rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-900">
+              <Link2 className="mt-0.5 h-4 w-4 flex-shrink-0" />
+              <div>
+                <p className="font-medium">This is a link button</p>
+                <p className="mt-1 text-xs text-blue-800">
+                  You can edit both the button text and its destination address below.
+                </p>
+              </div>
+            </div>
+          )}
+
           {/* Chinese Content */}
           <div className="space-y-2">
             <Label htmlFor="content-zh">
@@ -173,6 +189,22 @@ export function TextEditDialog({
               </p>
             )}
           </div>
+
+          {element.linkHref !== undefined && (
+            <div className="space-y-2">
+              <Label htmlFor="content-link">Link Address</Label>
+              <Input
+                id="content-link"
+                value={linkHref}
+                onChange={(e) => setLinkHref(e.target.value)}
+                placeholder="/contact"
+                disabled={saving}
+              />
+              <p className="text-xs text-gray-500">
+                Supports internal paths like `/contact` or full URLs like `https://example.com`.
+              </p>
+            </div>
+          )}
 
           {/* Error Message */}
           {error && (

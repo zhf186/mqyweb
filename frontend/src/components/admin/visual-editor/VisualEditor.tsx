@@ -23,6 +23,7 @@ import { EditOverlay } from './EditOverlay'
 import { TextEditDialog } from './TextEditDialog'
 import { ImageEditDialog } from './ImageEditDialog'
 import { contentApi } from '@/lib/api/admin'
+import { findElementBySelector, updateElementLinkHref } from '@/lib/visual-editor/editable-detector'
 import type { DeviceSize, Locale, IframeBridgeMessage, EditableElement } from '@/lib/visual-editor/types'
 
 interface VisualEditorProps {
@@ -332,23 +333,21 @@ export function VisualEditor({ pageSlug }: VisualEditorProps) {
   }
 
   // Handle text save
-  const handleTextSave = async (contentZh: string, contentEn: string) => {
+  const handleTextSave = async (contentZh: string, contentEn: string, linkHref?: string) => {
     if (!editingElement) return
 
     try {
-      // Find the content item by fieldKey
-      // We need to get the pageId first
       const pagesResponse = await contentApi.getPages()
       const pages = pagesResponse.data
-      const currentPage = pages.find((p: any) => p.slug === pageSlug)
-      
+      const currentPage = pages.find((page: any) => page.slug === pageSlug)
+
       if (!currentPage) {
-        throw new Error('页面未找到')
+        throw new Error('Page not found')
       }
 
-      // Get page content to find the content item
       const pageContentResponse = await contentApi.getPageContent(currentPage.id)
       const { contentItems } = pageContentResponse.data
+
       let contentItemForField = contentItems.find((item: any) => item.fieldKey === editingElement.fieldKey)
       if (!contentItemForField) {
         const ensureResponse = await contentApi.ensureContentItem(currentPage.id, {
@@ -361,35 +360,55 @@ export function VisualEditor({ pageSlug }: VisualEditorProps) {
       }
 
       if (!contentItemForField) {
-        throw new Error('内容项未找到')
+        throw new Error('Content item not found')
       }
 
-      // Update the content item
       await contentApi.updateContentItem(contentItemForField.id, {
         contentZh,
         contentEn,
         version: contentItemForField.version,
-        changeSummary: `通过可视化编辑器更新: ${editingElement.label}`,
+        changeSummary: `Updated via visual editor: ${editingElement.label}`,
       })
 
-      // Update local state
-      setEditableElements(prev =>
-        prev.map(el =>
+      if (linkHref !== undefined) {
+        const linkFieldKey = `${editingElement.fieldKey}.href`
+        let linkContentItem = contentItems.find((item: any) => item.fieldKey == linkFieldKey)
+
+        if (!linkContentItem) {
+          const ensureLinkResponse = await contentApi.ensureContentItem(currentPage.id, {
+            fieldKey: linkFieldKey,
+            fieldType: 'text',
+            contentZh: linkHref,
+            contentEn: linkHref,
+          })
+          linkContentItem = ensureLinkResponse.data
+        }
+
+        if (linkContentItem) {
+          await contentApi.updateContentItem(linkContentItem.id, {
+            contentZh: linkHref,
+            contentEn: linkHref,
+            version: linkContentItem.version,
+            changeSummary: `Updated link via visual editor: ${editingElement.label}`,
+          })
+        }
+      }
+
+      setEditableElements((prev) =>
+        prev.map((el) =>
           el.id === editingElement.id
-            ? { ...el, contentZh, contentEn }
+            ? { ...el, contentZh, contentEn, linkHref: linkHref ?? el.linkHref }
             : el
         )
       )
 
-      // Mark as having unsaved changes (will be cleared after preview update)
       setHasUnsavedChanges(true)
 
       toast({
-        title: '保存成功',
-        description: `${editingElement.label} 已更新`,
+        title: '????',
+        description: `${editingElement.label} ???`,
       })
 
-      // Send update message to iframe for real-time preview
       previewFrameRef.current?.sendMessage({
         type: 'UPDATE_CONTENT',
         payload: {
@@ -399,13 +418,22 @@ export function VisualEditor({ pageSlug }: VisualEditorProps) {
         },
       })
 
-      // Clear unsaved changes flag after a short delay
+      if (linkHref !== undefined) {
+        const iframeDocument = previewFrameRef.current?.iframeRef.current?.contentDocument
+        if (iframeDocument) {
+          const targetElement = findElementBySelector(editingElement.selector, iframeDocument)
+          if (targetElement) {
+            updateElementLinkHref(targetElement, linkHref)
+          }
+        }
+      }
+
       setTimeout(() => {
         setHasUnsavedChanges(false)
       }, 1000)
     } catch (error) {
       console.error('Failed to save text:', error)
-      throw error // Re-throw to let dialog handle it
+      throw error
     }
   }
 

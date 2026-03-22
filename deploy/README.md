@@ -253,7 +253,7 @@ sudo systemctl stop nginx
 
    # 后端
    cd /var/www/manqiyou/backend/manqiyou-app
-   java -jar target/manqiyou-app-0.0.1-SNAPSHOT.jar
+   java -jar "$(ls target/manqiyou-app-*.jar | grep -v '\.original$' | head -n 1)"
    ```
 
 ---

@@ -142,7 +142,8 @@
           "date": "2024年2月",
           "location": "线上活动"
         }
-      }
+      },
+      "viewAll.href": "/community/events"
     },
     "gallery": {
       "badge": "骑行瞬间",
@@ -161,7 +162,9 @@
         "eventsDesc": "参与500+场骑行活动",
         "rewards": "会员权益",
         "rewardsDesc": "专属优惠和积分奖励"
-      }
+      },
+      "joinNow.href": "/community/events",
+      "learnMore.href": "/about"
     }
   },
   "goodsPage": {
@@ -196,6 +199,38 @@
       "7": "骑行手套",
       "8": "运动水壶"
     }
+  },
+  "partners": {
+    "hero": {
+      "title": "合作伙伴",
+      "subtitle": "携手世界级品牌"
+    },
+    "yadea": {
+      "title": "全球领先电动车品牌",
+      "subtitle": "战略合作伙伴",
+      "desc": "与雅迪战略合作，共同打造智能骑行生态，为用户提供高品质的电助力自行车产品和服务"
+    },
+    "gazelle": {
+      "title": "荷兰皇家自行车品牌",
+      "subtitle": "欧洲先进技术",
+      "desc": "引入Gazelle荷兰皇家品牌的先进技术，德国血统E-BIKE，为骑友带来纯正的欧洲骑行体验"
+    },
+    "scenic": {
+      "title": "11家国家级景区",
+      "desc": "深度合作，共创骑游新体验"
+    },
+    "title": "合作伙伴",
+    "subtitle": "政企合作 · 异业联盟 · 城市加盟",
+    "government": "政企合作",
+    "alliance": "异业联盟",
+    "franchise": "城市加盟",
+    "model": {
+      "plan": "规划共制",
+      "resource": "资源共建",
+      "market": "市场共拓",
+      "profit": "利益共享"
+    },
+    "applyNow": "申请合作"
   },
   "partnersPage": {
     "heroImageAlt": "合作伙伴",
@@ -259,7 +294,9 @@
       "title": "成为合作伙伴",
       "desc": "加入漫骑游生态，共同开拓骑行旅游市场",
       "consult": "立即咨询",
-      "download": "下载合作手册"
+      "download": "下载合作手册",
+      "consult.href": "/contact",
+      "download.href": "/contact"
     }
   },
   "termsPage": {
@@ -409,9 +446,18 @@
       "subtitle": "途尔 E-BIKE",
       "desc": "扫码即骑，智能随行",
       "features": [
-        { "value": "11.9kg", "label": "极致轻量" },
-        { "value": "100km", "label": "续航里程" },
-        { "value": "智能系统", "label": "扫码即骑" }
+        {
+          "value": "11.9kg",
+          "label": "极致轻量"
+        },
+        {
+          "value": "100km",
+          "label": "续航里程"
+        },
+        {
+          "value": "智能系统",
+          "label": "扫码即骑"
+        }
       ]
     },
     "ebikeTitle": "德国血统 × 智能骑行",
@@ -449,48 +495,28 @@
     "ctaTitle": "开启骑行之旅",
     "ctaDesc": "探索更多可能"
   },
-  "partners": {
-    "hero": {
-      "title": "合作伙伴",
-      "subtitle": "携手世界级品牌"
-    },
-    "yadea": {
-      "title": "雅迪",
-      "subtitle": "全球最大电动车品牌",
-      "desc": "战略合作伙伴,共同打造智能骑行生态"
-    },
-    "gazelle": {
-      "title": "Gazelle",
-      "subtitle": "荷兰皇家品牌",
-      "desc": "引入欧洲先进技术，德国血统E-BIKE"
-    },
-    "scenic": {
-      "title": "11家国家级景区",
-      "desc": "深度合作，共创骑游新体验"
-    },
-    "title": "合作伙伴",
-    "subtitle": "政企合作 · 异业联盟 · 城市加盟",
-    "government": "政企合作",
-    "alliance": "异业联盟",
-    "franchise": "城市加盟",
-    "model": {
-      "plan": "规划共制",
-      "resource": "资源共建",
-      "market": "市场共拓",
-      "profit": "利益共享"
-    },
-    "applyNow": "申请合作"
-  },
   "about": {
     "hero": {
       "title": "关于漫骑游",
       "subtitle": "骑遇美好人生"
     },
     "stats": [
-      { "value": "2006", "label": "创立年份" },
-      { "value": "32", "label": "出口国家" },
-      { "value": "5000㎡", "label": "智造工厂" },
-      { "value": "11", "label": "景区合作" }
+      {
+        "value": "2006",
+        "label": "创立年份"
+      },
+      {
+        "value": "32",
+        "label": "出口国家"
+      },
+      {
+        "value": "5000㎡",
+        "label": "智造工厂"
+      },
+      {
+        "value": "11",
+        "label": "景区合作"
+      }
     ],
     "story": {
       "badge": "BRAND STORY",
@@ -501,12 +527,30 @@
       "badge": "TIMELINE",
       "title": "发展历程",
       "milestones": [
-        { "year": "2006", "event": "产品远销全球32国" },
-        { "year": "2020", "event": "漫骑游品牌创立" },
-        { "year": "2021", "event": "首条精品线路上线" },
-        { "year": "2022", "event": "会员突破10000人" },
-        { "year": "2023", "event": "途尔E-BIKE发布" },
-        { "year": "2024", "event": "11家景区合作启动" }
+        {
+          "year": "2006",
+          "event": "产品远销全球32国"
+        },
+        {
+          "year": "2020",
+          "event": "漫骑游品牌创立"
+        },
+        {
+          "year": "2021",
+          "event": "首条精品线路上线"
+        },
+        {
+          "year": "2022",
+          "event": "会员突破10000人"
+        },
+        {
+          "year": "2023",
+          "event": "途尔E-BIKE发布"
+        },
+        {
+          "year": "2024",
+          "event": "11家景区合作启动"
+        }
       ]
     },
     "manufacturing": {
@@ -514,9 +558,18 @@
       "title": "智造基地",
       "desc": "宁波宏途智能科技有限公司，20年专业制造经验",
       "stats": [
-        { "value": "5000㎡", "label": "工厂面积" },
-        { "value": "20年", "label": "制造经验" },
-        { "value": "200+", "label": "专业员工" }
+        {
+          "value": "5000㎡",
+          "label": "工厂面积"
+        },
+        {
+          "value": "20年",
+          "label": "制造经验"
+        },
+        {
+          "value": "200+",
+          "label": "专业员工"
+        }
       ]
     },
     "stores": {
@@ -524,30 +577,47 @@
       "title": "全国布局",
       "desc": "5个城市门店，更多城市持续拓展中",
       "cities": [
-        { "name": "宁波东钱湖店", "location": "浙江·宁波" },
-        { "name": "宁波慈城店", "location": "浙江·宁波" },
-        { "name": "宁波姚江店", "location": "浙江·宁波" },
-        { "name": "海南儋州店", "location": "海南·儋州" },
-        { "name": "贵州兴义店", "location": "贵州·兴义" },
-        { "name": "更多门店", "location": "持续拓展中" }
+        {
+          "name": "宁波东钱湖店",
+          "location": "浙江·宁波"
+        },
+        {
+          "name": "宁波慈城店",
+          "location": "浙江·宁波"
+        },
+        {
+          "name": "宁波姚江店",
+          "location": "浙江·宁波"
+        },
+        {
+          "name": "海南儋州店",
+          "location": "海南·儋州"
+        },
+        {
+          "name": "贵州兴义店",
+          "location": "贵州·兴义"
+        },
+        {
+          "name": "更多门店",
+          "location": "持续拓展中"
+        }
       ]
     },
     "cta": {
       "title": "加入漫骑游",
       "desc": "无论你是骑行爱好者、合作伙伴还是想加入我们的团队",
       "member": "成为会员",
-      "cooperate": "商务合作"
+      "cooperate": "商务合作",
+      "member.href": "/community",
+      "cooperate.href": "/partners"
     }
   },
   "community": {
-    "hero": {
-      "title": "骑行社群",
-      "subtitle": "10万+骑友的选择"
-    },
-    "stats": [
-      { "value": "500+", "label": "骑行活动" },
-      { "value": "10万+", "label": "社群成员" }
-    ]
+    "title": "骑游社群",
+    "subtitle": "通过价值观和爱好相同构建高价值用户社群",
+    "joinUs": "加入社群",
+    "memberPath": "会员成长路径",
+    "fromFan": "从粉丝到铁杆会员，甚至成为漫骑游事业的合伙人"
   },
   "sections": {
     "rental": "租赁",
@@ -682,7 +752,8 @@
     "perPersonFrom": "/人起",
     "actions": {
       "backToList": "返回列表",
-      "consultNow": "立即咨询"
+      "consultNow": "立即咨询",
+      "consultNow.href": "/contact"
     }
   },
   "ebike": {
@@ -781,7 +852,9 @@
       "title": "立即体验途尔",
       "desc": "预约试骑，感受极致轻盈的骑行体验",
       "testRide": "预约试骑",
-      "buyNow": "立即购买"
+      "buyNow": "立即购买",
+      "testRide.href": "/contact",
+      "buyNow.href": "/contact"
     },
     "help": {
       "needHelp": "需要帮忙？"
@@ -797,45 +870,6 @@
       "transportation": "行",
       "entertainment": "乐"
     }
-  },
-  "community": {
-    "title": "骑游社群",
-    "subtitle": "通过价值观和爱好相同构建高价值用户社群",
-    "joinUs": "加入社群",
-    "memberPath": "会员成长路径",
-    "fromFan": "从粉丝到铁杆会员，甚至成为漫骑游事业的合伙人"
-  },
-  "partners": {
-    "hero": {
-      "title": "合作伙伴",
-      "subtitle": "携手世界级品牌"
-    },
-    "yadea": {
-      "title": "全球领先电动车品牌",
-      "subtitle": "战略合作伙伴",
-      "desc": "与雅迪战略合作，共同打造智能骑行生态，为用户提供高品质的电助力自行车产品和服务"
-    },
-    "gazelle": {
-      "title": "荷兰皇家自行车品牌",
-      "subtitle": "欧洲先进技术",
-      "desc": "引入Gazelle荷兰皇家品牌的先进技术，德国血统E-BIKE，为骑友带来纯正的欧洲骑行体验"
-    },
-    "scenic": {
-      "title": "11家国家级景区",
-      "desc": "深度合作，共创骑游新体验"
-    },
-    "title": "合作伙伴",
-    "subtitle": "政企合作 · 异业联盟 · 城市加盟",
-    "government": "政企合作",
-    "alliance": "异业联盟",
-    "franchise": "城市加盟",
-    "model": {
-      "plan": "规划共制",
-      "resource": "资源共建",
-      "market": "市场共拓",
-      "profit": "利益共享"
-    },
-    "applyNow": "申请合作"
   },
   "cities": {
     "title": "城市版图",

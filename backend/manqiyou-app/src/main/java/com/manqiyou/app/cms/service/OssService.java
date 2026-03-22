@@ -209,30 +209,32 @@ public class OssService {
         if (url == null || url.isEmpty()) {
             return null;
         }
-        
-        // 如果使用自定义域名
-        if (ossProperties.getCustomDomain() != null && url.contains(ossProperties.getCustomDomain())) {
-            return url.substring(url.indexOf(ossProperties.getCustomDomain()) + ossProperties.getCustomDomain().length() + 1);
-        }
-        
-        // 如果使用OSS默认域名
-        String bucketDomain = ossProperties.getBucket() + "." + ossProperties.getEndpoint();
-        if (url.contains(bucketDomain)) {
-            return url.substring(url.indexOf(bucketDomain) + bucketDomain.length() + 1);
-        }
 
         String uploadsPrefix = "/uploads/";
         int uploadsIndex = url.indexOf(uploadsPrefix);
         if (uploadsIndex >= 0) {
             return url.substring(uploadsIndex + uploadsPrefix.length());
         }
-        
+
+        if (ossProperties.getCustomDomain() != null
+            && !ossProperties.getCustomDomain().isBlank()
+            && url.contains(ossProperties.getCustomDomain())) {
+            return url.substring(url.indexOf(ossProperties.getCustomDomain()) + ossProperties.getCustomDomain().length() + 1);
+        }
+
+        if (ossProperties.getBucket() != null
+            && !ossProperties.getBucket().isBlank()
+            && ossProperties.getEndpoint() != null
+            && !ossProperties.getEndpoint().isBlank()) {
+            String bucketDomain = ossProperties.getBucket() + "." + ossProperties.getEndpoint();
+            if (url.contains(bucketDomain)) {
+                return url.substring(url.indexOf(bucketDomain) + bucketDomain.length() + 1);
+            }
+        }
+
         return url;
     }
-    
-    /**
-     * 创建OSS客户端
-     */
+
     private OSS createOssClient() {
         return new OSSClientBuilder().build(
             ossProperties.getEndpoint(),

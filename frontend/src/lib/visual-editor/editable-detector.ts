@@ -13,6 +13,7 @@ export function detectEditableElements(document: Document): EditableElement[] {
     const fieldKey = el.getAttribute('data-editable')!
     const type = el.getAttribute('data-editable-type') as 'text' | 'image'
     const label = el.getAttribute('data-editable-label') || fieldKey
+    const linkHref = resolveLinkHref(el)
     
     // 获取内容
     let contentZh = ''
@@ -44,10 +45,26 @@ export function detectEditableElements(document: Document): EditableElement[] {
       selector: generateSelector(el),
       contentZh,
       contentEn,
+      linkHref,
       label,
       isRequired: false,
     }
   })
+}
+
+function resolveLinkHref(element: Element): string | undefined {
+  const explicitHref = element.getAttribute('href')
+  if (explicitHref) {
+    return explicitHref
+  }
+
+  const nearestAnchor = element.closest('a')
+  if (nearestAnchor) {
+    return nearestAnchor.getAttribute('href') || nearestAnchor.getAttribute('data-editable-href') || undefined
+  }
+
+  const editableHref = element.getAttribute('data-editable-href')
+  return editableHref || undefined
 }
 
 /**
@@ -162,6 +179,15 @@ export function updateElementContent(element: Element, content: string, type: 't
     setTimeout(() => {
       element.classList.remove('visual-editor-updating')
     }, 500)
+  }
+}
+
+export function updateElementLinkHref(element: Element, href: string): void {
+  element.setAttribute('data-editable-href', href)
+
+  const target = element instanceof HTMLAnchorElement ? element : element.closest('a')
+  if (target) {
+    target.setAttribute('href', href)
   }
 }
 

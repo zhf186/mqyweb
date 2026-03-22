@@ -38,6 +38,33 @@ echo -e "${GREEN}步骤 4/5: 构建后端...${NC}"
 cd "$BACKEND_DIR"
 ./mvnw clean package -DskipTests
 
+BACKEND_JAR=$(ls -t "$BACKEND_DIR"/target/manqiyou-app-*.jar 2>/dev/null | grep -v '\.original$' | head -n 1 || true)
+if [ -z "$BACKEND_JAR" ]; then
+    echo -e "${RED}错误: 未找到后端 JAR 文件，请检查构建结果${NC}"
+    exit 1
+fi
+
+sudo tee /etc/systemd/system/manqiyou-backend.service > /dev/null << EOF
+[Unit]
+Description=Manqiyou Backend Service
+After=network.target
+
+[Service]
+Type=simple
+User=$USER
+WorkingDirectory=$BACKEND_DIR
+ExecStart=/usr/bin/java -jar $BACKEND_JAR
+Restart=on-failure
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+sudo systemctl daemon-reload
+
 echo ""
 echo -e "${GREEN}步骤 5/5: 重启服务...${NC}"
 

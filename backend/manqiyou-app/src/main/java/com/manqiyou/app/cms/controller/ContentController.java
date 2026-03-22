@@ -3,7 +3,10 @@ package com.manqiyou.app.cms.controller;
 import com.manqiyou.app.cms.dto.ContentItemDTO;
 import com.manqiyou.app.cms.dto.CreateContentItemRequest;
 import com.manqiyou.app.cms.dto.PageWithContentDTO;
+import com.manqiyou.app.cms.dto.PublishPageRequest;
+import com.manqiyou.app.cms.dto.PublishPageResultDTO;
 import com.manqiyou.app.cms.dto.UpdateContentRequest;
+import com.manqiyou.app.cms.annotation.OperationLog;
 import com.manqiyou.app.cms.entity.ContentVersion;
 import com.manqiyou.app.cms.entity.Page;
 import com.manqiyou.app.cms.security.AdminSecurityUtils;
@@ -64,6 +67,18 @@ public class ContentController {
 
         ContentItemDTO updated = contentService.updateContentItem(itemId, request, userId);
         return Result.success(updated);
+    }
+
+    @PostMapping("/pages/{pageId}/publish")
+    @OperationLog(action = "publish", resourceType = "page", description = "Publish CMS page content")
+    public Result<PublishPageResultDTO> publishPage(@PathVariable Long pageId,
+                                                    @Validated @RequestBody PublishPageRequest request,
+                                                    Authentication authentication) {
+        Long userId = AdminSecurityUtils.getCurrentUserId(authentication);
+        log.info("Publishing page {} by user {}", pageId, userId);
+
+        PublishPageResultDTO result = contentService.publishPage(pageId, request.getSummary(), userId);
+        return Result.success(result);
     }
 
     @GetMapping("/items/{itemId}/versions")

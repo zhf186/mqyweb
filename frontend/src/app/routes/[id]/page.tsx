@@ -163,7 +163,7 @@ export default function RouteDetailPage() {
     <>
       <Header transparent />
       <main className="bg-black text-white">
-        <section className="relative h-[60vh] min-h-[420px] overflow-hidden">
+        <section className="theme-preserve-dark relative h-[60vh] min-h-[420px] overflow-hidden">
           <div className="absolute inset-0">
             <Image
               src={getEditableText('routesDetail.hero.image', routeQuery.data?.coverImage || '/brand_assets/page12_img1.jpeg')}
@@ -188,7 +188,7 @@ export default function RouteDetailPage() {
 
           <div className="relative z-10 mx-auto flex h-full max-w-6xl flex-col justify-end px-6 pb-14">
             <Link
-              href="/routes"
+              href={getEditableText('routesDetail.backToRoutes.href', '/routes')}
               className="inline-flex w-fit items-center text-sm text-white/70 hover:text-white"
               data-editable="routesDetail.backToRoutes"
               data-editable-type="text"
@@ -356,7 +356,7 @@ export default function RouteDetailPage() {
 
             <div className="mt-14 flex flex-wrap gap-3">
               <Link
-                href="/routes"
+                href={getEditableText('routesDetail.actions.backToList.href', '/routes')}
                 className="rounded-full border border-white/15 px-7 py-3 text-sm text-white/80 transition-all hover:border-white/30"
                 data-editable="routesDetail.actions.backToList"
                 data-editable-type="text"
@@ -364,14 +364,15 @@ export default function RouteDetailPage() {
               >
                 {getEditableText('routesDetail.actions.backToList', t('routesDetail.actions.backToList'))}
               </Link>
-              <button
+              <Link
+                href={getEditableText('routesDetail.actions.consultNow.href', '/contact')}
                 className="rounded-full bg-white px-7 py-3 text-sm font-medium text-black transition-transform hover:scale-105"
                 data-editable="routesDetail.actions.consultNow"
                 data-editable-type="text"
                 data-editable-label="Route Detail Consult Now"
               >
                 {getEditableText('routesDetail.actions.consultNow', t('routesDetail.actions.consultNow'))}
-              </button>
+              </Link>
             </div>
           </section>
         ) : null}

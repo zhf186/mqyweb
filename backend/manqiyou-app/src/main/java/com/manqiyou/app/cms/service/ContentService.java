@@ -3,6 +3,7 @@ package com.manqiyou.app.cms.service;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.manqiyou.app.cms.dto.ContentItemDTO;
 import com.manqiyou.app.cms.dto.PageWithContentDTO;
+import com.manqiyou.app.cms.dto.PublishPageResultDTO;
 import com.manqiyou.app.cms.dto.UpdateContentRequest;
 import com.manqiyou.app.cms.entity.ContentItem;
 import com.manqiyou.app.cms.entity.ContentVersion;
@@ -17,6 +18,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,19 +38,19 @@ public class ContentService {
     private static final Set<String> SUPPORTED_FIELD_TYPES = Set.of("text", "textarea", "richtext");
 
     private static final List<PageSeed> DEFAULT_PAGE_SEEDS = List.of(
-        new PageSeed("home", "首页", "Home", "Website home page"),
-        new PageSeed("ebike", "E-BIKE页面", "E-BIKE Page", "E-bike product page"),
-        new PageSeed("routes", "路线页面", "Routes Page", "Route list and details page"),
-        new PageSeed("goods", "在地好物", "Goods Page", "Goods and products page"),
-        new PageSeed("community", "社群活动", "Community Page", "Community activities page"),
-        new PageSeed("partners", "合作伙伴", "Partners Page", "Partners page"),
-        new PageSeed("about", "关于我们", "About Page", "About us page"),
-        new PageSeed("community-events", "社群活动子页", "Community Events Page", "Community events page"),
-        new PageSeed("careers", "招贤纳士", "Careers Page", "Careers page"),
-        new PageSeed("contact", "联系我们", "Contact Page", "Contact page"),
-        new PageSeed("faq", "常见问题", "FAQ Page", "FAQ page"),
-        new PageSeed("privacy", "隐私政策", "Privacy Page", "Privacy policy page"),
-        new PageSeed("terms", "服务条款", "Terms Page", "Terms of service page")
+        new PageSeed("home", "Home", "Home", "Website home page"),
+        new PageSeed("ebike", "E-BIKE", "E-BIKE Page", "E-bike product page"),
+        new PageSeed("routes", "Routes", "Routes Page", "Route list and details page"),
+        new PageSeed("goods", "Goods", "Goods Page", "Goods and products page"),
+        new PageSeed("community", "Community", "Community Page", "Community activities page"),
+        new PageSeed("partners", "Partners", "Partners Page", "Partners page"),
+        new PageSeed("about", "About", "About Page", "About us page"),
+        new PageSeed("community-events", "Community Events", "Community Events Page", "Community events page"),
+        new PageSeed("careers", "Careers", "Careers Page", "Careers page"),
+        new PageSeed("contact", "Contact", "Contact Page", "Contact page"),
+        new PageSeed("faq", "FAQ", "FAQ Page", "FAQ page"),
+        new PageSeed("privacy", "Privacy", "Privacy Page", "Privacy policy page"),
+        new PageSeed("terms", "Terms", "Terms Page", "Terms of service page")
     );
 
     private static final Map<String, List<ContentItemSeed>> DEFAULT_CONTENT_SEEDS = Map.ofEntries(
@@ -176,7 +179,7 @@ public class ContentService {
     public Page getPageById(Long pageId) {
         Page page = pageMapper.selectById(pageId);
         if (page == null) {
-            throw new RuntimeException("濠碉紕鍋戦崐妤呭极鐠囧樊鐒介柣妤€鐗忛埢鏃傗偓骞垮劚閹虫劙骞楅悩缁樼厱? " + pageId);
+            throw new RuntimeException("Page not found: " + pageId);
         }
         return page;
     }
@@ -198,17 +201,33 @@ public class ContentService {
     public PageWithContentDTO getPageWithContent(Long pageId) {
         Page page = getPageById(pageId);
         ensureDefaultContentItems(page);
-
         LambdaQueryWrapper<ContentItem> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(ContentItem::getPageId, pageId)
             .orderByAsc(ContentItem::getDisplayOrder)
             .orderByAsc(ContentItem::getId);
         List<ContentItem> contentItems = contentItemMapper.selectList(wrapper);
-
         PageWithContentDTO dto = new PageWithContentDTO();
         BeanUtils.copyProperties(page, dto);
         dto.setContentItems(contentItems.stream()
             .map(this::convertToDTO)
+            .collect(Collectors.toList()));
+        return dto;
+    }
+    /**
+     * Get page with published content only.
+     */
+    public PageWithContentDTO getPublishedPageWithContent(Long pageId) {
+        Page page = getPageById(pageId);
+        ensureDefaultContentItems(page);
+        LambdaQueryWrapper<ContentItem> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(ContentItem::getPageId, pageId)
+            .orderByAsc(ContentItem::getDisplayOrder)
+            .orderByAsc(ContentItem::getId);
+        List<ContentItem> contentItems = contentItemMapper.selectList(wrapper);
+        PageWithContentDTO dto = new PageWithContentDTO();
+        BeanUtils.copyProperties(page, dto);
+        dto.setContentItems(contentItems.stream()
+            .map(this::convertToPublishedDTO)
             .collect(Collectors.toList()));
         return dto;
     }
@@ -240,6 +259,8 @@ public class ContentService {
         item.setFieldType(normalizeFieldType(fieldType));
         item.setContentZh(contentZh == null ? "" : contentZh);
         item.setContentEn(contentEn == null ? "" : contentEn);
+        item.setPublishedContentZh("");
+        item.setPublishedContentEn("");
         item.setMaxLength(2000);
         item.setIsRequired(false);
         item.setDisplayOrder(resolveNextDisplayOrder(pageId));
@@ -264,7 +285,7 @@ public class ContentService {
     public ContentItem getContentItemById(Long itemId) {
         ContentItem item = contentItemMapper.selectById(itemId);
         if (item == null) {
-            throw new RuntimeException("闂備礁鎲￠崝鏇㈠箠鎼搭煈鏁婇柟閭﹀幑娴滄粓姊洪锝囥€掗柣鐔哥箞閹鈽夊▍顓т簻閿? " + itemId);
+            throw new RuntimeException("Content item not found: " + itemId);
         }
         return item;
     }
@@ -320,7 +341,7 @@ public class ContentService {
         }
 
         ContentItem currentItem = getContentItemById(itemId);
-        createVersionRecord(currentItem, userId, "闂備浇顕栭崢褰掑垂瑜版崵鍥蓟閵夈儳顦梺瑙勵問閸犳牠銆傛總鍛婄厸?" + targetVersion.getVersionNumber());
+        createVersionRecord(currentItem, userId, "闂傚倸鍊搁崐宄懊归崶顒夋晪闁哄稁鍘奸崒銊ф喐閻楀牆绗掗柛銊ュ€婚幉鎼佹偋閸繂鎯為梺鎼炲労閸撴瑩鎷戦悢鍏肩厪濠㈣泛鐗嗛崝銈嗐亜閿旇浜版慨濠呮閹叉挳宕熼棃娑欐珱闂備礁鎽滄慨鐢告偋閻樿违闁稿本绋撻梽鍕煕濞戞﹫鍔熼柛?" + targetVersion.getVersionNumber());
 
         currentItem.setContentZh(targetVersion.getContentZh());
         currentItem.setContentEn(targetVersion.getContentEn());
@@ -328,6 +349,43 @@ public class ContentService {
 
         ContentItem updatedItem = getContentItemById(itemId);
         return convertToDTO(updatedItem);
+    }
+
+    /**
+     * Publish a page by creating a version checkpoint for all current content items.
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public PublishPageResultDTO publishPage(Long pageId, String summary, Long userId) {
+        if (summary == null || summary.isBlank()) {
+            throw new RuntimeException("Publish summary cannot be blank");
+        }
+        Page page = getPageById(pageId);
+        ensureDefaultContentItems(page);
+        LambdaQueryWrapper<ContentItem> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(ContentItem::getPageId, pageId)
+            .orderByAsc(ContentItem::getDisplayOrder)
+            .orderByAsc(ContentItem::getId);
+        List<ContentItem> contentItems = contentItemMapper.selectList(wrapper);
+        String changeSummary = "Publish page: " + summary.trim();
+        LocalDateTime publishedAt = LocalDateTime.now();
+        for (ContentItem item : contentItems) {
+            createVersionRecord(item, userId, changeSummary);
+            item.setPublishedContentZh(item.getContentZh());
+            item.setPublishedContentEn(item.getContentEn());
+            item.setPublishedAt(publishedAt);
+            contentItemMapper.updateById(item);
+        }
+        pageMapper.updateById(page);
+        Page refreshedPage = getPageById(pageId);
+        PublishPageResultDTO result = new PublishPageResultDTO();
+        result.setId(refreshedPage.getId());
+        result.setPageSlug(refreshedPage.getSlug());
+        result.setPageNameZh(refreshedPage.getNameZh());
+        result.setPageNameEn(refreshedPage.getNameEn());
+        result.setSummary(summary.trim());
+        result.setPublishedItems(contentItems.size());
+        result.setPublishedAt(publishedAt);
+        return result;
     }
 
     private void createVersionRecord(ContentItem item, Long userId, String changeSummary) {
@@ -446,6 +504,8 @@ public class ContentService {
             item.setFieldType(seed.fieldType);
             item.setContentZh("");
             item.setContentEn("");
+            item.setPublishedContentZh("");
+            item.setPublishedContentEn("");
             item.setMaxLength(seed.maxLength);
             item.setIsRequired(false);
             item.setDisplayOrder(nextDisplayOrder++);
@@ -491,7 +551,30 @@ public class ContentService {
     private ContentItemDTO convertToDTO(ContentItem item) {
         ContentItemDTO dto = new ContentItemDTO();
         BeanUtils.copyProperties(item, dto);
+        dto.setPublishedContentZh(item.getPublishedContentZh());
+        dto.setPublishedContentEn(item.getPublishedContentEn());
+        dto.setPublishedAt(item.getPublishedAt());
+        dto.setHasUnpublishedChanges(hasUnpublishedChanges(item));
         return dto;
+    }
+    private ContentItemDTO convertToPublishedDTO(ContentItem item) {
+        ContentItemDTO dto = new ContentItemDTO();
+        BeanUtils.copyProperties(item, dto);
+        dto.setContentZh(item.getPublishedContentZh() == null ? "" : item.getPublishedContentZh());
+        dto.setContentEn(item.getPublishedContentEn() == null ? "" : item.getPublishedContentEn());
+        dto.setPublishedContentZh(item.getPublishedContentZh());
+        dto.setPublishedContentEn(item.getPublishedContentEn());
+        dto.setPublishedAt(item.getPublishedAt());
+        dto.setHasUnpublishedChanges(hasUnpublishedChanges(item));
+        return dto;
+    }
+
+    private boolean hasUnpublishedChanges(ContentItem item) {
+        String publishedZh = item.getPublishedContentZh() == null ? "" : item.getPublishedContentZh();
+        String publishedEn = item.getPublishedContentEn() == null ? "" : item.getPublishedContentEn();
+        String draftZh = item.getContentZh() == null ? "" : item.getContentZh();
+        String draftEn = item.getContentEn() == null ? "" : item.getContentEn();
+        return !publishedZh.equals(draftZh) || !publishedEn.equals(draftEn);
     }
 
     private static class PageSeed {
@@ -520,3 +603,5 @@ public class ContentService {
         }
     }
 }
+
+

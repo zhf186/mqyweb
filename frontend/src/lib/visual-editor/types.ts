@@ -50,6 +50,7 @@ export interface EditableElement {
   // Content information
   contentZh: string
   contentEn: string
+  linkHref?: string
   
   // Metadata
   label: string

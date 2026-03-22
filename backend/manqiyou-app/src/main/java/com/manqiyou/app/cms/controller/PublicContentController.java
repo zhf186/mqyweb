@@ -15,8 +15,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 公开内容API Controller
- * 不需要认证，供前端页面读取CMS内容
+ * 鍏紑鍐呭API Controller
+ * 涓嶉渶瑕佽璇侊紝渚涘墠绔〉闈㈣鍙朇MS鍐呭
  */
 @RestController
 @RequestMapping("/api/public/content")
@@ -28,46 +28,46 @@ public class PublicContentController {
     private ContentService contentService;
     
     /**
-     * 根据页面slug获取页面内容
+     * 鏍规嵁椤甸潰slug鑾峰彇椤甸潰鍐呭
      * GET /api/public/content/pages/:slug
      */
     @GetMapping("/pages/{slug}")
     public Result<Map<String, String>> getPageContentBySlug(@PathVariable String slug) {
-        log.info("获取公开页面内容: slug={}", slug);
+        log.info("鑾峰彇鍏紑椤甸潰鍐呭: slug={}", slug);
         
         try {
-            // 根据slug查找页面
+            // 鏍规嵁slug鏌ユ壘椤甸潰
             Page page = contentService.getPageBySlug(slug);
             if (page == null) {
-                return Result.error("页面不存在: " + slug);
+                return Result.error("椤甸潰涓嶅瓨鍦? " + slug);
             }
             
-            // 获取页面内容
-            PageWithContentDTO pageContent = contentService.getPageWithContent(page.getId());
+            // 鑾峰彇椤甸潰鍐呭
+            PageWithContentDTO pageContent = contentService.getPublishedPageWithContent(page.getId());
             
-            // 转换为key-value格式，方便前端使用
+            // 杞崲涓簁ey-value鏍煎紡锛屾柟渚垮墠绔娇鐢?
             Map<String, String> content = new HashMap<>();
             for (ContentItemDTO item : pageContent.getContentItems()) {
-                // 使用fieldKey作为key，同时提供中英文内容
+                // 浣跨敤fieldKey浣滀负key锛屽悓鏃舵彁渚涗腑鑻辨枃鍐呭
                 content.put(item.getFieldKey() + ".zh", item.getContentZh());
                 content.put(item.getFieldKey() + ".en", item.getContentEn());
             }
             
             return Result.success(content);
         } catch (Exception e) {
-            log.error("获取页面内容失败: slug={}", slug, e);
-            return Result.error("获取页面内容失败");
+            log.error("鑾峰彇椤甸潰鍐呭澶辫触: slug={}", slug, e);
+            return Result.error("鑾峰彇椤甸潰鍐呭澶辫触");
         }
     }
     
     /**
-     * 批量获取多个页面的内容
+     * 鎵归噺鑾峰彇澶氫釜椤甸潰鐨勫唴瀹?
      * GET /api/public/content/pages?slugs=home,about
      */
     @GetMapping("/pages")
     public Result<Map<String, Map<String, String>>> getMultiplePages(
             @RequestParam String slugs) {
-        log.info("批量获取页面内容: slugs={}", slugs);
+        log.info("鎵归噺鑾峰彇椤甸潰鍐呭: slugs={}", slugs);
         
         try {
             String[] slugArray = slugs.split(",");
@@ -77,7 +77,7 @@ public class PublicContentController {
                 slug = slug.trim();
                 Page page = contentService.getPageBySlug(slug);
                 if (page != null) {
-                    PageWithContentDTO pageContent = contentService.getPageWithContent(page.getId());
+                    PageWithContentDTO pageContent = contentService.getPublishedPageWithContent(page.getId());
                     
                     Map<String, String> content = new HashMap<>();
                     for (ContentItemDTO item : pageContent.getContentItems()) {
@@ -91,8 +91,10 @@ public class PublicContentController {
             
             return Result.success(result);
         } catch (Exception e) {
-            log.error("批量获取页面内容失败", e);
-            return Result.error("批量获取页面内容失败");
+            log.error("鎵归噺鑾峰彇椤甸潰鍐呭澶辫触", e);
+            return Result.error("鎵归噺鑾峰彇椤甸潰鍐呭澶辫触");
         }
     }
 }
+
+

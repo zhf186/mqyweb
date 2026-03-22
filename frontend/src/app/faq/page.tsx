@@ -111,7 +111,7 @@ export default function FaqPage() {
           </p>
           <div className="mt-10">
             <Link
-              href="/"
+              href={getEditableText('faqPage.backHome.href', '/')}
               className="text-brand-accent hover:text-white"
               data-editable="faqPage.backHome"
               data-editable-type="text"

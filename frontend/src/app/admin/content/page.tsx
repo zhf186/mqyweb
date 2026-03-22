@@ -1,8 +1,8 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { contentApi, type Page, type ContentItem } from '@/lib/api/admin'
+import { contentApi, type ContentItem, type Page } from '@/lib/api/admin'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import {
@@ -14,11 +14,12 @@ import {
 } from '@/components/ui/select'
 import { Skeleton } from '@/components/ui/skeleton'
 import { ContentEditor } from '@/components/admin/ContentEditor'
+import { ContentDiffPanel } from '@/components/admin/ContentDiffPanel'
 import { VersionHistory } from '@/components/admin/VersionHistory'
 import { PreviewModal } from '@/components/admin/PreviewModal'
 import { PublishDialog } from '@/components/admin/PublishDialog'
 import { useToast } from '@/hooks/use-toast'
-import { FileText, Clock, AlertCircle, History, Eye, Upload } from 'lucide-react'
+import { AlertCircle, Clock, Eye, FileText, History, Upload } from 'lucide-react'
 
 const PAGE_ZH_NAME_MAP: Record<string, string> = {
   home: '首页',
@@ -47,12 +48,13 @@ const getPageZhName = (page: Page): string => {
   return page.slug
 }
 
-/**
- * 内容管理页面
- * Requirements: 2.1, 2.2
- */
+const hasPendingDrafts = (items: ContentItem[]): boolean =>
+  items.some((item) => item.hasUnpublishedChanges)
+
 export default function ContentManagementPage() {
   const router = useRouter()
+  const { toast } = useToast()
+
   const [pages, setPages] = useState<Page[]>([])
   const [selectedPageId, setSelectedPageId] = useState<string>('')
   const [selectedPage, setSelectedPage] = useState<Page | null>(null)
@@ -63,27 +65,33 @@ export default function ContentManagementPage() {
   const [viewingHistoryItemId, setViewingHistoryItemId] = useState<string | null>(null)
   const [showPreview, setShowPreview] = useState(false)
   const [showPublish, setShowPublish] = useState(false)
-  const { toast } = useToast()
 
-  // Load all pages on mount
   useEffect(() => {
     loadPages()
   }, [])
 
-  // Load content when page is selected
   useEffect(() => {
     if (selectedPageId) {
       loadPageContent(selectedPageId)
     }
   }, [selectedPageId])
 
+  const pageStatusLabel = useMemo(() => {
+    if (contentItems.length === 0) {
+      return null
+    }
+
+    return hasPendingDrafts(contentItems)
+      ? { text: '有草稿未发布', className: 'bg-amber-100 text-amber-700' }
+      : { text: '已全部发布', className: 'bg-emerald-100 text-emerald-700' }
+  }, [contentItems])
+
   const loadPages = async () => {
     try {
       setLoading(true)
       const response = await contentApi.getPages()
       setPages(response.data)
-      
-      // Auto-select first page if available
+
       if (response.data.length > 0 && !selectedPageId) {
         setSelectedPageId(response.data[0].id)
       }
@@ -91,7 +99,7 @@ export default function ContentManagementPage() {
       console.error('Failed to load pages:', error)
       toast({
         title: '加载失败',
-        description: '无法加载页面列表，请刷新重试',
+        description: '无法加载页面列表，请刷新后重试。',
         variant: 'destructive',
       })
     } finally {
@@ -109,7 +117,7 @@ export default function ContentManagementPage() {
       console.error('Failed to load page content:', error)
       toast({
         title: '加载失败',
-        description: '无法加载页面内容，请刷新重试',
+        description: '无法加载页面内容，请稍后重试。',
         variant: 'destructive',
       })
     } finally {
@@ -118,10 +126,12 @@ export default function ContentManagementPage() {
   }
 
   const handlePublish = async (summary: string) => {
-    // TODO: Implement actual publish API call
-    // For now, just simulate success
-    console.log('Publishing with summary:', summary)
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    if (!selectedPageId) {
+      throw new Error('请先选择要发布的页面')
+    }
+
+    await contentApi.publishPage(selectedPageId, summary)
+    await loadPageContent(selectedPageId)
   }
 
   if (loading) {
@@ -129,7 +139,7 @@ export default function ContentManagementPage() {
       <div className="space-y-6">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">内容管理</h1>
-          <p className="mt-2 text-gray-600">管理网站页面的文字内容</p>
+          <p className="mt-2 text-gray-600">管理网站页面中的可编辑内容。</p>
         </div>
         <Skeleton className="h-10 w-64" />
         <div className="space-y-4">
@@ -143,20 +153,16 @@ export default function ContentManagementPage() {
 
   return (
     <div className="space-y-4 sm:space-y-6">
-      {/* Header */}
       <div>
         <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">内容管理</h1>
-        <p className="mt-1 sm:mt-2 text-sm sm:text-base text-gray-600">管理网站页面的文字内容</p>
+        <p className="mt-1 sm:mt-2 text-sm sm:text-base text-gray-600">管理网站页面中的文案与草稿发布状态。</p>
       </div>
 
-      {/* Page Selector */}
       <Card className="p-4 sm:p-6">
         <div className="flex flex-col sm:flex-row sm:items-center gap-4">
           <FileText className="h-5 w-5 text-gray-500 hidden sm:block" />
           <div className="flex-1">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              选择页面
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">选择页面</label>
             <Select value={selectedPageId} onValueChange={setSelectedPageId}>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="请选择要编辑的页面" />
@@ -171,29 +177,23 @@ export default function ContentManagementPage() {
             </Select>
           </div>
 
-          {/* Preview and Publish Buttons */}
           {selectedPageId && contentItems.length > 0 && (
             <div className="flex gap-2 w-full sm:w-auto">
-              <Button
-                variant="outline"
-                onClick={() => setShowPreview(true)}
-                className="flex-1 sm:flex-none"
-              >
+              <Button variant="outline" onClick={() => setShowPreview(true)} className="flex-1 sm:flex-none">
                 <Eye className="h-4 w-4 mr-2" />
                 快速预览
               </Button>
               <Button
                 variant="outline"
                 onClick={() => {
-                  // Navigate to visual editor
-                  if (selectedPage && selectedPage.slug) {
+                  if (selectedPage?.slug) {
                     router.push(`/admin/visual-editor/${selectedPage.slug}`)
-                  } else if (selectedPageId) {
-                    // Fallback: find page by ID
-                    const page = pages.find(p => p.id === selectedPageId)
-                    if (page && page.slug) {
-                      router.push(`/admin/visual-editor/${page.slug}`)
-                    }
+                    return
+                  }
+
+                  const page = pages.find((currentPage) => currentPage.id === selectedPageId)
+                  if (page?.slug) {
+                    router.push(`/admin/visual-editor/${page.slug}`)
                   }
                 }}
                 className="flex-1 sm:flex-none"
@@ -201,10 +201,7 @@ export default function ContentManagementPage() {
                 <Eye className="h-4 w-4 mr-2" />
                 可视化编辑
               </Button>
-              <Button
-                onClick={() => setShowPublish(true)}
-                className="flex-1 sm:flex-none"
-              >
+              <Button onClick={() => setShowPublish(true)} className="flex-1 sm:flex-none">
                 <Upload className="h-4 w-4 mr-2" />
                 发布
               </Button>
@@ -214,12 +211,17 @@ export default function ContentManagementPage() {
 
         {selectedPage && (
           <div className="mt-4 p-3 sm:p-4 bg-gray-50 rounded-lg">
-            <p className="text-xs sm:text-sm text-gray-600">{selectedPage.description}</p>
+            <p className="text-xs sm:text-sm text-gray-600">{selectedPage.description || '该页面暂无描述。'}</p>
+            {pageStatusLabel && (
+              <div className="mt-3 flex flex-wrap items-center gap-2 text-xs">
+                <span className={`px-2 py-1 rounded-full ${pageStatusLabel.className}`}>{pageStatusLabel.text}</span>
+                <span className="text-gray-500">共 {contentItems.length} 项内容</span>
+              </div>
+            )}
           </div>
         )}
       </Card>
 
-      {/* Content List */}
       {loadingContent ? (
         <div className="space-y-4">
           <Skeleton className="h-32 w-full" />
@@ -233,51 +235,56 @@ export default function ContentManagementPage() {
               <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
                 <div className="flex-1 min-w-0">
                   <div className="flex flex-wrap items-center gap-2 mb-2">
-                    <h3 className="text-base sm:text-lg font-semibold text-gray-900 truncate">
-                      {item.fieldKey}
-                    </h3>
-                    <span className="text-xs px-2 py-1 bg-gray-100 text-gray-600 rounded flex-shrink-0">
-                      {item.fieldType}
-                    </span>
+                    <h3 className="text-base sm:text-lg font-semibold text-gray-900 truncate">{item.fieldKey}</h3>
+                    <span className="text-xs px-2 py-1 bg-gray-100 text-gray-600 rounded flex-shrink-0">{item.fieldType}</span>
                     {item.isRequired && (
-                      <span className="text-xs px-2 py-1 bg-red-100 text-red-600 rounded flex-shrink-0">
-                        必填
-                      </span>
+                      <span className="text-xs px-2 py-1 bg-red-100 text-red-600 rounded flex-shrink-0">必填</span>
                     )}
+                    <span className={`text-xs px-2 py-1 rounded flex-shrink-0 ${item.hasUnpublishedChanges ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700'}`}>
+                      {item.hasUnpublishedChanges ? '草稿未发布' : '已发布'}
+                    </span>
                   </div>
 
                   <div className="space-y-3">
-                    {/* Chinese Content */}
                     <div>
-                      <p className="text-xs sm:text-sm font-medium text-gray-700 mb-1">
-                        中文内容
-                      </p>
+                      <p className="text-xs sm:text-sm font-medium text-gray-700 mb-1">当前草稿 - 中文</p>
                       <p className="text-xs sm:text-sm text-gray-600 bg-gray-50 p-2 sm:p-3 rounded break-words">
                         {item.contentZh || <span className="text-gray-400">未填写</span>}
                       </p>
                     </div>
 
-                    {/* English Content */}
                     <div>
-                      <p className="text-xs sm:text-sm font-medium text-gray-700 mb-1">
-                        English Content
-                      </p>
+                      <p className="text-xs sm:text-sm font-medium text-gray-700 mb-1">当前草稿 - English</p>
                       <p className="text-xs sm:text-sm text-gray-600 bg-gray-50 p-2 sm:p-3 rounded break-words">
                         {item.contentEn || <span className="text-gray-400">Not filled</span>}
                       </p>
                     </div>
+
+                    {item.hasUnpublishedChanges && (
+                      <ContentDiffPanel
+                        draftZh={item.contentZh}
+                        draftEn={item.contentEn}
+                        publishedZh={item.publishedContentZh}
+                        publishedEn={item.publishedContentEn}
+                      />
+                    )}
                   </div>
 
-                  {/* Meta Info */}
                   <div className="flex flex-wrap items-center gap-3 sm:gap-4 mt-3 sm:mt-4 text-xs text-gray-500">
                     <div className="flex items-center gap-1">
                       <Clock className="h-3 w-3 flex-shrink-0" />
-                      <span className="truncate">最后更新: {new Date(item.updatedAt).toLocaleString('zh-CN')}</span>
+                      <span className="truncate">最后更新 {new Date(item.updatedAt).toLocaleString('zh-CN')}</span>
                     </div>
+                    {item.publishedAt && (
+                      <div className="flex items-center gap-1">
+                        <Upload className="h-3 w-3 flex-shrink-0" />
+                        <span className="truncate">最近发布 {new Date(item.publishedAt).toLocaleString('zh-CN')}</span>
+                      </div>
+                    )}
                     {item.maxLength && (
                       <div className="flex items-center gap-1">
                         <AlertCircle className="h-3 w-3 flex-shrink-0" />
-                        <span>最大长度: {item.maxLength}</span>
+                        <span>最大长度 {item.maxLength}</span>
                       </div>
                     )}
                   </div>
@@ -293,11 +300,7 @@ export default function ContentManagementPage() {
                     <History className="h-4 w-4 sm:mr-1" />
                     <span className="hidden sm:inline">历史</span>
                   </Button>
-                  <Button
-                    variant="outline"
-                    onClick={() => setEditingItem(item)}
-                    className="flex-1 sm:flex-none"
-                  >
+                  <Button variant="outline" onClick={() => setEditingItem(item)} className="flex-1 sm:flex-none">
                     编辑
                   </Button>
                 </div>
@@ -308,11 +311,10 @@ export default function ContentManagementPage() {
       ) : (
         <Card className="p-8 sm:p-12 text-center">
           <FileText className="h-10 w-10 sm:h-12 sm:w-12 text-gray-400 mx-auto mb-3 sm:mb-4" />
-          <p className="text-sm sm:text-base text-gray-600">该页面暂无可编辑内容</p>
+          <p className="text-sm sm:text-base text-gray-600">该页面暂时没有可编辑内容。</p>
         </Card>
       )}
 
-      {/* Content Editor Modal */}
       {editingItem && (
         <ContentEditor
           contentItem={editingItem}
@@ -327,7 +329,6 @@ export default function ContentManagementPage() {
         />
       )}
 
-      {/* Version History Modal */}
       {viewingHistoryItemId && (
         <VersionHistory
           contentItemId={viewingHistoryItemId}
@@ -342,7 +343,6 @@ export default function ContentManagementPage() {
         />
       )}
 
-      {/* Preview Modal */}
       {showPreview && selectedPage && (
         <PreviewModal
           contentItems={contentItems}
@@ -356,7 +356,6 @@ export default function ContentManagementPage() {
         />
       )}
 
-      {/* Publish Dialog */}
       {showPublish && selectedPage && (
         <PublishDialog
           pageName={getPageZhName(selectedPage)}

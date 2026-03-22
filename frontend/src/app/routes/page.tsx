@@ -208,7 +208,7 @@ export default function RoutesPage() {
       <Header transparent />
       <main className="bg-black text-white">
         {/* Hero Section */}
-        <section className="relative h-[70vh] min-h-[500px] overflow-hidden">
+        <section className="theme-preserve-dark relative h-[70vh] min-h-[500px] overflow-hidden">
           <div className="absolute inset-0">
             <Image
               src={getEditableText('routes.hero.background', '/brand_assets/page12_img1.jpeg')}
@@ -400,7 +400,7 @@ export default function RoutesPage() {
         </section>
 
         {/* Filter */}
-        <section className="sticky top-16 z-30 border-b border-white/10 bg-black/90 py-3 backdrop-blur-md sm:py-4 lg:top-20">
+        <section className="theme-bright-surface border-b border-white/10 bg-black/90 py-3 backdrop-blur-md sm:py-4">
           <div className="mx-auto max-w-7xl px-4 sm:px-6">
             <div className="flex flex-col items-center gap-2.5 sm:gap-3">
               <div className="flex flex-wrap justify-center gap-1.5 sm:gap-2">
@@ -413,8 +413,8 @@ export default function RoutesPage() {
                     }}
                     className={`rounded-full px-4 py-1.5 text-xs transition-all sm:px-6 sm:py-2 sm:text-sm ${
                       filter === d
-                        ? 'bg-white text-black'
-                        : 'text-white/60 hover:text-white'
+                        ? 'bg-brand-primary text-white shadow-sm'
+                        : 'text-white/70 hover:bg-white/10 hover:text-white'
                     }`}
                     data-editable={d === 'all' ? 'routesPage.filters.difficulty.all' : `routesPage.filters.difficulty.${d}`}
                     data-editable-type="text"
@@ -437,8 +437,8 @@ export default function RoutesPage() {
                     }}
                     className={`rounded-full px-4 py-1.5 text-xs transition-all sm:px-5 sm:py-2 ${
                       categoryId === null
-                        ? 'bg-white text-black'
-                        : 'text-white/60 hover:text-white'
+                        ? 'bg-brand-primary text-white shadow-sm'
+                        : 'text-white/70 hover:bg-white/10 hover:text-white'
                     }`}
                     data-editable="routesPage.filters.categories.all"
                     data-editable-type="text"
@@ -455,8 +455,8 @@ export default function RoutesPage() {
                       }}
                       className={`rounded-full px-4 py-1.5 text-xs transition-all sm:px-5 sm:py-2 ${
                         categoryId === c.id
-                          ? 'bg-white text-black'
-                          : 'text-white/60 hover:text-white'
+                          ? 'bg-brand-primary text-white shadow-sm'
+                          : 'text-white/70 hover:bg-white/10 hover:text-white'
                       }`}
                       data-editable={`routesPage.filters.categories.${c.id}`}
                       data-editable-type="text"
@@ -515,7 +515,7 @@ export default function RoutesPage() {
                     transition={{ duration: 0.6, delay: index * 0.1 }}
                   >
                     <Link href={`/routes/${route.id}`} className="group block">
-                      <div className="relative aspect-[4/3] overflow-hidden rounded-xl sm:rounded-2xl">
+                      <div className="theme-preserve-dark relative aspect-[4/3] overflow-hidden rounded-xl sm:rounded-2xl">
                         <Image
                           src={getEditableText(`routesPage.cards.${route.id}.image`, route.coverImage || '/brand_assets/page12_img1.jpeg')}
                           alt={route.name}
@@ -527,7 +527,7 @@ export default function RoutesPage() {
                           data-editable-type="image"
                           data-editable-label={`routes-card-${route.id}-image`}
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent" />
                         <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6">
                           <span
                             className="inline-block rounded-full bg-brand-accent/90 px-2.5 py-1 text-xs font-medium text-black sm:px-3"
@@ -538,7 +538,7 @@ export default function RoutesPage() {
                             {getEditableText(`routesPage.cards.${route.id}.difficulty`, formatDifficultyLabel(t, route.difficulty))}
                           </span>
                           <h3
-                            className="mt-2 font-zh-heading text-xl font-bold sm:mt-3 sm:text-2xl"
+                            className="mt-2 font-zh-heading text-xl font-bold text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.72)] sm:mt-3 sm:text-2xl"
                             data-editable={`routesPage.cards.${route.id}.title`}
                             data-editable-type="text"
                             data-editable-label={`routes-card-${route.id}-title`}
@@ -546,7 +546,7 @@ export default function RoutesPage() {
                             {getEditableText(`routesPage.cards.${route.id}.title`, locale === 'en' ? route.nameEn || route.name : route.name)}
                           </h3>
                           <p
-                            className="mt-1 text-xs text-white/60 sm:text-sm"
+                            className="mt-1 text-xs text-white/80 drop-shadow-[0_2px_10px_rgba(0,0,0,0.6)] sm:text-sm"
                             data-editable={`routesPage.cards.${route.id}.subtitle`}
                             data-editable-type="text"
                             data-editable-label={`routes-card-${route.id}-subtitle`}
@@ -701,7 +701,7 @@ export default function RoutesPage() {
               </p>
               <div className="mt-8 flex flex-col justify-center gap-4 sm:mt-10 sm:flex-row sm:gap-6">
                 <Link
-                  href="/contact"
+                  href={getEditableText('routesPage.customCta.button.href', '/contact')}
                   className="rounded-full bg-orange-500 px-8 py-4 font-medium text-black transition-all hover:scale-105 hover:bg-orange-600"
                   data-editable="routesPage.customCta.button"
                   data-editable-type="text"
@@ -710,7 +710,7 @@ export default function RoutesPage() {
                   {getEditableText('routesPage.customCta.button', t('routesPage.customCta.button'))}
                 </Link>
                 <Link
-                  href="/routes"
+                  href={getEditableText('routesPage.browseMore.href', '/routes')}
                   className="rounded-full border-2 border-white bg-transparent px-8 py-4 font-medium text-white transition-all hover:bg-white hover:text-black"
                   data-editable="routesPage.browseMore"
                   data-editable-type="text"

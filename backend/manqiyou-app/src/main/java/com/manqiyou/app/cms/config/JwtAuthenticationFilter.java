@@ -15,6 +15,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Locale;
 
 /**
  * JWT authentication filter.
@@ -39,10 +40,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
         try {
             String jwt = getJwtFromRequest(request);
+            boolean blacklisted = false;
+
+            if (StringUtils.hasText(jwt)) {
+                try {
+                    blacklisted = Boolean.TRUE.equals(redisTemplate.hasKey(TOKEN_BLACKLIST_KEY_PREFIX + jwt));
+                } catch (Exception ex) {
+                    logger.warn("Redis unavailable while checking token blacklist; continuing without blacklist enforcement", ex);
+                }
+            }
 
             if (StringUtils.hasText(jwt)
                 && jwtTokenProvider.validateToken(jwt)
-                && !Boolean.TRUE.equals(redisTemplate.hasKey(TOKEN_BLACKLIST_KEY_PREFIX + jwt))) {
+                && !blacklisted) {
 
                 Long userId = jwtTokenProvider.getUserIdFromToken(jwt);
                 String role = jwtTokenProvider.getRoleFromToken(jwt);
@@ -56,7 +66,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         userId,
                         null,
                         Collections.singletonList(
-                            new SimpleGrantedAuthority("ROLE_" + role.toUpperCase())
+                            new SimpleGrantedAuthority("ROLE_" + role.toUpperCase(Locale.ROOT))
                         )
                     );
 

@@ -42,8 +42,8 @@ export default function LoginPage() {
         throw new Error('登录失败，请稍后重试')
       }
 
-      const { user, token } = response.data
-      login(user, token)
+      const { user, token, refreshToken } = response.data
+      login(user, token, refreshToken)
 
       toast({
         title: '登录成功',

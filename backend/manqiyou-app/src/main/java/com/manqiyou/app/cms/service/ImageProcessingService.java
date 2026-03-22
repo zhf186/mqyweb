@@ -1,156 +1,109 @@
 package com.manqiyou.app.cms.service;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.stereotype.Service;
 
+import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.ImageOutputStream;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * 图片处理服务
- * 使用Thumbnailator库进行图片缩放、裁剪和格式转换
+ * Image processing service.
+ * Generates optimized renditions immediately after CMS upload.
  */
 @Slf4j
 @Service
 public class ImageProcessingService {
-    
-    /**
-     * 图片尺寸配置
-     */
+
+    private static final int ORIGINAL_MAX_EDGE = 2560;
+    private static final String WEBP_EXTENSION = "webp";
+    private static final String WEBP_CONTENT_TYPE = "image/webp";
+    private static final String JPEG_EXTENSION = "jpg";
+    private static final String JPEG_CONTENT_TYPE = "image/jpeg";
+    private static final String PNG_EXTENSION = "png";
+    private static final String PNG_CONTENT_TYPE = "image/png";
+
+    @Getter
+    public static class ProcessedImage {
+        private final byte[] bytes;
+        private final String extension;
+        private final String contentType;
+
+        public ProcessedImage(byte[] bytes, String extension, String contentType) {
+            this.bytes = bytes;
+            this.extension = extension;
+            this.contentType = contentType;
+        }
+    }
+
     public static class ImageSize {
         public final String name;
         public final int width;
         public final double quality;
-        
+
         public ImageSize(String name, int width, double quality) {
             this.name = name;
             this.width = width;
             this.quality = quality;
         }
     }
-    
-    // 预定义的图片尺寸
+
     private static final ImageSize[] SIZES = {
-        new ImageSize("large", 1920, 0.85),
-        new ImageSize("medium", 1024, 0.85),
-        new ImageSize("small", 640, 0.85),
-        new ImageSize("thumbnail", 200, 0.80)
+        new ImageSize("large", 1920, 0.84),
+        new ImageSize("medium", 1280, 0.82),
+        new ImageSize("small", 800, 0.80),
+        new ImageSize("thumbnail", 240, 0.76)
     };
-    
-    /**
-     * 处理图片：生成多个尺寸版本并转换为WebP格式
-     *
-     * @param inputStream 原始图片输入流
-     * @param originalFilename 原始文件名
-     * @return Map<尺寸名称, 处理后的字节数组>
-     */
-    public Map<String, byte[]> processImage(InputStream inputStream, String originalFilename) throws IOException {
-        Map<String, byte[]> processedImages = new HashMap<>();
-        
+
+    public Map<String, ProcessedImage> processImage(InputStream inputStream, String originalFilename) throws IOException {
+        Map<String, ProcessedImage> processedImages = new LinkedHashMap<>();
+
         try {
-            // 读取原始图片
             BufferedImage originalImage = ImageIO.read(inputStream);
             if (originalImage == null) {
                 throw new IOException("无法读取图片文件");
             }
-            
-            int originalWidth = originalImage.getWidth();
-            int originalHeight = originalImage.getHeight();
-            
-            log.info("Processing image: {} ({}x{})", originalFilename, originalWidth, originalHeight);
-            
-            // 保存原图（转换为WebP）
-            byte[] originalWebp = convertToWebP(originalImage, 0.90);
-            processedImages.put("original", originalWebp);
-            
-            // 生成各个尺寸版本
+
+            BufferedImage normalizedImage = normalizeImage(originalImage);
+            boolean hasAlpha = normalizedImage.getColorModel().hasAlpha();
+            int originalWidth = normalizedImage.getWidth();
+            int originalHeight = normalizedImage.getHeight();
+
+            log.info("Processing uploaded asset {} ({}x{}, alpha={})", originalFilename, originalWidth, originalHeight, hasAlpha);
+
+            BufferedImage optimizedOriginal = resizeToMaxEdge(normalizedImage, ORIGINAL_MAX_EDGE);
+            processedImages.put("original", encodeImage(optimizedOriginal, hasAlpha, hasAlpha ? 1.0 : 0.88));
+
             for (ImageSize size : SIZES) {
-                // 如果原图宽度小于目标宽度，跳过该尺寸
                 if (originalWidth <= size.width) {
-                    log.debug("Skipping size {} (original width {} <= target width {})", 
-                        size.name, originalWidth, size.width);
                     continue;
                 }
-                
-                // 计算目标高度（保持宽高比）
-                int targetHeight = (int) ((double) originalHeight / originalWidth * size.width);
-                
-                // 缩放图片
-                BufferedImage resizedImage = resizeImage(originalImage, size.width, targetHeight);
-                
-                // 转换为WebP
-                byte[] webpBytes = convertToWebP(resizedImage, size.quality);
-                processedImages.put(size.name, webpBytes);
-                
-                log.debug("Generated {} size: {}x{} ({} bytes)", 
-                    size.name, size.width, targetHeight, webpBytes.length);
+
+                int targetHeight = Math.max(1, (int) Math.round((double) originalHeight / originalWidth * size.width));
+                BufferedImage resizedImage = resizeImage(normalizedImage, size.width, targetHeight, hasAlpha);
+                processedImages.put(size.name, encodeImage(resizedImage, hasAlpha, size.quality));
             }
-            
-            log.info("Successfully processed image into {} versions", processedImages.size());
+
+            log.info("Generated {} optimized variants for {}", processedImages.size(), originalFilename);
             return processedImages;
-            
         } catch (IOException e) {
-            log.error("Failed to process image: {}", originalFilename, e);
-            throw new IOException("图片处理失败: " + e.getMessage());
+            log.error("Failed to process image {}", originalFilename, e);
+            throw new IOException("图片处理失败: " + e.getMessage(), e);
         }
     }
-    
-    /**
-     * 缩放图片
-     *
-     * @param originalImage 原始图片
-     * @param targetWidth 目标宽度
-     * @param targetHeight 目标高度
-     * @return 缩放后的图片
-     */
-    private BufferedImage resizeImage(BufferedImage originalImage, int targetWidth, int targetHeight) throws IOException {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        
-        Thumbnails.of(originalImage)
-            .size(targetWidth, targetHeight)
-            .outputFormat("png")  // 中间格式使用PNG保持质量
-            .toOutputStream(outputStream);
-        
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
-        return ImageIO.read(inputStream);
-    }
-    
-    /**
-     * 转换图片为WebP格式
-     * 注意：Java标准库不直接支持WebP，这里使用PNG作为替代
-     * 在生产环境中，建议使用imageio-webp库或调用外部工具
-     *
-     * @param image 图片
-     * @param quality 质量（0.0-1.0）
-     * @return WebP格式的字节数组
-     */
-    private byte[] convertToWebP(BufferedImage image, double quality) throws IOException {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        
-        // 注意：这里使用JPEG作为WebP的替代
-        // 在实际生产环境中，应该使用真正的WebP编码器
-        Thumbnails.of(image)
-            .scale(1.0)
-            .outputQuality(quality)
-            .outputFormat("jpg")
-            .toOutputStream(outputStream);
-        
-        return outputStream.toByteArray();
-    }
-    
-    /**
-     * 获取图片尺寸信息
-     *
-     * @param inputStream 图片输入流
-     * @return [width, height]
-     */
+
     public int[] getImageDimensions(InputStream inputStream) throws IOException {
         try {
             BufferedImage image = ImageIO.read(inputStream);
@@ -160,16 +113,10 @@ public class ImageProcessingService {
             return new int[]{image.getWidth(), image.getHeight()};
         } catch (IOException e) {
             log.error("Failed to get image dimensions", e);
-            throw new IOException("获取图片尺寸失败: " + e.getMessage());
+            throw new IOException("获取图片尺寸失败: " + e.getMessage(), e);
         }
     }
-    
-    /**
-     * 验证是否为有效的图片文件
-     *
-     * @param inputStream 文件输入流
-     * @return 是否为有效图片
-     */
+
     public boolean isValidImage(InputStream inputStream) {
         try {
             BufferedImage image = ImageIO.read(inputStream);
@@ -177,5 +124,107 @@ public class ImageProcessingService {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    private BufferedImage normalizeImage(BufferedImage sourceImage) {
+        if (sourceImage.getType() == BufferedImage.TYPE_INT_RGB || sourceImage.getType() == BufferedImage.TYPE_INT_ARGB) {
+            return sourceImage;
+        }
+
+        int targetType = sourceImage.getColorModel().hasAlpha() ? BufferedImage.TYPE_INT_ARGB : BufferedImage.TYPE_INT_RGB;
+        BufferedImage normalizedImage = new BufferedImage(sourceImage.getWidth(), sourceImage.getHeight(), targetType);
+        Graphics2D graphics = normalizedImage.createGraphics();
+        graphics.setComposite(AlphaComposite.Src);
+        graphics.drawImage(sourceImage, 0, 0, null);
+        graphics.dispose();
+        return normalizedImage;
+    }
+
+    private BufferedImage resizeToMaxEdge(BufferedImage image, int maxEdge) throws IOException {
+        int width = image.getWidth();
+        int height = image.getHeight();
+        int longestEdge = Math.max(width, height);
+        if (longestEdge <= maxEdge) {
+            return image;
+        }
+
+        double scale = (double) maxEdge / longestEdge;
+        int targetWidth = Math.max(1, (int) Math.round(width * scale));
+        int targetHeight = Math.max(1, (int) Math.round(height * scale));
+        return resizeImage(image, targetWidth, targetHeight, image.getColorModel().hasAlpha());
+    }
+
+    private BufferedImage resizeImage(BufferedImage originalImage, int targetWidth, int targetHeight, boolean hasAlpha) throws IOException {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+        Thumbnails.of(originalImage)
+            .size(targetWidth, targetHeight)
+            .outputFormat(hasAlpha ? PNG_EXTENSION : JPEG_EXTENSION)
+            .outputQuality(hasAlpha ? 1.0 : 0.90)
+            .toOutputStream(outputStream);
+
+        try (ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray())) {
+            BufferedImage resizedImage = ImageIO.read(inputStream);
+            if (resizedImage == null) {
+                throw new IOException("无法生成缩放后的图片");
+            }
+            return resizedImage;
+        }
+    }
+
+    private ProcessedImage encodeImage(BufferedImage image, boolean hasAlpha, double quality) throws IOException {
+        if (canWriteWebP()) {
+            try {
+                return encodeWebP(image, quality);
+            } catch (IOException e) {
+                log.warn("Falling back from WebP encoding to legacy format: {}", e.getMessage());
+            }
+        }
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+        if (hasAlpha) {
+            ImageIO.write(image, PNG_EXTENSION, outputStream);
+            return new ProcessedImage(outputStream.toByteArray(), PNG_EXTENSION, PNG_CONTENT_TYPE);
+        }
+
+        Thumbnails.of(image)
+            .scale(1.0)
+            .outputQuality(quality)
+            .outputFormat(JPEG_EXTENSION)
+            .toOutputStream(outputStream);
+
+        return new ProcessedImage(outputStream.toByteArray(), JPEG_EXTENSION, JPEG_CONTENT_TYPE);
+    }
+
+    private boolean canWriteWebP() {
+        return ImageIO.getImageWritersByMIMEType(WEBP_CONTENT_TYPE).hasNext();
+    }
+
+    private ProcessedImage encodeWebP(BufferedImage image, double quality) throws IOException {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        ImageWriter writer = ImageIO.getImageWritersByMIMEType(WEBP_CONTENT_TYPE).next();
+
+        try (ImageOutputStream imageOutputStream = ImageIO.createImageOutputStream(outputStream)) {
+            writer.setOutput(imageOutputStream);
+            ImageWriteParam writeParam = writer.getDefaultWriteParam();
+
+            if (writeParam.canWriteCompressed()) {
+                writeParam.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+                String[] compressionTypes = writeParam.getCompressionTypes();
+                if (compressionTypes != null && compressionTypes.length > 0) {
+                    writeParam.setCompressionType(compressionTypes[0]);
+                }
+                writeParam.setCompressionQuality((float) quality);
+            }
+
+            writer.write(null, new IIOImage(image, null, null), writeParam);
+        } catch (Exception e) {
+            throw new IOException("WebP 编码失败: " + e.getMessage(), e);
+        } finally {
+            writer.dispose();
+        }
+
+        return new ProcessedImage(outputStream.toByteArray(), WEBP_EXTENSION, WEBP_CONTENT_TYPE);
     }
 }

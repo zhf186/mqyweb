@@ -138,6 +138,9 @@ public class StatisticsService {
             case "content":
                 ContentItem content = contentItemMapper.selectById(resourceId);
                 return content != null ? content.getFieldKey() : "Unknown Content";
+            case "page":
+                Page page = pageMapper.selectById(resourceId);
+                return page != null ? page.getNameZh() : "Unknown Page";
             case "route":
                 Route route = routeMapper.selectById(resourceId);
                 return route != null ? route.getNameZh() : "Unknown Route";

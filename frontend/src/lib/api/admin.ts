@@ -3,7 +3,7 @@
  * 封装所有 CMS 后台管理 API 调用
  */
 
-import { api, ApiResponse, PageResponse } from './client'
+import { api, authorizedFetch, ApiResponse, PageResponse } from './client'
 
 // ==================== Types ====================
 
@@ -26,6 +26,7 @@ export interface LoginRequest {
 
 export interface LoginResponse {
   token: string
+  refreshToken: string
   user: AdminUser
   expiresIn: number
 }
@@ -48,6 +49,10 @@ export interface ContentItem {
   fieldType: 'text' | 'textarea' | 'richtext'
   contentZh: string
   contentEn: string
+  publishedContentZh?: string | null
+  publishedContentEn?: string | null
+  publishedAt?: string | null
+  hasUnpublishedChanges?: boolean
   maxLength?: number
   isRequired: boolean
   displayOrder: number
@@ -72,6 +77,16 @@ export interface ContentVersion {
   changedBy: string
   changeSummary: string
   createdAt: string
+}
+
+export interface PublishPageResult {
+  id: string
+  pageSlug: string
+  pageNameZh: string
+  pageNameEn: string
+  summary: string
+  publishedItems: number
+  publishedAt: string
 }
 
 export interface Asset {
@@ -235,7 +250,10 @@ export const authApi = {
    * 获取当前用户信息
    */
   me: () =>
-    api.get<{ user: AdminUser; permissions: string[] }>('/admin/auth/me'),
+    api.get<AdminUser>('/admin/auth/me'),
+
+  refresh: (refreshToken: string) =>
+    api.post<LoginResponse>('/admin/auth/refresh', { refreshToken }),
 }
 
 /**
@@ -273,6 +291,9 @@ export const contentApi = {
    */
   restoreVersion: (itemId: string, versionId: string) =>
     api.post<ContentItem>(`/admin/content/items/${itemId}/restore?versionId=${encodeURIComponent(versionId)}`),
+
+  publishPage: (pageId: string, summary: string) =>
+    api.post<PublishPageResult>(`/admin/content/pages/${pageId}/publish`, { summary }),
 }
 
 /**
@@ -304,11 +325,8 @@ export const assetApi = {
     files.forEach(file => formData.append('files', file))
     formData.append('category', category)
 
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api'}/admin/assets/upload`, {
+    const response = await authorizedFetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api'}/admin/assets/upload`, {
       method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${typeof window !== 'undefined' ? localStorage.getItem('admin_token') : ''}`,
-      },
       body: formData,
     })
 
@@ -332,11 +350,8 @@ export const assetApi = {
     const formData = new FormData()
     formData.append('file', file)
 
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api'}/admin/assets/${assetId}`, {
+    const response = await authorizedFetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api'}/admin/assets/${assetId}`, {
       method: 'PUT',
-      headers: {
-        'Authorization': `Bearer ${typeof window !== 'undefined' ? localStorage.getItem('admin_token') : ''}`,
-      },
       body: formData,
     })
 

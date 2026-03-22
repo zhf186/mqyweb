@@ -69,6 +69,14 @@ chmod +x mvnw
 echo "构建 Spring Boot 应用..."
 ./mvnw clean package -DskipTests
 
+BACKEND_JAR=$(ls -t "$BACKEND_DIR"/target/manqiyou-app-*.jar 2>/dev/null | grep -v '\.original$' | head -n 1 || true)
+if [ -z "$BACKEND_JAR" ]; then
+    echo -e "${RED}错误: 未找到后端 JAR 文件，请检查构建结果${NC}"
+    exit 1
+fi
+
+echo "后端 JAR: $BACKEND_JAR"
+
 echo "后端构建完成"
 
 echo ""
@@ -117,7 +125,7 @@ After=network.target
 Type=simple
 User=$USER
 WorkingDirectory=$BACKEND_DIR
-ExecStart=/usr/bin/java -jar $BACKEND_DIR/target/manqiyou-app-0.0.1-SNAPSHOT.jar
+ExecStart=/usr/bin/java -jar $BACKEND_JAR
 Restart=on-failure
 RestartSec=10
 StandardOutput=journal

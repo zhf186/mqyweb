@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import Image from 'next/image'
 import { useSearchParams } from 'next/navigation'
 import { useEffect } from 'react'
@@ -110,7 +111,7 @@ export default function PartnersPage() {
       <Header transparent />
       <main className="min-h-screen bg-black text-white">
       {/* Hero Section */}
-      <section className="relative h-screen overflow-hidden">
+      <section className="theme-preserve-dark relative h-screen overflow-hidden">
         <Image
           src="/brand_assets/page12_img6.jpeg"
           alt={t('partnersPage.heroImageAlt')}
@@ -122,11 +123,11 @@ export default function PartnersPage() {
           data-editable-type="image"
           data-editable-label="合作页Hero背景图"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/85 via-black/70 to-black/80" />
         
         <div className="relative z-10 flex h-full flex-col items-center justify-center px-4 text-center">
           <div
-            className="inline-block px-4 py-2 mb-6 text-sm font-medium tracking-widest border border-white/30 rounded-full backdrop-blur-sm"
+            className="mb-6 inline-block rounded-full border border-white/35 bg-black/20 px-4 py-2 text-sm font-medium tracking-widest text-white/90 backdrop-blur-sm"
             data-editable="partnersPage.heroBadge"
             data-editable-type="text"
             data-editable-label="Partners Hero Badge"
@@ -134,7 +135,7 @@ export default function PartnersPage() {
             {t('partnersPage.heroBadge')}
           </div>
           <h1 
-            className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6"
+            className="mb-6 text-5xl font-bold text-white drop-shadow-[0_4px_24px_rgba(0,0,0,0.72)] md:text-7xl lg:text-8xl"
             data-editable="partnersPage.heroTitle"
             data-editable-type="text"
             data-editable-label="合作页标题"
@@ -142,7 +143,7 @@ export default function PartnersPage() {
             {t('partnersPage.heroTitle')}
           </h1>
           <p 
-            className="text-xl md:text-2xl text-white/80 max-w-3xl mx-auto"
+            className="mx-auto max-w-3xl text-xl text-white/92 drop-shadow-[0_2px_18px_rgba(0,0,0,0.65)] md:text-2xl"
             data-editable="partnersPage.heroDesc"
             data-editable-type="text"
             data-editable-label="合作页描述"
@@ -286,7 +287,7 @@ export default function PartnersPage() {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
             {/* Yadea Card */}
-            <div className="bg-zinc-900 rounded-2xl overflow-hidden border border-white/10 hover:border-orange-500/50 transition-all duration-300 group">
+            <div className="theme-preserve-dark bg-zinc-900 rounded-2xl overflow-hidden border border-white/10 hover:border-orange-500/50 transition-all duration-300 group">
               <div className="relative h-80 bg-gradient-to-br from-red-900/20 via-zinc-900 to-zinc-900 flex items-center justify-center p-12">
                 <div className="text-center">
                   <div
@@ -330,7 +331,7 @@ export default function PartnersPage() {
             </div>
 
             {/* Gazelle Card */}
-            <div className="bg-zinc-900 rounded-2xl overflow-hidden border border-white/10 hover:border-orange-500/50 transition-all duration-300 group">
+            <div className="theme-preserve-dark bg-zinc-900 rounded-2xl overflow-hidden border border-white/10 hover:border-orange-500/50 transition-all duration-300 group">
               <div className="relative h-80 bg-gradient-to-br from-blue-900/20 via-zinc-900 to-zinc-900 flex items-center justify-center p-12">
                 <div className="text-center">
                   <div
@@ -405,7 +406,7 @@ export default function PartnersPage() {
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
             {scenicAreas.map((area) => (
-              <div key={area.id} className="group cursor-pointer">
+              <div key={area.id} className="theme-preserve-dark group cursor-pointer">
                 <div className="aspect-square bg-zinc-900 rounded-xl overflow-hidden relative border border-white/10 hover:border-orange-500/50 transition-all duration-300">
                   <Image
                     src={area.image}
@@ -457,7 +458,7 @@ export default function PartnersPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {/* Scenic Area Cooperation */}
-            <div className="relative rounded-2xl overflow-hidden border border-white/10 hover:border-orange-500/50 transition-all duration-300 group">
+            <div className="theme-preserve-dark relative rounded-2xl overflow-hidden border border-white/10 hover:border-orange-500/50 transition-all duration-300 group">
               <div className="absolute inset-0">
                 <Image
                   src="/brand_assets/cities/page19_img1.jpeg"
@@ -469,17 +470,17 @@ export default function PartnersPage() {
                   data-editable-type="image"
                   data-editable-label="Scenic Cooperation Image"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-black/60" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/88 to-black/72" />
               </div>
               <div className="relative z-10 p-8">
                 <h3
-                  className="text-2xl font-bold mb-3"
+                  className="mb-3 text-2xl font-bold text-white drop-shadow-[0_2px_14px_rgba(0,0,0,0.72)]"
                   data-editable="partnersPage.types.scenic.title"
                   data-editable-type="text"
                   data-editable-label="景区合作类型标题"
                 >{t('partnersPage.types.scenic.title')}</h3>
                 <p
-                  className="text-white/80 mb-6"
+                  className="mb-6 text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.62)]"
                   data-editable="partnersPage.types.scenic.desc"
                   data-editable-type="text"
                   data-editable-label="景区合作类型描述"
@@ -488,7 +489,7 @@ export default function PartnersPage() {
                   <li className="flex items-start">
                     <span className="text-orange-500 mr-2">✓</span>
                     <span
-                      className="text-white/80"
+                      className="text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.58)]"
                       data-editable="partnersPage.types.scenic.benefits.1"
                       data-editable-type="text"
                       data-editable-label="Scenic Benefit 1"
@@ -499,7 +500,7 @@ export default function PartnersPage() {
                   <li className="flex items-start">
                     <span className="text-orange-500 mr-2">✓</span>
                     <span
-                      className="text-white/80"
+                      className="text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.58)]"
                       data-editable="partnersPage.types.scenic.benefits.2"
                       data-editable-type="text"
                       data-editable-label="Scenic Benefit 2"
@@ -510,7 +511,7 @@ export default function PartnersPage() {
                   <li className="flex items-start">
                     <span className="text-orange-500 mr-2">✓</span>
                     <span
-                      className="text-white/80"
+                      className="text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.58)]"
                       data-editable="partnersPage.types.scenic.benefits.3"
                       data-editable-type="text"
                       data-editable-label="Scenic Benefit 3"
@@ -523,7 +524,7 @@ export default function PartnersPage() {
             </div>
 
             {/* Hotel Cooperation */}
-            <div className="relative rounded-2xl overflow-hidden border border-white/10 hover:border-orange-500/50 transition-all duration-300 group">
+            <div className="theme-preserve-dark relative rounded-2xl overflow-hidden border border-white/10 hover:border-orange-500/50 transition-all duration-300 group">
               <div className="absolute inset-0">
                 <Image
                   src="/brand_assets/page10_img3.jpeg"
@@ -535,17 +536,17 @@ export default function PartnersPage() {
                   data-editable-type="image"
                   data-editable-label="Hotel Cooperation Image"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-black/60" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/88 to-black/72" />
               </div>
               <div className="relative z-10 p-8">
                 <h3
-                  className="text-2xl font-bold mb-3"
+                  className="mb-3 text-2xl font-bold text-white drop-shadow-[0_2px_14px_rgba(0,0,0,0.72)]"
                   data-editable="partnersPage.types.hotel.title"
                   data-editable-type="text"
                   data-editable-label="酒店合作类型标题"
                 >{t('partnersPage.types.hotel.title')}</h3>
                 <p
-                  className="text-white/80 mb-6"
+                  className="mb-6 text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.62)]"
                   data-editable="partnersPage.types.hotel.desc"
                   data-editable-type="text"
                   data-editable-label="酒店合作类型描述"
@@ -554,7 +555,7 @@ export default function PartnersPage() {
                   <li className="flex items-start">
                     <span className="text-orange-500 mr-2">✓</span>
                     <span
-                      className="text-white/80"
+                      className="text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.58)]"
                       data-editable="partnersPage.types.hotel.benefits.1"
                       data-editable-type="text"
                       data-editable-label="Hotel Benefit 1"
@@ -565,7 +566,7 @@ export default function PartnersPage() {
                   <li className="flex items-start">
                     <span className="text-orange-500 mr-2">✓</span>
                     <span
-                      className="text-white/80"
+                      className="text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.58)]"
                       data-editable="partnersPage.types.hotel.benefits.2"
                       data-editable-type="text"
                       data-editable-label="Hotel Benefit 2"
@@ -576,7 +577,7 @@ export default function PartnersPage() {
                   <li className="flex items-start">
                     <span className="text-orange-500 mr-2">✓</span>
                     <span
-                      className="text-white/80"
+                      className="text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.58)]"
                       data-editable="partnersPage.types.hotel.benefits.3"
                       data-editable-type="text"
                       data-editable-label="Hotel Benefit 3"
@@ -589,7 +590,7 @@ export default function PartnersPage() {
             </div>
 
             {/* Brand Sponsorship */}
-            <div className="relative rounded-2xl overflow-hidden border border-white/10 hover:border-orange-500/50 transition-all duration-300 group">
+            <div className="theme-preserve-dark relative rounded-2xl overflow-hidden border border-white/10 hover:border-orange-500/50 transition-all duration-300 group">
               <div className="absolute inset-0">
                 <Image
                   src="/brand_assets/page12_img3.jpeg"
@@ -601,17 +602,17 @@ export default function PartnersPage() {
                   data-editable-type="image"
                   data-editable-label="Sponsor Cooperation Image"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-black/60" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/88 to-black/72" />
               </div>
               <div className="relative z-10 p-8">
                 <h3
-                  className="text-2xl font-bold mb-3"
+                  className="mb-3 text-2xl font-bold text-white drop-shadow-[0_2px_14px_rgba(0,0,0,0.72)]"
                   data-editable="partnersPage.types.sponsor.title"
                   data-editable-type="text"
                   data-editable-label="品牌赞助类型标题"
                 >{t('partnersPage.types.sponsor.title')}</h3>
                 <p
-                  className="text-white/80 mb-6"
+                  className="mb-6 text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.62)]"
                   data-editable="partnersPage.types.sponsor.desc"
                   data-editable-type="text"
                   data-editable-label="品牌赞助类型描述"
@@ -620,7 +621,7 @@ export default function PartnersPage() {
                   <li className="flex items-start">
                     <span className="text-orange-500 mr-2">✓</span>
                     <span
-                      className="text-white/80"
+                      className="text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.58)]"
                       data-editable="partnersPage.types.sponsor.benefits.1"
                       data-editable-type="text"
                       data-editable-label="Sponsor Benefit 1"
@@ -631,7 +632,7 @@ export default function PartnersPage() {
                   <li className="flex items-start">
                     <span className="text-orange-500 mr-2">✓</span>
                     <span
-                      className="text-white/80"
+                      className="text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.58)]"
                       data-editable="partnersPage.types.sponsor.benefits.2"
                       data-editable-type="text"
                       data-editable-label="Sponsor Benefit 2"
@@ -642,7 +643,7 @@ export default function PartnersPage() {
                   <li className="flex items-start">
                     <span className="text-orange-500 mr-2">✓</span>
                     <span
-                      className="text-white/80"
+                      className="text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.58)]"
                       data-editable="partnersPage.types.sponsor.benefits.3"
                       data-editable-type="text"
                       data-editable-label="Sponsor Benefit 3"
@@ -658,7 +659,7 @@ export default function PartnersPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="relative py-24 md:py-32 overflow-hidden">
+      <section className="theme-preserve-dark relative overflow-hidden py-24 md:py-32">
         <div className="absolute inset-0">
           <Image
             src="/brand_assets/page11_img3.jpeg"
@@ -670,11 +671,11 @@ export default function PartnersPage() {
             data-editable-type="image"
             data-editable-label="合作页CTA背景图"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-black/50" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/82 to-black/68" />
         </div>
         <div className="relative z-10 container mx-auto px-4 text-center">
           <h2 
-            className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 drop-shadow-lg"
+            className="mb-6 text-4xl font-bold text-white drop-shadow-[0_4px_24px_rgba(0,0,0,0.72)] md:text-5xl lg:text-6xl"
             data-editable="partnersPage.cta.title"
             data-editable-type="text"
             data-editable-label="合作页CTA标题"
@@ -690,22 +691,24 @@ export default function PartnersPage() {
             {t('partnersPage.cta.desc')}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button
+            <Link
+              href={t('partnersPage.cta.consult.href', '/contact')}
               className="rounded-full bg-orange-500 px-8 py-4 text-base font-medium text-black hover:bg-orange-600 transition-all hover:scale-105 shadow-lg"
               data-editable="partnersPage.cta.consult"
               data-editable-type="text"
               data-editable-label="Partners CTA Consult Button"
             >
               {t('partnersPage.cta.consult')}
-            </button>
-            <button
+            </Link>
+            <Link
+              href={t('partnersPage.cta.download.href', '/contact')}
               className="rounded-full border-2 border-white bg-white/10 px-8 py-4 text-base font-medium text-white backdrop-blur-sm hover:bg-white hover:text-black transition-all"
               data-editable="partnersPage.cta.download"
               data-editable-type="text"
               data-editable-label="Partners CTA Download Button"
             >
               {t('partnersPage.cta.download')}
-            </button>
+            </Link>
           </div>
         </div>
       </section>

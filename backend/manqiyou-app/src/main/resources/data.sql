@@ -28,13 +28,13 @@ INSERT INTO cms_pages (slug, name_zh, name_en, description, is_active) VALUES
 ('routes', '路线页面', 'Routes Page', '骑游路线列表页面', true);
 
 -- 插入CMS测试内容项
-INSERT INTO cms_content_items (page_id, field_key, field_type, content_zh, content_en, max_length, is_required, display_order, version) VALUES
-(1, 'hero.title', 'text', '骑遇无限美好人生', 'Encounter Infinite Beautiful Life', 100, true, 1, 0),
-(1, 'hero.subtitle', 'text', '德国工艺电助力自行车 × 深度探索骑游路线', 'German E-BIKE × Deep Exploration Routes', 200, true, 2, 0),
-(1, 'hero.cta', 'text', '开始探索', 'Start Exploring', 50, true, 3, 0),
-(2, 'intro.title', 'text', '途尔 E-BIKE', 'Tour E-BIKE', 100, true, 1, 0),
-(2, 'intro.description', 'textarea', '德国工艺，智能电助力系统，让骑行更轻松', 'German craftsmanship, intelligent electric assist system', 500, true, 2, 0),
-(3, 'header.title', 'text', '精选骑游路线', 'Featured Routes', 100, true, 1, 0);
+INSERT INTO cms_content_items (page_id, field_key, field_type, content_zh, content_en, published_content_zh, published_content_en, published_at, max_length, is_required, display_order, version) VALUES
+(1, 'hero.title', 'text', '骑遇无限美好人生', 'Encounter Infinite Beautiful Life', '骑遇无限美好人生', 'Encounter Infinite Beautiful Life', CURRENT_TIMESTAMP, 100, true, 1, 0),
+(1, 'hero.subtitle', 'text', '德国工艺电助力自行车 × 深度探索骑游路线', 'German E-BIKE × Deep Exploration Routes', '德国工艺电助力自行车 × 深度探索骑游路线', 'German E-BIKE × Deep Exploration Routes', CURRENT_TIMESTAMP, 200, true, 2, 0),
+(1, 'hero.cta', 'text', '开始探索', 'Start Exploring', '开始探索', 'Start Exploring', CURRENT_TIMESTAMP, 50, true, 3, 0),
+(2, 'intro.title', 'text', '途尔 E-BIKE', 'Tour E-BIKE', '途尔 E-BIKE', 'Tour E-BIKE', CURRENT_TIMESTAMP, 100, true, 1, 0),
+(2, 'intro.description', 'textarea', '德国工艺，智能电助力系统，让骑行更轻松', 'German craftsmanship, intelligent electric assist system', '德国工艺，智能电助力系统，让骑行更轻松', 'German craftsmanship, intelligent electric assist system', CURRENT_TIMESTAMP, 500, true, 2, 0),
+(3, 'header.title', 'text', '精选骑游路线', 'Featured Routes', '精选骑游路线', 'Featured Routes', CURRENT_TIMESTAMP, 100, true, 1, 0);
 
 
 -- ============================================

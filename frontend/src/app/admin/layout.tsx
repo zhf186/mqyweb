@@ -1,17 +1,10 @@
 'use client'
 
-/**
- * Admin Layout with Route Guard
- * 后台管理系统布局和路由守卫
- * 
- * Features:
- * - Check authentication status
- * - Redirect to login if not authenticated
- * - Apply admin layout to all admin pages (except login)
- */
-
-import { useEffect } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
+import { authApi } from '@/lib/api/admin'
+import { ApiError } from '@/lib/api/client'
+import { refreshAdminSession } from '@/lib/auth/admin-session'
 import { useAdminAuthStore } from '@/stores/admin-auth'
 import { AdminLayout } from '@/components/admin/AdminLayout'
 
@@ -24,33 +17,99 @@ export default function AdminRootLayout({
   const pathname = usePathname()
   const hasHydrated = useAdminAuthStore((state) => state.hasHydrated)
   const token = useAdminAuthStore((state) => state.token)
+  const setUser = useAdminAuthStore((state) => state.setUser)
+  const syncFromStorage = useAdminAuthStore((state) => state.syncFromStorage)
+  const logout = useAdminAuthStore((state) => state.logout)
+  const [isCheckingSession, setIsCheckingSession] = useState(false)
+  const lastValidatedTokenRef = useRef<string | null>(null)
 
-  // Route guard
   useEffect(() => {
-    // Skip guard for login page
-    if (pathname === '/admin/login') {
+    if (pathname === '/admin/login' || !hasHydrated) {
       return
     }
 
-    // Wait persist state hydration
-    if (!hasHydrated) {
-      return
-    }
-
-    // Check authentication
     if (!token) {
-      // Redirect to login
+      lastValidatedTokenRef.current = null
       router.replace('/admin/login')
     }
-  }, [hasHydrated, token, pathname, router])
+  }, [hasHydrated, pathname, router, token])
 
-  // If on login page, render without layout
+  useEffect(() => {
+    if (pathname === '/admin/login' || !hasHydrated || !token) {
+      return
+    }
+
+    if (lastValidatedTokenRef.current === token) {
+      return
+    }
+
+    let cancelled = false
+
+    const validateSession = async () => {
+      setIsCheckingSession(true)
+
+      try {
+        const response = await authApi.me()
+        if (cancelled) {
+          return
+        }
+
+        syncFromStorage()
+        setUser(response.data)
+        lastValidatedTokenRef.current = useAdminAuthStore.getState().token ?? token
+        return
+      } catch (error) {
+        const isAuthFailure = error instanceof ApiError && (error.status === 401 || error.status === 403)
+
+        if (isAuthFailure) {
+          const refreshed = await refreshAdminSession()
+          if (refreshed) {
+            try {
+              const retryResponse = await authApi.me()
+              if (cancelled) {
+                return
+              }
+
+              syncFromStorage()
+              setUser(retryResponse.data)
+              lastValidatedTokenRef.current = useAdminAuthStore.getState().token ?? token
+              return
+            } catch {
+              // Fall through to logout below.
+            }
+          }
+
+          if (!cancelled) {
+            lastValidatedTokenRef.current = null
+            logout()
+            router.replace('/admin/login')
+          }
+          return
+        }
+
+        if (!cancelled) {
+          console.error('Failed to validate admin session:', error)
+          lastValidatedTokenRef.current = token
+        }
+      } finally {
+        if (!cancelled) {
+          setIsCheckingSession(false)
+        }
+      }
+    }
+
+    validateSession()
+
+    return () => {
+      cancelled = true
+    }
+  }, [hasHydrated, logout, pathname, router, setUser, syncFromStorage, token])
+
   if (pathname === '/admin/login') {
     return <>{children}</>
   }
 
-  // If not authenticated, show loading or nothing while redirecting
-  if (!hasHydrated) {
+  if (!hasHydrated || isCheckingSession) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
@@ -72,6 +131,5 @@ export default function AdminRootLayout({
     )
   }
 
-  // Render with admin layout
   return <AdminLayout>{children}</AdminLayout>
 }

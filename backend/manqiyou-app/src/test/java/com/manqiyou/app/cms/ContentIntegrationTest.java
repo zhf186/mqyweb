@@ -2,6 +2,7 @@ package com.manqiyou.app.cms;
 
 import com.manqiyou.app.cms.dto.ContentItemDTO;
 import com.manqiyou.app.cms.dto.PageWithContentDTO;
+import com.manqiyou.app.cms.dto.PublishPageResultDTO;
 import com.manqiyou.app.cms.dto.UpdateContentRequest;
 import com.manqiyou.app.cms.entity.ContentVersion;
 import com.manqiyou.app.cms.entity.Page;
@@ -289,7 +290,7 @@ class ContentIntegrationTest {
             contentService.updateContentItem(testContentItemId, secondUpdate, 1L);
         });
         
-        assertTrue(exception.getMessage().contains("已被其他用户修改"), 
+        assertTrue(exception.getMessage().contains("Content was modified"), 
             "错误消息应该提示内容已被修改");
         
         System.out.println("乐观锁测试通过: " + exception.getMessage());
@@ -310,7 +311,7 @@ class ContentIntegrationTest {
             contentService.getPageWithContent(nonExistentPageId);
         });
         
-        assertTrue(exception.getMessage().contains("页面不存在"), 
+        assertTrue(exception.getMessage().contains("Page not found"), 
             "错误消息应该提示页面不存在");
     }
     
@@ -334,7 +335,7 @@ class ContentIntegrationTest {
             contentService.updateContentItem(nonExistentItemId, request, 1L);
         });
         
-        assertTrue(exception.getMessage().contains("内容项不存在"), 
+        assertTrue(exception.getMessage().contains("Content item not found"), 
             "错误消息应该提示内容项不存在");
     }
     
@@ -353,7 +354,7 @@ class ContentIntegrationTest {
             contentService.restoreVersion(testContentItemId, nonExistentVersionId, 1L);
         });
         
-        assertTrue(exception.getMessage().contains("版本不存在"), 
+        assertTrue(exception.getMessage().contains("Version does not exist"), 
             "错误消息应该提示版本不存在");
     }
     
@@ -404,5 +405,69 @@ class ContentIntegrationTest {
             "重新检索的英文内容应该与保存的完全一致");
         
         System.out.println("往返一致性测试通过");
+    }
+
+    @Test
+    @Order(12)
+    void testPublishPageCreatesVersionSnapshots() {
+        assertNotNull(testPageId, "测试页面ID不应为空");
+        assertNotNull(testContentItemId, "测试内容项ID不应为空");
+
+        List<ContentVersion> versionsBefore = contentService.getVersionHistory(testContentItemId);
+        int versionCountBefore = versionsBefore.size();
+
+        PublishPageResultDTO result = contentService.publishPage(testPageId, "Publish homepage content", 1L);
+
+        assertNotNull(result, "发布结果不应为空");
+        assertEquals(testPageId, result.getId(), "发布结果中的页面ID应与当前页面一致");
+        assertTrue(result.getPublishedItems() > 0, "发布结果应包含已发布内容项数量");
+        assertNotNull(result.getPublishedAt(), "发布时间不应为空");
+
+        List<ContentVersion> versionsAfter = contentService.getVersionHistory(testContentItemId);
+        assertEquals(versionCountBefore + 1, versionsAfter.size(), "发布页面后应为内容项新增一条版本快照");
+        assertTrue(versionsAfter.get(0).getChangeSummary().contains("Publish page"), "版本快照应记录发布说明");
+    }
+
+    @Test
+    @Order(13)
+    void testPublicContentUsesPublishedSnapshot() {
+        PageWithContentDTO publishedBefore = contentService.getPublishedPageWithContent(testPageId);
+        ContentItemDTO publishedItemBefore = publishedBefore.getContentItems().stream()
+            .filter(item -> item.getId().equals(testContentItemId))
+            .findFirst()
+            .orElseThrow();
+
+        PageWithContentDTO draftPage = contentService.getPageWithContent(testPageId);
+        ContentItemDTO draftItem = draftPage.getContentItems().stream()
+            .filter(item -> item.getId().equals(testContentItemId))
+            .findFirst()
+            .orElseThrow();
+
+        UpdateContentRequest request = new UpdateContentRequest();
+        request.setContentZh("未发布的草稿中文内容");
+        request.setContentEn("Unpublished draft English content");
+        request.setVersion(draftItem.getVersion());
+        request.setChangeSummary("Draft update before publish");
+        contentService.updateContentItem(testContentItemId, request, 1L);
+
+        PageWithContentDTO publishedAfterDraftSave = contentService.getPublishedPageWithContent(testPageId);
+        ContentItemDTO publishedItemAfterDraftSave = publishedAfterDraftSave.getContentItems().stream()
+            .filter(item -> item.getId().equals(testContentItemId))
+            .findFirst()
+            .orElseThrow();
+
+        assertEquals(publishedItemBefore.getContentZh(), publishedItemAfterDraftSave.getContentZh());
+        assertEquals(publishedItemBefore.getContentEn(), publishedItemAfterDraftSave.getContentEn());
+
+        contentService.publishPage(testPageId, "Publish draft content", 1L);
+
+        PageWithContentDTO publishedAfterPublish = contentService.getPublishedPageWithContent(testPageId);
+        ContentItemDTO publishedItemAfterPublish = publishedAfterPublish.getContentItems().stream()
+            .filter(item -> item.getId().equals(testContentItemId))
+            .findFirst()
+            .orElseThrow();
+
+        assertEquals("未发布的草稿中文内容", publishedItemAfterPublish.getContentZh());
+        assertEquals("Unpublished draft English content", publishedItemAfterPublish.getContentEn());
     }
 }

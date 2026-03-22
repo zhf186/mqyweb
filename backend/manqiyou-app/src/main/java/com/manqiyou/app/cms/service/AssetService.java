@@ -322,27 +322,30 @@ public class AssetService {
         
         try {
             // 处理图片生成多尺寸
-            Map<String, byte[]> processedImages = imageProcessingService.processImage(
+            Map<String, ImageProcessingService.ProcessedImage> processedImages = imageProcessingService.processImage(
                 file.getInputStream(),
                 file.getOriginalFilename()
             );
             
             // 上传各个尺寸到OSS
-            for (Map.Entry<String, byte[]> entry : processedImages.entrySet()) {
+            for (Map.Entry<String, ImageProcessingService.ProcessedImage> entry : processedImages.entrySet()) {
                 String sizeName = entry.getKey();
-                byte[] imageBytes = entry.getValue();
+                ImageProcessingService.ProcessedImage processedImage = entry.getValue();
+                byte[] imageBytes = processedImage.getBytes();
                 
                 // 生成文件名
-                String filename = generateFilename(file.getOriginalFilename(), sizeName);
+                String filename = generateFilename(file.getOriginalFilename(), sizeName, processedImage.getExtension());
                 
                 // 上传到OSS
-                String url = ossService.uploadBytes(imageBytes, filename, "image/jpeg");
+                String url = ossService.uploadBytes(imageBytes, filename, processedImage.getContentType());
                 
                 // 设置对应的URL
                 switch (sizeName) {
                     case "original":
                         asset.setFileUrl(url);
                         asset.setFileKey(ossService.extractFileKey(url));
+                        asset.setFileSize((long) imageBytes.length);
+                        asset.setMimeType(processedImage.getContentType());
                         break;
                     case "large":
                         asset.setLargeUrl(url);
@@ -360,7 +363,11 @@ public class AssetService {
             }
             
             asset.setIsProcessed(true);
-            asset.setWebpConverted(true);
+            ImageProcessingService.ProcessedImage originalProcessedImage = processedImages.get("original");
+            asset.setWebpConverted(
+                originalProcessedImage != null
+                    && "webp".equalsIgnoreCase(originalProcessedImage.getExtension())
+            );
             asset.setProcessingStatus("completed");
             
         } catch (Exception e) {
@@ -418,7 +425,7 @@ public class AssetService {
     /**
      * 生成文件名
      */
-    private String generateFilename(String originalFilename, String sizeName) {
+    private String generateFilename(String originalFilename, String sizeName, String extension) {
         String baseName = originalFilename;
         int dotIndex = originalFilename.lastIndexOf('.');
         if (dotIndex > 0) {
@@ -426,9 +433,9 @@ public class AssetService {
         }
         
         if ("original".equals(sizeName)) {
-            return baseName + ".jpg";
+            return baseName + "." + extension;
         } else {
-            return baseName + "_" + sizeName + ".jpg";
+            return baseName + "_" + sizeName + "." + extension;
         }
     }
     

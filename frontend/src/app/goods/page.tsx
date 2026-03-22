@@ -107,7 +107,7 @@ export default function GoodsPage() {
       <Header transparent />
       <main className="bg-black text-white">
         {/* Hero Section */}
-        <section className="relative h-[60vh] min-h-[450px] overflow-hidden">
+        <section className="theme-preserve-dark relative h-[60vh] min-h-[450px] overflow-hidden">
           <div className="absolute inset-0">
             <Image
               src="/brand_assets/page10_img1.jpeg"
@@ -157,7 +157,7 @@ export default function GoodsPage() {
         </section>
 
         {/* Category Filter */}
-        <section className="sticky top-16 z-30 border-b border-white/10 bg-black/90 py-3 backdrop-blur-md sm:py-4 lg:top-20">
+        <section className="theme-bright-surface border-b border-white/10 bg-black/90 py-3 backdrop-blur-md sm:py-4">
           <div className="mx-auto max-w-7xl px-4 sm:px-6">
             <div className="flex flex-wrap justify-center gap-1.5 sm:gap-2">
               {categories.map((cat) => (
@@ -166,8 +166,8 @@ export default function GoodsPage() {
                   onClick={() => setActiveCategory(cat.id)}
                   className={`rounded-full px-4 py-1.5 text-xs transition-all sm:px-6 sm:py-2 sm:text-sm ${
                     activeCategory === cat.id
-                      ? 'bg-white text-black'
-                      : 'text-white/60 hover:text-white'
+                      ? 'bg-brand-primary text-white shadow-sm'
+                      : 'text-white/70 hover:bg-white/10 hover:text-white'
                   }`}
                   data-editable={`goodsPage.categories.${cat.id}`}
                   data-editable-type="text"

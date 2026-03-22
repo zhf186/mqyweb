@@ -12,6 +12,10 @@ public class ContentItemDTO {
     private String fieldType;
     private String contentZh;
     private String contentEn;
+    private String publishedContentZh;
+    private String publishedContentEn;
+    private LocalDateTime publishedAt;
+    private Boolean hasUnpublishedChanges;
     private Integer maxLength;
     private Boolean isRequired;
     private Integer displayOrder;
@@ -37,6 +41,18 @@ public class ContentItemDTO {
     
     public String getContentEn() { return contentEn; }
     public void setContentEn(String contentEn) { this.contentEn = contentEn; }
+
+    public String getPublishedContentZh() { return publishedContentZh; }
+    public void setPublishedContentZh(String publishedContentZh) { this.publishedContentZh = publishedContentZh; }
+
+    public String getPublishedContentEn() { return publishedContentEn; }
+    public void setPublishedContentEn(String publishedContentEn) { this.publishedContentEn = publishedContentEn; }
+
+    public LocalDateTime getPublishedAt() { return publishedAt; }
+    public void setPublishedAt(LocalDateTime publishedAt) { this.publishedAt = publishedAt; }
+
+    public Boolean getHasUnpublishedChanges() { return hasUnpublishedChanges; }
+    public void setHasUnpublishedChanges(Boolean hasUnpublishedChanges) { this.hasUnpublishedChanges = hasUnpublishedChanges; }
     
     public Integer getMaxLength() { return maxLength; }
     public void setMaxLength(Integer maxLength) { this.maxLength = maxLength; }

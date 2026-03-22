@@ -149,7 +149,7 @@ export default function CommunityPage() {
       <Header transparent />
       <main className="bg-black text-white">
         {/* Hero Section */}
-        <section className="relative h-[70vh] min-h-[500px] overflow-hidden">
+        <section className="theme-preserve-dark relative h-[70vh] min-h-[500px] overflow-hidden">
           <div className="absolute inset-0">
             <Image
               src="/brand_assets/page19_img3.jpeg"
@@ -294,7 +294,7 @@ export default function CommunityPage() {
                 </h2>
               </div>
               <Link
-                href="/community/events"
+                href={t('communityPage.activities.viewAll.href', '/community/events')}
                 className="text-brand-accent hover:underline"
                 data-editable="communityPage.activities.viewAll"
                 data-editable-type="text"
@@ -314,7 +314,7 @@ export default function CommunityPage() {
                   transition={{ duration: 0.6, delay: index * 0.15 }}
                   className="group"
                 >
-                  <div className="relative aspect-[16/10] overflow-hidden rounded-2xl">
+                  <div className="theme-preserve-dark relative aspect-[16/10] overflow-hidden rounded-2xl">
                     <Image
                       src={activity.image}
                       alt={locale === 'en' ? activity.titleEn : t(activity.titleKey)}
@@ -327,7 +327,7 @@ export default function CommunityPage() {
                       data-editable-type="image"
                       data-editable-label={`Community Activity ${activity.id} Image`}
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/55 to-transparent" />
                     <span className={`absolute right-4 top-4 rounded-full px-3 py-1 text-xs font-medium ${
                       activity.status === 'open'
                         ? 'bg-brand-accent text-black'
@@ -342,7 +342,7 @@ export default function CommunityPage() {
                     </span>
                     <div className="absolute bottom-4 left-4 right-4">
                       <h3
-                        className="font-zh-heading text-xl font-bold"
+                        className="font-zh-heading text-xl font-bold text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.72)]"
                         data-editable={`communityPage.activities.items.${activity.id}.title`}
                         data-editable-type="text"
                         data-editable-label={`Community Activity ${activity.id} Title`}
@@ -427,7 +427,7 @@ export default function CommunityPage() {
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: index * 0.05 }}
-                  className="group relative aspect-square overflow-hidden rounded-2xl cursor-pointer"
+                  className="theme-preserve-dark group relative aspect-square cursor-pointer overflow-hidden rounded-2xl"
                 >
                   <Image
                     src={src}
@@ -481,7 +481,8 @@ export default function CommunityPage() {
                 {t('communityPage.cta.desc')}
               </p>
               <div className="mt-12 flex flex-wrap justify-center gap-4">
-                <button
+                <Link
+                  href={t('communityPage.cta.joinNow.href', '/community/events')}
                   className="group relative overflow-hidden rounded-full bg-white px-10 py-5 text-lg font-semibold text-black transition-all hover:scale-105 hover:shadow-2xl hover:shadow-white/20"
                   data-editable="communityPage.cta.joinNow"
                   data-editable-type="text"
@@ -489,15 +490,16 @@ export default function CommunityPage() {
                 >
                   <span className="relative z-10">{t('communityPage.cta.joinNow')}</span>
                   <div className="absolute inset-0 -z-0 bg-gradient-to-r from-brand-accent to-white opacity-0 transition-opacity group-hover:opacity-100" />
-                </button>
-                <button
+                </Link>
+                <Link
+                  href={t('communityPage.cta.learnMore.href', '/about')}
                   className="rounded-full border-2 border-white/30 px-10 py-5 text-lg font-semibold transition-all hover:border-white/60 hover:bg-white/10"
                   data-editable="communityPage.cta.learnMore"
                   data-editable-type="text"
                   data-editable-label="Community CTA Learn More Button"
                 >
                   {t('common.learnMore')}
-                </button>
+                </Link>
               </div>
               
               {/* Additional CTA info */}
