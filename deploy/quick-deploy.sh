@@ -16,7 +16,7 @@ echo -e "${GREEN}========================================${NC}"
 echo ""
 
 # 配置变量
-PROJECT_DIR="/var/www/manqiyou"
+PROJECT_DIR="/opt/mqyweb"
 GIT_REPO="git@github.com:zhf186/mqyweb.git"
 DOMAIN="www.zjmqy.cc"
 

@@ -11,7 +11,7 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # 项目路径
-PROJECT_ROOT="/var/www/manqiyou"
+PROJECT_ROOT="/opt/mqyweb"
 FRONTEND_DIR="$PROJECT_ROOT/frontend"
 BACKEND_DIR="$PROJECT_ROOT/backend/manqiyou-app"
 
@@ -90,7 +90,7 @@ module.exports = {
     name: 'manqiyou-frontend',
     script: 'npm',
     args: 'start',
-    cwd: '/var/www/manqiyou/frontend',
+    cwd: '/opt/mqyweb/frontend',
     instances: 1,
     autorestart: true,
     watch: false,

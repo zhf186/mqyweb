@@ -8,7 +8,7 @@ param(
     [string]$Username,
     
     [Parameter(Mandatory=$false)]
-    [string]$TargetPath = "/var/www/manqiyou"
+    [string]$TargetPath = "/opt/mqyweb"
 )
 
 Write-Host "=========================================="

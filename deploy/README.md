@@ -83,7 +83,7 @@ bash deploy/deploy.sh
 
 **前提条件：**
 - 已运行 `setup-server.sh`
-- 项目代码已上传到 `/var/www/manqiyou`
+- 项目代码已上传到 `/opt/mqyweb`
 
 ---
 
@@ -148,13 +148,13 @@ bash deploy/ssl-setup.sh
 .\deploy\upload-to-server.ps1 -ServerIP "1.2.3.4" -Username "ubuntu"
 
 # 指定目标路径
-.\deploy\upload-to-server.ps1 -ServerIP "1.2.3.4" -Username "ubuntu" -TargetPath "/var/www/manqiyou"
+.\deploy\upload-to-server.ps1 -ServerIP "1.2.3.4" -Username "ubuntu" -TargetPath "/opt/mqyweb"
 ```
 
 **参数说明：**
 - `ServerIP`: 服务器 IP 地址（必填）
 - `Username`: SSH 用户名（必填）
-- `TargetPath`: 目标路径（可选，默认 /var/www/manqiyou）
+- `TargetPath`: 目标路径（可选，默认 /opt/mqyweb）
 
 **自动排除：**
 - node_modules
@@ -248,11 +248,11 @@ sudo systemctl stop nginx
 3. **手动测试**
    ```bash
    # 前端
-   cd /var/www/manqiyou/frontend
+   cd /opt/mqyweb/frontend
    npm run start
 
    # 后端
-   cd /var/www/manqiyou/backend/manqiyou-app
+   cd /opt/mqyweb/backend/manqiyou-app
    java -jar "$(ls target/manqiyou-app-*.jar | grep -v '\.original$' | head -n 1)"
    ```
 

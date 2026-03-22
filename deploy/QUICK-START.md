@@ -29,19 +29,19 @@ bash deploy/setup-server.sh
 
 ```bash
 # 创建项目目录
-sudo mkdir -p /var/www/manqiyou
-sudo chown -R $USER:$USER /var/www/manqiyou
+sudo mkdir -p /opt/mqyweb
+sudo chown -R $USER:$USER /opt/mqyweb
 
 # 移动代码到项目目录
-mv ~/manqiyou-temp/* /var/www/manqiyou/
-mv ~/manqiyou-temp/.* /var/www/manqiyou/ 2>/dev/null || true
+mv ~/manqiyou-temp/* /opt/mqyweb/
+mv ~/manqiyou-temp/.* /opt/mqyweb/ 2>/dev/null || true
 rm -rf ~/manqiyou-temp
 ```
 
 ### 步骤 3：运行部署脚本
 
 ```bash
-cd /var/www/manqiyou
+cd /opt/mqyweb
 bash deploy/deploy.sh
 ```
 
@@ -78,14 +78,14 @@ cd D:\mrcweb1
 ```bash
 cd /path/to/mrcweb1
 rsync -avz --exclude 'node_modules' --exclude 'target' --exclude '.git' \
-  ./ username@your-server-ip:/var/www/manqiyou/
+  ./ username@your-server-ip:/opt/mqyweb/
 ```
 
 ### 步骤 2：SSH 登录服务器
 
 ```bash
 ssh username@your-server-ip
-cd /var/www/manqiyou
+cd /opt/mqyweb
 ```
 
 ### 步骤 3：运行部署脚本
@@ -157,7 +157,7 @@ curl http://your-domain.com/api/health
 ### 更新代码
 
 ```bash
-cd /var/www/manqiyou
+cd /opt/mqyweb
 bash deploy/update.sh
 ```
 
@@ -183,7 +183,7 @@ sudo kill -9 <PID>
 ### 2. 前端构建失败
 
 ```bash
-cd /var/www/manqiyou/frontend
+cd /opt/mqyweb/frontend
 rm -rf node_modules .next
 npm install
 npm run build
@@ -199,7 +199,7 @@ sudo journalctl -u manqiyou-backend -n 100 --no-pager
 java -version
 
 # 手动测试启动
-cd /var/www/manqiyou/backend/manqiyou-app
+cd /opt/mqyweb/backend/manqiyou-app
 java -jar "$(ls target/manqiyou-app-*.jar | grep -v '\.original$' | head -n 1)"
 ```
 

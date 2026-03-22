@@ -15,7 +15,7 @@ NC='\033[0m' # No Color
 # 配置变量
 SERVER_IP="47.97.21.33"
 DOMAIN="www.zjmqy.cc"
-PROJECT_DIR="/var/www/manqiyou"
+PROJECT_DIR="/opt/mqyweb"
 GIT_REPO="git@github.com:zhf186/mqyweb.git"
 
 echo -e "${GREEN}========================================${NC}"
